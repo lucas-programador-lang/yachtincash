@@ -156,21 +156,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Credita 10% de comissão de 1º nível para quem indicou este usuário
         if (referredByUid) {
+            const valorComissao = info.valor * 0.10;
+
             firebaseDb.ref('commissions/' + referredByUid).push({
                 fromUid: user.uid,
                 fromName: user.displayName || user.email,
-                valor: info.valor * 0.10,
+                valor: valorComissao,
                 createdAt: Date.now()
+            });
+
+            // Soma a comissão ao saldo disponível de quem indicou. Usamos
+            // transaction() em vez de um simples "get + set" porque isso
+            // evita perder valor se duas comissões chegarem quase juntas
+            // (ex: dois indicados ativando planos ao mesmo tempo).
+            firebaseDb.ref('users/' + referredByUid + '/balance').transaction((saldoAtual) => {
+                return (saldoAtual || 0) + valorComissao;
             });
         }
     }
 
     // Preenche a página Carteira (totais + tabela de planos ativos) a
     // partir dos dados de users/{uid}/planos no Realtime Database.
+    // Também atualiza o "Rendimento Acumulado" do Início, que usa a
+    // mesma base de cálculo.
     function renderizarCarteira(planosData) {
         const tbody = document.getElementById('planosAtivosBody');
         const totalInvestidoEl = document.getElementById('totalInvestidoPlanos');
         const rendimentoTotalEl = document.getElementById('rendimentoTotalPlanos');
+        const rendimentoInicioEl = document.getElementById('rendimentoAcumuladoInicio');
         if (!tbody) return;
 
         const planos = planosData ? Object.values(planosData) : [];
@@ -179,6 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
             tbody.innerHTML = '<tr><td colspan="5" class="muted">Você ainda não possui planos ativos. Vá até <strong>Investir</strong> para alugar seu primeiro Yacht.</td></tr>';
             if (totalInvestidoEl) totalInvestidoEl.textContent = formatarMoeda(0);
             if (rendimentoTotalEl) rendimentoTotalEl.textContent = formatarMoeda(0);
+            if (rendimentoInicioEl) rendimentoInicioEl.textContent = formatarMoeda(0);
             return;
         }
 
@@ -213,6 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tbody.innerHTML = linhas;
         if (totalInvestidoEl) totalInvestidoEl.textContent = formatarMoeda(totalInvestido);
         if (rendimentoTotalEl) rendimentoTotalEl.textContent = formatarMoeda(rendimentoTotal);
+        if (rendimentoInicioEl) rendimentoInicioEl.textContent = formatarMoeda(rendimentoTotal);
     }
 
     // Preenche o Extrato de Recebimentos: cada dia já rendido de cada plano
@@ -290,13 +305,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Soma as comissões recebidas (commissions/{uid}) e atualiza o card
-    // "Comissões (1º Nível - 10%)" da Equipe.
+    // "Comissões (1º Nível - 10%)" tanto da Equipe quanto do Início.
     function renderizarComissoes(commissionsData) {
         const comissaoEl = document.getElementById('comissaoNivel1');
-        if (!comissaoEl) return;
+        const comissaoInicioEl = document.getElementById('comissaoNivel1Inicio');
+        if (!comissaoEl && !comissaoInicioEl) return;
         const comissoes = commissionsData ? Object.values(commissionsData) : [];
         const total = comissoes.reduce((soma, c) => soma + (c.valor || 0), 0);
-        comissaoEl.textContent = formatarMoeda(total);
+        if (comissaoEl) comissaoEl.textContent = formatarMoeda(total);
+        if (comissaoInicioEl) comissaoInicioEl.textContent = formatarMoeda(total);
     }
 
     // Rótulos amigáveis para o tipo de chave PIX, usados no modal de Saque
