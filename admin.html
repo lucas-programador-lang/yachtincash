@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YACHTINCASH - Painel Admin</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="app-body">
+    <div class="app-layout">
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <aside class="sidebar" id="sidebar">
+            <button class="sidebar-close" id="sidebarClose" aria-label="Fechar menu">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5l14 14M19 5 5 19"/></svg>
+            </button>
+            <div class="sidebar-brand">
+                <span class="brand-logo-ring"><img src="logo.png" alt="Logo" class="brand-logo"></span>
+                <span class="brand-name">YACHTINCASH</span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-item">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 16.5 20 12l-4.5-4.5"/><path d="M20 12H9"/><path d="M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3" transform="rotate(180 12 12)"/></svg>
+                    <span>Voltar ao App</span>
+                </a>
+                <button class="nav-item active">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6.5V11c0 5 3.4 8.9 8 10 4.6-1.1 8-5 8-10V6.5L12 3Z"/><path d="M9 12l2 2 4-4"/></svg>
+                    <span>Painel Admin</span>
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <button onclick="Auth.logout()" class="logout-btn">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3"/><path d="M15.5 16.5 20 12l-4.5-4.5"/><path d="M20 12H9"/></svg>
+                    <span>Sair</span>
+                </button>
+            </div>
+        </aside>
+
+        <header class="mobile-topbar">
+            <button class="hamburger-btn" id="hamburgerBtn" aria-label="Abrir menu" aria-expanded="false" aria-controls="sidebar">
+                <span></span><span></span><span></span>
+            </button>
+            <span class="mobile-topbar-title">Painel Admin</span>
+        </header>
+
+        <main class="main-content">
+            <h1 class="page-title">Painel Administrativo</h1>
+
+            <div class="grid-stats">
+                <div class="stat-card">
+                    <span>Total de Saques Pendentes</span>
+                    <h2 id="statSaquesPendentes">R$ 0,00</h2>
+                </div>
+                <div class="stat-card">
+                    <span>Total de Depósitos Pendentes</span>
+                    <h2 id="statDepositosPendentes">R$ 0,00</h2>
+                </div>
+                <div class="stat-card">
+                    <span>Pendências de Plano</span>
+                    <h2 id="statPendenciasPlano">0</h2>
+                </div>
+                <div class="stat-card">
+                    <span>Saldo Total dos Usuários</span>
+                    <h2 id="statSaldoTotal">R$ 0,00</h2>
+                </div>
+                <div class="stat-card">
+                    <span>Usuários Cadastrados</span>
+                    <h2 id="statUsuariosCadastrados">0</h2>
+                </div>
+            </div>
+
+            <section class="admin-section">
+                <h3 class="section-subtitle">Usuários e Saldos</h3>
+                <p class="page-subtitle">Saldo sacável e comissão de indicação acumulada de cada cliente cadastrado.</p>
+                <input type="text" id="buscaUsuarios" class="ref-input admin-search" placeholder="Buscar por nome ou e-mail...">
+                <div class="info-box">
+                    <div class="table-scroll">
+                        <table class="extrato-table">
+                            <thead>
+                                <tr>
+                                    <th>Usuário</th>
+                                    <th>E-mail</th>
+                                    <th>Saldo</th>
+                                    <th>Comissão Acumulada</th>
+                                    <th>Admin</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usuariosBody">
+                                <tr><td colspan="5" class="muted">Carregando usuários...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section class="admin-section">
+                <h3 class="section-subtitle">Pendências de Plano</h3>
+                <p class="page-subtitle">Pix confirmado e dinheiro recebido, mas o usuário já tinha um plano ativo desse valor no momento da confirmação — precisa de uma decisão manual: criar o plano mesmo assim (ignora o limite) ou marcar como resolvido sem criar plano (ex.: reembolso feito fora do sistema).</p>
+                <div class="info-box">
+                    <div class="table-scroll">
+                        <table class="extrato-table">
+                            <thead>
+                                <tr>
+                                    <th>Data/Horário</th>
+                                    <th>Usuário</th>
+                                    <th>Valor</th>
+                                    <th>Observação</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pendenciasPlanoBody">
+                                <tr><td colspan="5" class="muted">Carregando pendências...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section class="admin-section">
+                <h3 class="section-subtitle">Todos os Saques</h3>
+                <p class="page-subtitle">Ao marcar um saque como pago, o Extrato do usuário é atualizado automaticamente.</p>
+                <div class="info-box">
+                    <div class="table-scroll">
+                        <table class="extrato-table">
+                            <thead>
+                                <tr>
+                                    <th>Data/Horário</th>
+                                    <th>Usuário</th>
+                                    <th>Chave PIX</th>
+                                    <th>Valor Solicitado</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="saquesBody">
+                                <tr><td colspan="6" class="muted">Carregando saques...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section class="admin-section">
+                <h3 class="section-subtitle">Todos os Depósitos</h3>
+                <p class="page-subtitle">Ao aprovar um depósito, o plano correspondente é ativado automaticamente na Carteira do usuário.</p>
+                <div class="info-box">
+                    <div class="table-scroll">
+                        <table class="extrato-table">
+                            <thead>
+                                <tr>
+                                    <th>Data/Horário</th>
+                                    <th>Usuário</th>
+                                    <th>Valor do Plano</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="depositosBody">
+                                <tr><td colspan="5" class="muted">Carregando depósitos...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Firebase SDK (compat) — precisa vir antes de auth.js, script.js e admin.js -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+    <script src="auth.js"></script>
+    <script src="script.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>
