@@ -13,6 +13,9 @@
         <div class="sidebar-overlay" id="sidebarOverlay"></div>
         <!-- SIDEBAR (desktop / tablet, and off-canvas drawer on mobile) -->
         <aside class="sidebar" id="sidebar">
+            <button class="sidebar-close" id="sidebarClose" aria-label="Fechar menu">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5l14 14M19 5 5 19"/></svg>
+            </button>
             <div class="sidebar-brand">
                 <span class="brand-logo-ring"><img src="logo.png" alt="Logo" class="brand-logo"></span>
                 <span class="brand-name">YACHTINCASH</span>
@@ -67,15 +70,10 @@
         </aside>
         <!-- TOP BAR (mobile only) -->
         <header class="mobile-topbar">
-            <div class="mobile-topbar-start">
-                <button class="hamburger-btn" id="hamburgerBtn" aria-label="Abrir menu" aria-expanded="false" aria-controls="sidebar">
-                    <span></span><span></span><span></span>
-                </button>
-                <div class="sidebar-brand">
-                    <span class="brand-logo-ring"><img src="logo.png" alt="Logo" class="brand-logo"></span>
-                    <span class="brand-name">YACHTINCASH</span>
-                </div>
-            </div>
+            <button class="hamburger-btn" id="hamburgerBtn" aria-label="Abrir menu" aria-expanded="false" aria-controls="sidebar">
+                <span></span><span></span><span></span>
+            </button>
+            <span class="mobile-topbar-title" id="mobileTopbarTitle">Início</span>
         </header>
         <!-- MAIN CONTENT -->
         <main class="main-content">
