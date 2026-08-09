@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YACHTINCASH - Painel Admin</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="app-body">
+    <div class="app-layout">
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <span class="brand-logo-ring"><img src="logo.png" alt="Logo" class="brand-logo"></span>
+                <span class="brand-name">YACHTINCASH · Admin</span>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-item">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5 12 4l8 7.5"/><path d="M6 10v9a1 1 0 0 0 1 1h3v-6h4v6h3a1 1 0 0 0 1-1v-9"/></svg>
+                    <span>Voltar ao Dashboard</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button onclick="Auth.logout()" class="logout-btn">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3"/><path d="M15.5 16.5 20 12l-4.5-4.5"/><path d="M20 12H9"/></svg>
+                    <span>Sair</span>
+                </button>
+            </div>
+        </aside>
+
+        <header class="mobile-topbar">
+            <div class="mobile-topbar-start">
+                <button class="hamburger-btn" id="hamburgerBtn" aria-label="Abrir menu" aria-expanded="false" aria-controls="sidebar">
+                    <span></span><span></span><span></span>
+                </button>
+                <div class="sidebar-brand">
+                    <span class="brand-logo-ring"><img src="logo.png" alt="Logo" class="brand-logo"></span>
+                    <span class="brand-name">Admin</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content" id="adminContent" style="display:none;">
+            <h1 class="page-title">Painel Admin</h1>
+
+            <!-- RODAR CÁLCULO DE RENDIMENTOS -->
+            <div class="info-box admin-action-box">
+                <div>
+                    <h3 class="section-subtitle" style="margin-top:0;">Rodar cálculo de rendimentos agora</h3>
+                    <p class="muted">Roda o mesmo cálculo do Cron Trigger diário na hora, e mostra abaixo quem foi creditado ou por que alguém ficou de fora (conta não encontrada, data de ativação inválida, etc.).</p>
+                </div>
+                <button class="btn" id="btnRodarRendimentos" style="max-width: 320px;">Rodar cálculo agora</button>
+                <div class="admin-run-log" id="rendimentosLog"></div>
+            </div>
+
+            <!-- STATS -->
+            <div class="admin-stats-grid">
+                <div class="admin-stat-card">
+                    <span>Total de Saques Pendentes</span>
+                    <strong id="statSaquesPendentes">0</strong>
+                </div>
+                <div class="admin-stat-card">
+                    <span>Total de Depósitos Pendentes</span>
+                    <strong id="statDepositosPendentes">0</strong>
+                </div>
+                <div class="admin-stat-card">
+                    <span>Pendências de Plano</span>
+                    <strong id="statPendenciasPlano">0</strong>
+                </div>
+                <div class="admin-stat-card">
+                    <span>Saldo Total dos Usuários</span>
+                    <strong id="statSaldoTotal">R$ 0,00</strong>
+                </div>
+                <div class="admin-stat-card">
+                    <span>Usuários Cadastrados</span>
+                    <strong id="statTotalUsuarios">0</strong>
+                </div>
+            </div>
+
+            <!-- USUÁRIOS E SALDOS -->
+            <div class="admin-section">
+                <div class="admin-section-header">
+                    <h3 class="section-subtitle" style="margin-top:0;">Usuários e Saldos</h3>
+                    <p class="muted">Saldo sacável e comissão de indicação acumulada de cada cliente cadastrado.</p>
+                </div>
+                <input type="text" class="admin-search-input" id="buscaUsuarios" placeholder="Buscar por nome ou e-mail...">
+                <div class="info-box">
+                    <div class="table-scroll">
+                        <table class="extrato-table">
+                            <thead>
+                                <tr>
+                                    <th>Usuário</th>
+                                    <th>E-mail</th>
+                                    <th>Saldo</th>
+                                    <th>Comissão Acumulada</th>
+                                    <th>Admin</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usuariosBody">
+                                <tr><td colspan="5" class="muted">Carregando...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PENDÊNCIAS DE PLANO -->
+            <div class="admin-section">
+                <div class="admin-section-header">
+                    <h3 class="section-subtitle" style="margin-top:0;">Pendências de Plano</h3>
+                    <p class="muted">Pix confirmado e dinheiro recebido, mas o usuário já tinha um plano ativo desse valor no momento da confirmação — precisa de uma decisão manual: criar o plano mesmo assim (ignora o limite) ou marcar como resolvido sem criar plano (ex.: reembolso feito fora do sistema).</p>
+                </div>
+                <div class="info-box">
+                    <div class="table-scroll">
+                        <table class="extrato-table">
+                            <thead>
+                                <tr>
+                                    <th>Data/Horário</th>
+                                    <th>Usuário</th>
+                                    <th>Valor</th>
+                                    <th>Observação</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pendenciasBody">
+                                <tr><td colspan="5" class="muted">Nenhuma pendência de plano no momento.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TODOS OS SAQUES -->
+            <div class="admin-section">
+                <div class="admin-section-header">
+                    <h3 class="section-subtitle" style="margin-top:0;">Todos os Saques</h3>
+                    <p class="muted">Ao marcar um saque como pago, o Extrato do usuário é atualizado automaticamente.</p>
+                </div>
+                <div class="info-box">
+                    <div class="table-scroll">
+                        <table class="extrato-table">
+                            <thead>
+                                <tr>
+                                    <th>Data/Horário</th>
+                                    <th>Usuário</th>
+                                    <th>Chave PIX</th>
+                                    <th>Valor Solicitado</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="saquesBody">
+                                <tr><td colspan="6" class="muted">Carregando...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TODOS OS DEPÓSITOS -->
+            <div class="admin-section">
+                <div class="admin-section-header">
+                    <h3 class="section-subtitle" style="margin-top:0;">Todos os Depósitos</h3>
+                    <p class="muted">Ao aprovar um depósito, o plano correspondente é ativado automaticamente na Carteira do usuário.</p>
+                </div>
+                <div class="info-box">
+                    <div class="table-scroll">
+                        <table class="extrato-table">
+                            <thead>
+                                <tr>
+                                    <th>Data/Horário</th>
+                                    <th>Usuário</th>
+                                    <th>Valor do Plano</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="depositosBody">
+                                <tr><td colspan="5" class="muted">Carregando...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <main class="main-content" id="adminAcessoNegado" style="display:none;">
+            <h1 class="page-title">Acesso restrito</h1>
+            <div class="rules-box">
+                <p>Esta área é exclusiva para administradores.</p>
+            </div>
+        </main>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-functions-compat.js"></script>
+    <script src="auth.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>
