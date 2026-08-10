@@ -219,6 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
             firebaseDb.ref('commissions/' + referredByUid).push({
                 fromUid: uid,
                 fromName: (usersMap[uid] && (usersMap[uid].fullName || usersMap[uid].email)) || uid,
+                planoNome: info.nome,
                 valor: valorComissao,
                 createdAt: Date.now()
             });
