@@ -64,6 +64,13 @@ const Auth = {
     // indicação único, salva o perfil (nome + saldo inicial de R$ 5,00 +
     // refCode) e, se o cadastro veio de um link de indicação (?ref=CODIGO
     // na URL), registra o vínculo com quem indicou. Retorna uma Promise.
+    //
+    // IMPORTANTE: usa .update() em vez de .set() em users/{uid} — as regras
+    // do Realtime Database só têm .write definido em cada CAMPO (fullName,
+    // email, balance, etc.), não no nó users/$uid como um todo. Um .set()
+    // no nó pai é avaliado só no caminho exato onde é chamado (sem olhar
+    // regras dos filhos) e seria recusado; .update() com múltiplos campos
+    // já é avaliado campo a campo pelo Firebase, batendo com essas regras.
     register(fullName, email, password) {
         return firebaseAuth.createUserWithEmailAndPassword(email, password)
             .then((credential) => {
@@ -71,7 +78,7 @@ const Auth = {
                 const uid = user.uid;
                 return user.updateProfile({ displayName: fullName })
                     .then(() => gerarCodigoIndicacaoUnico(uid))
-                    .then((refCode) => this._userRef(uid).set({
+                    .then((refCode) => this._userRef(uid).update({
                         fullName: fullName,
                         email: email,
                         balance: 5,
