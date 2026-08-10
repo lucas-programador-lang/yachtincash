@@ -1826,6 +1826,10 @@ body.modal-open {
     .grid-yacht {
         grid-template-columns: repeat(2, 1fr);
     }
+
+    .yacht-card-img {
+        height: 162px;
+    }
 }
 
 @media (min-width: 1024px) {
@@ -1847,6 +1851,10 @@ body.modal-open {
     .grid-yacht {
         grid-template-columns: repeat(3, 1fr);
         gap: 22px;
+    }
+
+    .yacht-card-img {
+        height: 178px;
     }
 
     .sidebar {
@@ -1920,6 +1928,10 @@ body.modal-open {
 
     .grid-yacht {
         grid-template-columns: repeat(4, 1fr);
+    }
+
+    .yacht-card-img {
+        height: 152px;
     }
 }
 
@@ -2052,6 +2064,10 @@ body.modal-open {
         padding: 8px 5px;
     }
 
+    .yacht-card-img {
+        height: 132px;
+    }
+
     .page-title {
         font-size: 21px;
     }
@@ -2084,6 +2100,14 @@ body.modal-open {
 
     .yacht-card {
         padding: 18px;
+    }
+
+    /* O padding do card cai pra 18px aqui — a imagem precisa acompanhar
+       pra continuar "sangrando" até a borda em vez de deixar uma faixa */
+    .yacht-card-img {
+        width: calc(100% + 36px);
+        margin: -18px -18px 14px -18px;
+        height: 120px;
     }
 }
 
