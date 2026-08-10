@@ -2008,6 +2008,52 @@ body.modal-open {
     }
 }
 
+/* Card do plano Yacht no celular: em telas médias (ex: 600–767px) o grid
+   auto-fit da versão desktop podia encaixar 2 colunas estreitas e deixar
+   tudo espremido. Aqui força 1 coluna de largura total e aumenta o
+   respiro entre imagem, título, preço, divisor e botão. */
+@media (max-width: 767px) {
+    .grid-yacht {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .yacht-card {
+        padding: 24px;
+    }
+
+    .yacht-card-img {
+        width: calc(100% + 48px);
+        margin: -24px -24px 20px -24px;
+    }
+
+    .yacht-divider {
+        margin: 0 -24px;
+    }
+
+    .yacht-card-header {
+        margin-bottom: 10px;
+    }
+
+    .yacht-return {
+        gap: 6px;
+        padding: 18px 0 16px 0;
+    }
+
+    .yacht-meta {
+        gap: 16px;
+        padding: 20px 0;
+    }
+
+    .yacht-meta-item {
+        gap: 6px;
+    }
+
+    .yacht-card .btn {
+        margin-top: 20px;
+    }
+}
+
 @media (max-width: 480px) {
     body {
         align-items: flex-start;
