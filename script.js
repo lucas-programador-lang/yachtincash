@@ -656,19 +656,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     renderizarExtrato(ultimoPlanosData, ultimosSaquesUsuario, ultimosDepositosUsuario);
                 });
 
-                // O admin grava saques/depósitos de TODOS os usuários nos
-                // nós raiz 'withdrawals'/'deposits' — aqui filtramos só os
-                // deste usuário para refletir status (pago/aprovado) no
-                // Extrato dele automaticamente.
-                firebaseDb.ref('withdrawals').on('value', (snapshot) => {
-                    const todos = snapshot.val() || {};
-                    ultimosSaquesUsuario = Object.values(todos).filter((s) => s.uid === user.uid);
+                // As regras do Firebase só deixam um usuário comum ler
+                // 'withdrawals'/'deposits' via query filtrada pelo próprio
+                // uid (não o nó inteiro, que é exclusivo do admin) — por
+                // isso usamos orderByChild('uid').equalTo(...) aqui.
+                firebaseDb.ref('withdrawals').orderByChild('uid').equalTo(user.uid).on('value', (snapshot) => {
+                    const meusRegistros = snapshot.val() || {};
+                    ultimosSaquesUsuario = Object.values(meusRegistros);
                     renderizarExtrato(ultimoPlanosData, ultimosSaquesUsuario, ultimosDepositosUsuario);
                 });
 
-                firebaseDb.ref('deposits').on('value', (snapshot) => {
-                    const todos = snapshot.val() || {};
-                    ultimosDepositosUsuario = Object.values(todos).filter((d) => d.uid === user.uid);
+                firebaseDb.ref('deposits').orderByChild('uid').equalTo(user.uid).on('value', (snapshot) => {
+                    const meusRegistros = snapshot.val() || {};
+                    ultimosDepositosUsuario = Object.values(meusRegistros);
                     renderizarExtrato(ultimoPlanosData, ultimosSaquesUsuario, ultimosDepositosUsuario);
                 });
 
