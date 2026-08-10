@@ -216,8 +216,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Preenche o Extrato de Recebimentos: cada dia já rendido de cada plano
-    // ativo vira uma linha (mesma base de dados/cálculo da Carteira).
-    function renderizarExtrato(planosData, saquesDoUsuario, depositosDoUsuario) {
+    // ativo vira uma linha (mesma base de dados/cálculo da Carteira), mais
+    // depósitos aprovados/rejeitados, saques pagos e comissões de indicação.
+    function renderizarExtrato(planosData, saquesDoUsuario, depositosDoUsuario, comissoesDoUsuario) {
         const tbody = document.getElementById('extratoBody');
         if (!tbody) return;
 
@@ -264,6 +265,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     valor: 0
                 });
             }
+        });
+
+        // Comissões de indicação (10%) recebidas — uma linha por indicado
+        // que teve um plano aprovado, identificando quem gerou a comissão.
+        (comissoesDoUsuario || []).forEach((comissao) => {
+            entradas.push({
+                data: comissao.createdAt,
+                descricao: `Comissão de indicação (10%) — plano de ${comissao.fromName || 'indicado'}`,
+                valor: comissao.valor
+            });
         });
 
         if (!entradas.length) {
@@ -649,11 +660,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 let ultimoPlanosData = null;
                 let ultimosSaquesUsuario = [];
                 let ultimosDepositosUsuario = [];
+                let ultimasComissoesUsuario = [];
 
                 userRef.child('planos').on('value', (snapshot) => {
                     ultimoPlanosData = snapshot.val();
                     renderizarCarteira(ultimoPlanosData);
-                    renderizarExtrato(ultimoPlanosData, ultimosSaquesUsuario, ultimosDepositosUsuario);
+                    renderizarExtrato(ultimoPlanosData, ultimosSaquesUsuario, ultimosDepositosUsuario, ultimasComissoesUsuario);
                 });
 
                 // As regras do Firebase só deixam um usuário comum ler
@@ -663,13 +675,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 firebaseDb.ref('withdrawals').orderByChild('uid').equalTo(user.uid).on('value', (snapshot) => {
                     const meusRegistros = snapshot.val() || {};
                     ultimosSaquesUsuario = Object.values(meusRegistros);
-                    renderizarExtrato(ultimoPlanosData, ultimosSaquesUsuario, ultimosDepositosUsuario);
+                    renderizarExtrato(ultimoPlanosData, ultimosSaquesUsuario, ultimosDepositosUsuario, ultimasComissoesUsuario);
                 });
 
                 firebaseDb.ref('deposits').orderByChild('uid').equalTo(user.uid).on('value', (snapshot) => {
                     const meusRegistros = snapshot.val() || {};
                     ultimosDepositosUsuario = Object.values(meusRegistros);
-                    renderizarExtrato(ultimoPlanosData, ultimosSaquesUsuario, ultimosDepositosUsuario);
+                    renderizarExtrato(ultimoPlanosData, ultimosSaquesUsuario, ultimosDepositosUsuario, ultimasComissoesUsuario);
                 });
 
                 // Escuta em tempo real os indicados e as comissões (Equipe)
@@ -677,7 +689,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     renderizarMembrosRede(snapshot.val());
                 });
                 firebaseDb.ref('commissions/' + user.uid).on('value', (snapshot) => {
-                    renderizarComissoes(snapshot.val());
+                    const minhasComissoes = snapshot.val() || {};
+                    ultimasComissoesUsuario = Object.values(minhasComissoes);
+                    renderizarComissoes(minhasComissoes);
+                    renderizarExtrato(ultimoPlanosData, ultimosSaquesUsuario, ultimosDepositosUsuario, ultimasComissoesUsuario);
                 });
 
                 // Rendimento diário e status "Concluído" dependem do tempo
@@ -685,7 +700,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // recarregar a página para ver a virada do dia.
                 setInterval(() => {
                     renderizarCarteira(ultimoPlanosData);
-                    renderizarExtrato(ultimoPlanosData, ultimosSaquesUsuario, ultimosDepositosUsuario);
+                    renderizarExtrato(ultimoPlanosData, ultimosSaquesUsuario, ultimosDepositosUsuario, ultimasComissoesUsuario);
                 }, 60000);
             });
         } else {
