@@ -20,8 +20,6 @@
         rgba(255, 255, 255, 0) 70%);
     --border-gradient: linear-gradient(135deg, rgba(139, 250, 255, 0.6), rgba(31, 184, 174, 0.18) 40%, rgba(255, 255, 255, 0.07) 70%, rgba(0, 229, 255, 0.4));
 
-    /* Fundo em várias camadas — mais profundo e "caro", com um leve
-       tom azul-petróleo em vez do preto puro anterior */
     --bg-dark: #03060a;
     --bg-dark-2: #060b13;
     --bg-card: #0c1620;
@@ -490,7 +488,7 @@ h3 { font-size: 16px; font-weight: 600; margin-bottom: 10px; }
     display: flex;
     flex-direction: column;
     padding: 30px 18px;
-    background: linear-gradient(180deg, rgba(12, 22, 32, 0.97) 0%, rgba(9, 16, 25, 0.99) 100%);
+    background: linear-gradient(180deg, rgba(12, 22, 32, .97) 0%, rgba(9, 16, 25, .99) 100%);
     border-right: 1px solid var(--border-soft);
     position: sticky;
     top: 0;
@@ -687,8 +685,6 @@ h3 { font-size: 16px; font-weight: 600; margin-bottom: 10px; }
     letter-spacing: 0.01em;
 }
 
-/* Botão "×" no topo da própria gaveta (mobile) — faltava, o HTML já
-   tinha o id/SVG mas nenhuma regra de estilo pra ele */
 .sidebar-close {
     appearance: none;
     -webkit-appearance: none;
@@ -1086,14 +1082,17 @@ h3 { font-size: 16px; font-weight: 600; margin-bottom: 10px; }
     z-index: 2;
 }
 
-/* Foto do plano — ocupa a largura toda do card (bleed até a borda),
-   cantos arredondados só em cima, acompanhando o border-radius do
-   card. Fica antes do cabeçalho, como uma capa/thumbnail. */
+/* Foto do plano — largura total do card (bleed até a borda), cantos
+   arredondados só em cima. Usa aspect-ratio (em vez de altura fixa
+   por breakpoint) para manter sempre o mesmo enquadramento
+   proporcional à largura do card — é isso que evita o "zoom"
+   excessivo/corte estranho que acontecia no mobile com alturas
+   fixas muito baixas comparadas à largura. */
 .yacht-card-img {
     display: block;
     width: calc(100% + 44px);
     margin: -22px -22px 16px -22px;
-    height: 150px;
+    aspect-ratio: 16 / 10;
     object-fit: cover;
     border-radius: var(--radius-md) var(--radius-md) 0 0;
 }
@@ -1826,10 +1825,6 @@ body.modal-open {
     .grid-yacht {
         grid-template-columns: repeat(2, 1fr);
     }
-
-    .yacht-card-img {
-        height: 162px;
-    }
 }
 
 @media (min-width: 1024px) {
@@ -1851,10 +1846,6 @@ body.modal-open {
     .grid-yacht {
         grid-template-columns: repeat(3, 1fr);
         gap: 22px;
-    }
-
-    .yacht-card-img {
-        height: 178px;
     }
 
     .sidebar {
@@ -1928,10 +1919,6 @@ body.modal-open {
 
     .grid-yacht {
         grid-template-columns: repeat(4, 1fr);
-    }
-
-    .yacht-card-img {
-        height: 152px;
     }
 }
 
@@ -2110,10 +2097,6 @@ body.modal-open {
         padding: 8px 5px;
     }
 
-    .yacht-card-img {
-        height: 132px;
-    }
-
     .page-title {
         font-size: 21px;
     }
@@ -2153,7 +2136,6 @@ body.modal-open {
     .yacht-card-img {
         width: calc(100% + 36px);
         margin: -18px -18px 14px -18px;
-        height: 120px;
     }
 }
 
