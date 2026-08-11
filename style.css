@@ -1547,6 +1547,19 @@ h3 { font-size: 16px; font-weight: 600; margin-bottom: 10px; }
     width: 100%;
     max-width: 440px;
     text-align: left;
+    /* Sobrescreve o fundo/efeitos herdados de .card: aqui o modal usa
+       exatamente os mesmos tons do fundo do site (--bg-dark/--bg-dark-2),
+       em vez do gradiente mais claro com brilho ciano usado nos cards
+       de autenticação — fica "parte do site" em vez de um painel à parte. */
+    background: linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-dark-2) 100%);
+}
+
+.modal-card::before {
+    opacity: 0.3;
+}
+
+.modal-card::after {
+    display: none;
 }
 
 .modal-card.has-scroll {
@@ -1564,48 +1577,36 @@ h3 { font-size: 16px; font-weight: 600; margin-bottom: 10px; }
     position: absolute;
     top: 14px;
     right: 14px;
-    width: 30px;
-    height: 30px;
-    min-width: 30px;
-    min-height: 30px;
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
     aspect-ratio: 1 / 1;
     flex-shrink: 0;
-    display: block;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--border-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border-soft-2);
     border-radius: 50%;
     color: var(--text-muted);
-    font-size: 0;
-    line-height: 0;
     cursor: pointer;
-    transition: background var(--transition), color var(--transition), border-color var(--transition);
+    z-index: 2;
+    transition: background var(--transition), color var(--transition), border-color var(--transition), transform var(--transition);
 }
 
-.modal-close::before,
-.modal-close::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 11px;
-    height: 1.5px;
-    border-radius: 2px;
-    background: currentColor;
-}
-
-.modal-close::before {
-    transform: translate(-50%, -50%) rotate(45deg);
-}
-
-.modal-close::after {
-    transform: translate(-50%, -50%) rotate(-45deg);
+.modal-close svg {
+    width: 15px;
+    height: 15px;
+    pointer-events: none;
 }
 
 @media (hover: hover) and (pointer: fine) {
     .modal-close:hover {
         background: var(--danger-bg);
-        border-color: rgba(242, 73, 92, 0.35);
+        border-color: rgba(242, 73, 92, 0.4);
         color: var(--danger);
+        transform: rotate(90deg);
     }
 }
 
