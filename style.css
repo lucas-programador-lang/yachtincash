@@ -1338,6 +1338,23 @@ h3 { font-size: 16px; font-weight: 600; margin-bottom: 10px; }
     min-width: 0;
 }
 
+/* ===== Tabelas do Painel Admin: mais respiro e hover mais perceptível,
+   já que aqui cada linha costuma ter uma ação (aprovar/rejeitar/pagar)
+   — vale guiar o olho melhor do que no Extrato passivo do usuário. */
+.admin-body .extrato-table th {
+    padding: 12px 14px;
+    background: rgba(255, 255, 255, 0.02);
+    border-bottom: 1px solid var(--border-soft-2);
+}
+
+.admin-body .extrato-table td {
+    padding: 14px;
+}
+
+.admin-body .extrato-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.045);
+}
+
 .admin-section {
     margin-top: 34px;
 }
@@ -1388,6 +1405,8 @@ h3 { font-size: 16px; font-weight: 600; margin-bottom: 10px; }
 
 .table-actions .btn {
     white-space: nowrap;
+    padding: 8px 14px;
+    font-size: 13px;
 }
 
 .badge {
@@ -1944,6 +1963,13 @@ body.modal-open {
         justify-content: space-between;
         margin-bottom: 22px;
     }
+
+    /* Sem a sidebar, o max-width de 980px (pensado para o dashboard
+       normal, que ainda tem os ~284px da sidebar disputando espaço)
+       deixa muito vazio à direita no admin — aqui ganha mais respiro. */
+    .admin-body .main-content {
+        max-width: 1240px;
+    }
 }
 
 @media (min-width: 1280px) {
@@ -1971,6 +1997,10 @@ body.modal-open {
 
     .grid-yacht {
         grid-template-columns: repeat(4, 1fr);
+    }
+
+    .admin-body .main-content {
+        max-width: 1400px;
     }
 }
 
