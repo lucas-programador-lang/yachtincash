@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     function formatarMoeda(valor) {
-        return `R$ ${(valor || 0).toFixed(2).replace('.', ',')}`;
+        return `R$ ${(valor || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     }
 
     function formatarDataHora(timestamp) {
@@ -495,7 +495,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (valor < SAQUE_VALOR_MINIMO) {
-            showToast('warning', 'Valor mínimo não atingido', `O valor mínimo para saque é R$ ${SAQUE_VALOR_MINIMO.toFixed(2).replace('.', ',')}.`);
+            showToast('warning', 'Valor mínimo não atingido', `O valor mínimo para saque é R$ ${SAQUE_VALOR_MINIMO.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}.`);
             valorInput.focus();
             return;
         }
@@ -519,7 +519,7 @@ document.addEventListener('DOMContentLoaded', () => {
             createdAt: Date.now()
         });
 
-        showToast('success', 'Solicitação de saque enviada!', `Valor: R$ ${valor.toFixed(2).replace('.', ',')}`);
+        showToast('success', 'Solicitação de saque enviada!', `Valor: R$ ${valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
         valorInput.value = '';
         closeModal('sacarModal');
     };
@@ -595,7 +595,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const balanceValue = typeof data.balance === 'number' ? data.balance : (parseFloat(data.balance) || 0);
                     currentBalance = balanceValue;
 
-                    const formattedBalance = balanceValue.toFixed(2).replace('.', ',');
+                    const formattedBalance = balanceValue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
                     // Atualiza o saldo em todos os lugares onde ele aparece (Início, Carteira, Perfil)
                     const balanceTargets = ['userBalance', 'sacarSaldoDisponivel'];
