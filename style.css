@@ -1507,7 +1507,7 @@ h3 { font-size: 16px; font-weight: 600; margin-bottom: 10px; }
     background:
         radial-gradient(ellipse 420px 260px at 20% -10%, rgba(31, 184, 174, 0.14), transparent 62%),
         radial-gradient(ellipse 360px 240px at 100% 100%, rgba(0, 229, 255, 0.08), transparent 60%),
-        linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-dark-2) 100%);
+        linear-gradient(160deg, var(--bg-card) 0%, var(--bg-card-2) 100%);
 }
 
 .modal-card::before {
