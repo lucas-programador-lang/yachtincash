@@ -662,6 +662,47 @@ h3 { font-size: 16px; font-weight: 600; margin-bottom: 10px; }
     display: none;
 }
 
+/* ===== Painel Admin: topbar exclusiva do desktop =====
+   Só existe dentro de .admin-body (admin.html). No mobile ela fica
+   escondida e o .mobile-topbar padrão (hamburger + sidebar off-canvas)
+   assume — igual ao resto do site. */
+.admin-topbar {
+    display: none;
+}
+
+.admin-topbar-title {
+    font-size: 15.5px;
+    font-weight: 700;
+    color: var(--text-color);
+    letter-spacing: 0.01em;
+}
+
+.admin-logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: transparent;
+    border: 1px solid var(--border-soft-2);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background var(--transition), color var(--transition), border-color var(--transition);
+}
+
+.admin-logout-btn:hover {
+    background: var(--danger-bg);
+    border-color: rgba(242, 73, 92, 0.35);
+    color: var(--danger);
+}
+
+.admin-logout-btn svg {
+    width: 15px;
+    height: 15px;
+}
+
 .mobile-topbar-title {
     font-size: 15.5px;
     font-weight: 700;
@@ -1318,6 +1359,27 @@ h3 { font-size: 16px; font-weight: 600; margin-bottom: 10px; }
     font-size: 14px;
 }
 
+/* O .grid-stats genérico usa auto-fit, pensado para os pares de cards
+   do dashboard normal (Início/Equipe). Com os 5 cards do admin, auto-fit
+   quebra de forma desigual (ex: 3+2 com o último esticado) — aqui o
+   número de colunas é explícito por breakpoint para ficar sempre
+   alinhado, sem sobrescrever o .grid-stats usado em outras páginas. */
+.admin-body .grid-stats {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+@media (min-width: 640px) {
+    .admin-body .grid-stats {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .admin-body .grid-stats {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
 .table-actions {
     display: flex;
     flex-wrap: wrap;
@@ -1866,6 +1928,21 @@ body.modal-open {
     .profile-card:hover {
         border-color: rgba(31, 184, 174, 0.48);
         box-shadow: var(--shadow-lg), var(--shadow-inset-top);
+    }
+
+    /* ===== Painel Admin no desktop: sem sidebar, sem "Sair"/"Voltar ao
+       App" na barra lateral — vira uma topbar simples com título e um
+       botão de sair discreto. No mobile nada disso muda: a sidebar
+       off-canvas com hamburger continua funcionando normalmente. */
+    .admin-body .sidebar {
+        display: none;
+    }
+
+    .admin-body .admin-topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 22px;
     }
 }
 
