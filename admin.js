@@ -239,28 +239,81 @@ document.addEventListener('DOMContentLoaded', () => {
             planoKey: deposito.planoKey
         };
 
-        if (temPlanoAtivoMesmoValor(deposito.uid, info.valor)) {
-            firebaseDb.ref('planPendencies').push({
-                uid: deposito.uid,
-                userName: deposito.userName,
-                valor: info.valor,
+        // FIX: checagem de duplicidade + criação do plano feitas de forma
+        // atômica dentro de uma transaction no próprio nó do usuário. Antes,
+        // temPlanoAtivoMesmoValor() lia o cache local usersMap e o plano era
+        // criado depois com um push() separado — dois cliques (ou dois
+        // admins) quase simultâneos podiam ambos ler o mesmo estado
+        // desatualizado e passar pela checagem antes que o primeiro push()
+        // fosse refletido, criando plano e comissão duplicados.
+        firebaseDb.ref('users/' + deposito.uid).transaction((userData) => {
+            if (userData === null) return userData;
+
+            const planosAtuais = userData.planos ? Object.values(userData.planos) : [];
+            const jaTemPlanoAtivo = planosAtuais.some((plano) => {
+                const diasPassados = Math.floor((Date.now() - plano.dataAtivacao) / 86400000);
+                const ativo = diasPassados < plano.duracaoDias;
+                return ativo && Math.abs((plano.valorInvestido || 0) - info.valor) < 0.01;
+            });
+
+            if (jaTemPlanoAtivo) {
+                // Aborta a transaction sem alterar nada — sinaliza pendência no .then().
+                return;
+            }
+
+            if (!userData.planos) userData.planos = {};
+            const novoPlanoId = firebaseDb.ref('users/' + deposito.uid + '/planos').push().key;
+            userData.planos[novoPlanoId] = {
+                planoKey: info.planoKey || null,
                 nome: info.nome,
+                valorInvestido: info.valor,
                 retornoDiario: info.retornoDiario,
                 duracaoDias: info.duracaoDias,
-                planoKey: info.planoKey || deposito.planoKey || null,
-                observacao: 'Pix confirmado, mas o usuário já tinha um plano ativo desse valor no momento da confirmação.',
-                depositId,
-                status: 'open',
-                createdAt: Date.now()
-            });
-            firebaseDb.ref('deposits/' + depositId).update({ status: 'approved', resolvedAt: Date.now() });
-            showToast('warning', 'Depósito aprovado com pendência', 'Usuário já tem plano ativo desse valor — decisão manual necessária em "Pendências de Plano".');
-            return;
-        }
+                dataAtivacao: Date.now()
+            };
+            return userData;
+        }).then((resultado) => {
+            if (!resultado.committed) {
+                // Transaction abortada (plano duplicado detectado nesta execução) — cria a pendência.
+                firebaseDb.ref('planPendencies').push({
+                    uid: deposito.uid,
+                    userName: deposito.userName,
+                    valor: info.valor,
+                    nome: info.nome,
+                    retornoDiario: info.retornoDiario,
+                    duracaoDias: info.duracaoDias,
+                    planoKey: info.planoKey || deposito.planoKey || null,
+                    observacao: 'Pix confirmado, mas o usuário já tinha um plano ativo desse valor no momento da confirmação.',
+                    depositId,
+                    status: 'open',
+                    createdAt: Date.now()
+                });
+                firebaseDb.ref('deposits/' + depositId).update({ status: 'approved', resolvedAt: Date.now() });
+                showToast('warning', 'Depósito aprovado com pendência', 'Usuário já tem plano ativo desse valor — decisão manual necessária em "Pendências de Plano".');
+                return;
+            }
 
-        criarPlanoParaUsuario(deposito.uid, info);
-        firebaseDb.ref('deposits/' + depositId).update({ status: 'approved', resolvedAt: Date.now() });
-        showToast('success', 'Depósito aprovado!', 'O plano foi ativado na carteira do usuário.');
+            // Plano criado com sucesso — credita a comissão de indicação, se houver.
+            const userDataFinal = resultado.snapshot.val();
+            const referredByUid = userDataFinal ? userDataFinal.referredBy : null;
+            if (referredByUid) {
+                const valorComissao = info.valor * 0.10;
+                firebaseDb.ref('commissions/' + referredByUid).push({
+                    fromUid: deposito.uid,
+                    fromName: (userDataFinal && (userDataFinal.fullName || userDataFinal.email)) || deposito.uid,
+                    planoNome: info.nome,
+                    valor: valorComissao,
+                    createdAt: Date.now()
+                });
+                firebaseDb.ref('users/' + referredByUid + '/balance').transaction((saldoAtual) => (saldoAtual || 0) + valorComissao);
+            }
+
+            firebaseDb.ref('deposits/' + depositId).update({ status: 'approved', resolvedAt: Date.now() });
+            showToast('success', 'Depósito aprovado!', 'O plano foi ativado na carteira do usuário.');
+        }).catch((err) => {
+            console.error('Erro ao aprovar depósito:', err);
+            showToast('error', 'Erro ao aprovar depósito', 'Tente novamente em instantes.');
+        });
     }
 
     function rejeitarDeposito(depositId) {
@@ -290,9 +343,31 @@ document.addEventListener('DOMContentLoaded', () => {
     function marcarSaquePago(id) {
         const saque = saquesMap[id];
         if (!saque || saque.status !== 'pending') return;
-        firebaseDb.ref('users/' + saque.uid + '/balance').transaction((saldoAtual) => Math.max(0, (saldoAtual || 0) - saque.valor));
-        firebaseDb.ref('withdrawals/' + id).update({ status: 'paid', paidAt: Date.now() });
-        showToast('success', 'Saque marcado como pago!', 'O saldo do usuário foi atualizado.');
+
+        // FIX: antes, a transaction sempre "committava" saturando o saldo em
+        // 0 com Math.max(0, ...) mesmo quando o saldo era menor que o valor
+        // do saque — e o saque era marcado como 'paid' de qualquer forma, ou
+        // seja, o admin conseguia pagar mais do que o usuário tinha
+        // disponível sem nenhum aviso. Agora a transaction aborta (retorna
+        // undefined) se o saldo for insuficiente, e o status só é atualizado
+        // se a transaction de fato for aplicada.
+        firebaseDb.ref('users/' + saque.uid + '/balance').transaction((saldoAtual) => {
+            const saldo = saldoAtual || 0;
+            if (saldo < saque.valor) {
+                return; // aborta a transaction — saldo insuficiente
+            }
+            return saldo - saque.valor;
+        }).then((resultado) => {
+            if (!resultado.committed) {
+                showToast('warning', 'Saldo insuficiente', 'O saldo atual do usuário é menor que o valor do saque. Verifique antes de marcar como pago.');
+                return;
+            }
+            firebaseDb.ref('withdrawals/' + id).update({ status: 'paid', paidAt: Date.now() });
+            showToast('success', 'Saque marcado como pago!', 'O saldo do usuário foi atualizado.');
+        }).catch((err) => {
+            console.error('Erro ao marcar saque como pago:', err);
+            showToast('error', 'Erro ao processar saque', 'Tente novamente em instantes.');
+        });
     }
 
     function rejeitarSaque(id) {
@@ -301,6 +376,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function alternarAdmin(uid, novoValor) {
+        // FIX: impede que o admin logado remova a própria permissão — sem essa
+        // checagem, um clique em "Remover Admin" na própria linha bloqueava o
+        // próprio acesso ao painel sem nenhuma confirmação ou outro admin disponível.
+        const usuarioLogado = firebaseAuth.currentUser;
+        if (!novoValor && usuarioLogado && usuarioLogado.uid === uid) {
+            showToast('warning', 'Ação não permitida', 'Você não pode remover sua própria permissão de administrador.');
+            return;
+        }
         firebaseDb.ref('users/' + uid + '/isAdmin').set(novoValor);
         showToast('success', novoValor ? 'Usuário promovido a admin.' : 'Permissão de admin removida.');
     }
