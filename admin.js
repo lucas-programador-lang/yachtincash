@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         ${s.status === 'pending' ? `
                             <div class="table-actions">
                                 <button class="btn btn-compact btn-success" data-action="marcar-saque-pago" data-id="${id}">Marcar como pago</button>
-                                <button class="btn btn-compact btn-outline" data-action="rejeitar-saque" data-id="${id}">Rejeitar</button>
+                                <button class="btn btn-compact btn-danger" data-action="rejeitar-saque" data-id="${id}">Rejeitar</button>
                             </div>
                         ` : '<span class="muted">—</span>'}
                     </td>
@@ -176,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         ${d.status === 'pending' ? `
                             <div class="table-actions">
                                 <button class="btn btn-compact btn-success" data-action="aprovar-deposito" data-id="${id}">Aprovar</button>
-                                <button class="btn btn-compact btn-outline" data-action="rejeitar-deposito" data-id="${id}">Rejeitar</button>
+                                <button class="btn btn-compact btn-danger" data-action="rejeitar-deposito" data-id="${id}">Rejeitar</button>
                             </div>
                         ` : '<span class="muted">—</span>'}
                     </td>
