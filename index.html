@@ -325,7 +325,9 @@
     <!-- MODAL: DEPOSITAR -->
     <div class="modal-overlay" id="depositModal" onclick="if(event.target===this) closeModal('depositModal')">
         <div class="modal-card card">
-            <button class="modal-close" onclick="closeModal('depositModal')" aria-label="Fechar">&times;</button>
+            <button class="modal-close" onclick="closeModal('depositModal')" aria-label="Fechar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5l14 14M19 5 5 19"/></svg>
+            </button>
             <h2 style="text-align:left;">Realizar Depósito</h2>
             <p class="subtitle" style="text-align:left; margin-bottom: 22px;">Selecione o plano desejado e gere o seu QR Code Pix.</p>
             <div class="form-group">
@@ -365,7 +367,9 @@
     <!-- MODAL: SACAR -->
     <div class="modal-overlay" id="sacarModal" onclick="if(event.target===this) closeModal('sacarModal')">
         <div class="modal-card card">
-            <button class="modal-close" onclick="closeModal('sacarModal')" aria-label="Fechar">&times;</button>
+            <button class="modal-close" onclick="closeModal('sacarModal')" aria-label="Fechar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5l14 14M19 5 5 19"/></svg>
+            </button>
             <div class="withdraw-balance-box">
                 <span>Saldo Disponível:</span>
                 <strong id="sacarSaldoDisponivel">R$ 5,00</strong>
