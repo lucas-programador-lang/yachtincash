@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     function formatarMoeda(valor) {
-        return `R$ ${(valor || 0).toFixed(2).replace('.', ',')}`;
+        return `R$ ${(valor || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     }
 
     function formatarDataHora(timestamp) {
