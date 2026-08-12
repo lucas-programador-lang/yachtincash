@@ -89,9 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <td>${formatarMoeda(u.balance)}</td>
                         <td>${formatarMoeda(comissao)}</td>
                         <td>
-                            <button class="btn btn-compact ${isAdmin ? 'btn-danger' : 'btn-outline'}" data-action="toggle-admin" data-uid="${uid}" data-novo-valor="${!isAdmin}">
-                                ${isAdmin ? 'Remover Admin' : 'Tornar Admin'}
-                            </button>
+                            ${isAdmin ? '<span class="badge badge-success">Admin</span>' : '<span class="muted">—</span>'}
                         </td>
                     </tr>
                 `;
@@ -375,19 +373,6 @@ document.addEventListener('DOMContentLoaded', () => {
         showToast('info', 'Saque rejeitado.');
     }
 
-    function alternarAdmin(uid, novoValor) {
-        // FIX: impede que o admin logado remova a própria permissão — sem essa
-        // checagem, um clique em "Remover Admin" na própria linha bloqueava o
-        // próprio acesso ao painel sem nenhuma confirmação ou outro admin disponível.
-        const usuarioLogado = firebaseAuth.currentUser;
-        if (!novoValor && usuarioLogado && usuarioLogado.uid === uid) {
-            showToast('warning', 'Ação não permitida', 'Você não pode remover sua própria permissão de administrador.');
-            return;
-        }
-        firebaseDb.ref('users/' + uid + '/isAdmin').set(novoValor);
-        showToast('success', novoValor ? 'Usuário promovido a admin.' : 'Permissão de admin removida.');
-    }
-
     // ===== Delegação de cliques nas tabelas (evita listener por linha) =====
     document.addEventListener('click', (e) => {
         const btn = e.target.closest('button[data-action]');
@@ -395,9 +380,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const action = btn.dataset.action;
         const id = btn.dataset.id;
-        const uid = btn.dataset.uid;
 
-        if (action === 'toggle-admin') alternarAdmin(uid, btn.dataset.novoValor === 'true');
         if (action === 'aprovar-deposito') aprovarDeposito(id);
         if (action === 'rejeitar-deposito') rejeitarDeposito(id);
         if (action === 'criar-plano-mesmo-assim') criarPlanoMesmoAssim(id);
