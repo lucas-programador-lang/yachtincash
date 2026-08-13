@@ -233,38 +233,37 @@ document.addEventListener('DOMContentLoaded', () => {
                 entradas.push({
                     data: plano.dataAtivacao + dia * 86400000,
                     descricao: `Rendimento Diário — ${plano.nome}`,
-                    valor: plano.retornoDiario
+                    valor: plano.retornoDiario,
+                    status: 'paid'
                 });
             }
         });
 
-        // Saques pagos entram como saída (valor negativo) no extrato —
-        // atualiza sozinho assim que o admin marca como pago.
+        // Saques aparecem assim que solicitados (Pendente) e o status
+        // muda sozinho — via listener em tempo real do Firebase — quando
+        // o admin marca como pago ou rejeita, sem precisar recarregar a página.
         (saquesDoUsuario || []).forEach((saque) => {
-            if (saque.status !== 'paid') return;
             entradas.push({
-                data: saque.paidAt || saque.createdAt,
+                data: saque.paidAt || saque.resolvedAt || saque.createdAt,
                 descricao: 'Saque via Pix',
-                valor: -saque.valor
+                valor: saque.status === 'paid' ? -saque.valor : 0,
+                status: saque.status === 'paid' ? 'paid' : (saque.status === 'rejected' ? 'rejected' : 'pending')
             });
         });
 
-        // Depósitos aprovados/rejeitados também aparecem — dá visibilidade
-        // pro usuário sem ele precisar perguntar no suporte.
+        // Depósitos também aparecem desde a solicitação (Pendente) — antes
+        // só entravam no Extrato quando já aprovados ou rejeitados.
         (depositosDoUsuario || []).forEach((deposito) => {
-            if (deposito.status === 'approved') {
-                entradas.push({
-                    data: deposito.resolvedAt || deposito.createdAt,
-                    descricao: `Depósito aprovado — ${deposito.planoNome}`,
-                    valor: deposito.valor
-                });
-            } else if (deposito.status === 'rejected') {
-                entradas.push({
-                    data: deposito.resolvedAt || deposito.createdAt,
-                    descricao: `Depósito rejeitado — ${deposito.planoNome}`,
-                    valor: 0
-                });
-            }
+            entradas.push({
+                data: deposito.resolvedAt || deposito.createdAt,
+                descricao: deposito.status === 'approved'
+                    ? `Depósito aprovado — ${deposito.planoNome}`
+                    : deposito.status === 'rejected'
+                        ? `Depósito rejeitado — ${deposito.planoNome}`
+                        : `Depósito solicitado — ${deposito.planoNome}`,
+                valor: deposito.status === 'approved' ? deposito.valor : 0,
+                status: deposito.status === 'approved' ? 'paid' : (deposito.status === 'rejected' ? 'rejected' : 'pending')
+            });
         });
 
         // Comissões de indicação (10%) recebidas — uma linha por indicado
@@ -273,16 +272,25 @@ document.addEventListener('DOMContentLoaded', () => {
             entradas.push({
                 data: comissao.createdAt,
                 descricao: `Comissão de indicação (10%) — plano de ${comissao.fromName || 'indicado'}`,
-                valor: comissao.valor
+                valor: comissao.valor,
+                status: 'paid'
             });
         });
 
         if (!entradas.length) {
-            tbody.innerHTML = '<tr><td colspan="4" class="muted">Nenhuma movimentação registrada ainda.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" class="muted">Nenhuma movimentação registrada ainda.</td></tr>';
             return;
         }
 
         entradas.sort((a, b) => b.data - a.data);
+
+        // Mesmo padrão visual de badge já usado no Painel Admin —
+        // pendente em amarelo, pago em verde, rejeitado em vermelho.
+        const STATUS_BADGE = {
+            pending: '<span class="badge badge-warning">Pendente</span>',
+            paid: '<span class="badge badge-success">Pago</span>',
+            rejected: '<span class="badge badge-danger">Rejeitado</span>'
+        };
 
         tbody.innerHTML = entradas.map((entrada) => {
             const dataObj = new Date(entrada.data);
@@ -291,12 +299,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const valorFormatado = entrada.valor < 0
                 ? `- ${formatarMoeda(Math.abs(entrada.valor))}`
                 : formatarMoeda(entrada.valor);
+            const statusBadge = STATUS_BADGE[entrada.status] || STATUS_BADGE.paid;
 
             return `
                 <tr>
                     <td>${dataHora}</td>
                     <td>${mesAno}</td>
                     <td>${entrada.descricao}</td>
+                    <td>${statusBadge}</td>
                     <td>${valorFormatado}</td>
                 </tr>
             `;
