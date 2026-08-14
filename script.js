@@ -144,10 +144,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // antes do dinheiro realmente cair).
     function registrarDepositoPendente(planoValor) {
         const user = firebaseAuth.currentUser;
-        if (!user) return;
+        if (!user) return Promise.reject(new Error('Usuário não autenticado.'));
         const chave = PLANOS_INFO[planoValor] ? planoValor : 'teste-20';
         const info = PLANOS_INFO[chave];
-        firebaseDb.ref('deposits').push({
+        return firebaseDb.ref('deposits').push({
             uid: user.uid,
             userName: currentUserName || user.email || user.uid,
             planoKey: chave,
@@ -157,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
             duracaoDias: info.duracaoDias,
             status: 'pending',
             createdAt: Date.now()
-        });
+        }).then((ref) => ref.key);
     }
 
     // Preenche a página Carteira (totais + tabela de planos ativos) a
@@ -427,8 +427,12 @@ document.addEventListener('DOMContentLoaded', () => {
         container.appendChild(toast);
     };
 
+    // URL do Worker Cloudflare que integra com a Vizzion Pay — troque
+    // pelo domínio real do seu Worker publicado.
+    const PIX_WORKER_URL = 'https://SEU-WORKER.SEU-SUBDOMINIO.workers.dev';
+
     // ===== QR Code Pix (modal de Depositar) =====
-    window.gerarQrCodeDeposito = function () {
+    window.gerarQrCodeDeposito = async function () {
         const cpfInput = document.getElementById('depositCpf');
         const telefoneInput = document.getElementById('depositTelefone');
 
@@ -437,34 +441,84 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Código Pix "copia e cola" (exemplo — substituir pela integração real do gateway)
-        const pixCode = '00020126580014BR.GOV.BCB.PIX2572qrcode.cartwavehub.com.br/v2/qr/cob/945c7fe1-5dc0-49a1-be8d-041bf95642e05204000053039865802BR5925PLATAFORMA6009SAO PAULO62070503***6304ABCD';
+        const user = firebaseAuth.currentUser;
+        if (!user) return;
 
-        const qrContainer = document.getElementById('qrcodeCanvas');
-        qrContainer.innerHTML = '';
-
-        if (typeof QRCode !== 'undefined') {
-            new QRCode(qrContainer, {
-                text: pixCode,
-                width: 200,
-                height: 200,
-                colorDark: '#0e1420',
-                colorLight: '#ffffff'
-            });
-        } else {
-            console.error('Biblioteca QRCode não carregada.');
-            qrContainer.innerText = 'Não foi possível gerar o QR Code.';
+        const gerarBtn = document.querySelector('#depositModal button[onclick="gerarQrCodeDeposito()"]');
+        if (gerarBtn) {
+            gerarBtn.disabled = true;
+            gerarBtn.innerText = 'Gerando Pix...';
         }
 
-        document.getElementById('depositPixCode').innerText = pixCode;
-        document.getElementById('depositQrView').style.display = 'block';
+        try {
+            // 1. Cria o depósito como pendente primeiro — precisamos do ID
+            // gerado pelo Firebase antes de pedir a cobrança à Vizzion Pay,
+            // porque esse ID vira o "identifier" da transação: é o que o
+            // webhook de confirmação usa depois para saber qual depósito
+            // aprovar automaticamente.
+            const planoValor = document.getElementById('depositPlano').value;
+            const depositId = await registrarDepositoPendente(planoValor);
+            const chave = PLANOS_INFO[planoValor] ? planoValor : 'teste-20';
+            const info = PLANOS_INFO[chave];
 
-        const modalCard = document.querySelector('#depositModal .modal-card');
-        if (modalCard) modalCard.classList.add('has-scroll');
+            // 2. Pede ao Worker para criar a cobrança real na Vizzion Pay.
+            // As chaves de API nunca ficam no navegador — só o Worker as
+            // conhece, guardadas como Secret no Cloudflare.
+            const response = await fetch(`${PIX_WORKER_URL}/criar-pix`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    depositId,
+                    valor: info.valor,
+                    cliente: {
+                        name: currentUserName || user.email || 'Cliente',
+                        email: user.email || '',
+                        phone: telefoneInput.value.trim(),
+                        document: cpfInput.value.trim()
+                    }
+                })
+            });
 
-        // Registra o depósito como pendente — é isso que faz ele aparecer
-        // em "Todos os Depósitos" no painel admin, aguardando aprovação
-        registrarDepositoPendente(document.getElementById('depositPlano').value);
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.error || 'Falha ao gerar cobrança Pix.');
+            }
+
+            const pixCode = data.pixCode;
+            if (!pixCode) {
+                throw new Error('A Vizzion Pay não retornou o código Pix.');
+            }
+
+            const qrContainer = document.getElementById('qrcodeCanvas');
+            qrContainer.innerHTML = '';
+
+            if (typeof QRCode !== 'undefined') {
+                new QRCode(qrContainer, {
+                    text: pixCode,
+                    width: 200,
+                    height: 200,
+                    colorDark: '#0e1420',
+                    colorLight: '#ffffff'
+                });
+            } else {
+                console.error('Biblioteca QRCode não carregada.');
+                qrContainer.innerText = 'Não foi possível gerar o QR Code.';
+            }
+
+            document.getElementById('depositPixCode').innerText = pixCode;
+            document.getElementById('depositQrView').style.display = 'block';
+
+            const modalCard = document.querySelector('#depositModal .modal-card');
+            if (modalCard) modalCard.classList.add('has-scroll');
+        } catch (err) {
+            console.error('Erro ao gerar cobrança Pix:', err);
+            showToast('error', 'Erro ao gerar Pix', 'Não foi possível gerar o QR Code agora. Tente novamente em instantes.');
+        } finally {
+            if (gerarBtn) {
+                gerarBtn.disabled = false;
+                gerarBtn.innerText = 'Gerar QR Code Pix';
+            }
+        }
     };
 
     window.copiarCodigoPixDeposito = function () {
