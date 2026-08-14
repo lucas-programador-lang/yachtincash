@@ -427,9 +427,8 @@ document.addEventListener('DOMContentLoaded', () => {
         container.appendChild(toast);
     };
 
-    // URL do Worker Cloudflare que integra com a Vizzion Pay — troque
-    // pelo domínio real do seu Worker publicado.
-    const PIX_WORKER_URL = 'https://SEU-WORKER.SEU-SUBDOMINIO.workers.dev';
+    // URL do Worker Cloudflare que integra com a Vizzion Pay.
+    const PIX_WORKER_URL = 'https://apidayachtincash.lucas-dev-programador.workers.dev';
 
     // ===== QR Code Pix (modal de Depositar) =====
     window.gerarQrCodeDeposito = async function () {
