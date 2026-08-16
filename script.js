@@ -1,4 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Guarda o elemento que tinha foco antes de abrir um modal, para
+    // devolver o foco a ele ao fechar — importante para quem navega
+    // por teclado/leitor de tela não "perder o lugar" na página.
+    let elementoComFocoAntesDoModal = null;
+
     // ===== Modais (ex: Depositar) =====
     window.openModal = function (modalId) {
         const modal = document.getElementById(modalId);
@@ -13,8 +18,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (modalCard) modalCard.classList.remove('has-scroll');
                 definirModoPlanoDeposito(false);
             }
+            elementoComFocoAntesDoModal = document.activeElement;
             modal.classList.add('open');
             document.body.classList.add('modal-open');
+
+            // Move o foco para dentro do modal (primeiro campo/botão focável)
+            const primeiroFocavel = modal.querySelector('input, select, textarea, button:not(.modal-close)');
+            (primeiroFocavel || modal.querySelector('.modal-close'))?.focus();
         }
     };
 
@@ -23,6 +33,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (modal) {
             modal.classList.remove('open');
             document.body.classList.remove('modal-open');
+            elementoComFocoAntesDoModal?.focus();
+            elementoComFocoAntesDoModal = null;
         }
     };
 
@@ -34,9 +46,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             document.querySelectorAll('.modal-overlay.open').forEach((modal) => {
-                modal.classList.remove('open');
+                closeModal(modal.id);
             });
-            document.body.classList.remove('modal-open');
             closeSidebar();
         }
     });
@@ -96,6 +107,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
         const d = new Date(timestamp);
         return `${meses[d.getMonth()]}/${d.getFullYear()}`;
+    }
+
+    // Escapa HTML antes de inserir qualquer texto vindo do Firebase (nome
+    // completo, nome de indicado etc.) via innerHTML. Esses campos são
+    // digitados pelo próprio usuário em "Perfil" — sem isso, alguém
+    // poderia salvar algo como "<img src=x onerror=...>" como nome e
+    // rodar script na tela de quem o indicou (Extrato/Equipe).
+    function escapeHtml(texto) {
+        const div = document.createElement('div');
+        div.textContent = texto == null ? '' : String(texto);
+        return div.innerHTML;
     }
 
     function atualizarLabelPlanoSelecionado() {
@@ -201,7 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return `
                 <tr>
                     <td>${dataFormatada}</td>
-                    <td>${plano.nome} — ${formatarMoeda(plano.valorInvestido)}</td>
+                    <td>${escapeHtml(plano.nome)} — ${formatarMoeda(plano.valorInvestido)}</td>
                     <td>${formatarMoeda(plano.retornoDiario)}</td>
                     <td>${formatarMoeda(rendimentoAcumulado)}</td>
                     <td>${statusBadge}</td>
@@ -232,7 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
             for (let dia = 1; dia <= diasContados; dia++) {
                 entradas.push({
                     data: plano.dataAtivacao + dia * 86400000,
-                    descricao: `Rendimento Diário — ${plano.nome}`,
+                    descricao: `Rendimento Diário — ${escapeHtml(plano.nome)}`,
                     valor: plano.retornoDiario,
                     status: 'paid'
                 });
@@ -257,10 +279,10 @@ document.addEventListener('DOMContentLoaded', () => {
             entradas.push({
                 data: deposito.resolvedAt || deposito.createdAt,
                 descricao: deposito.status === 'approved'
-                    ? `Depósito aprovado — ${deposito.planoNome}`
+                    ? `Depósito aprovado — ${escapeHtml(deposito.planoNome)}`
                     : deposito.status === 'rejected'
-                        ? `Depósito rejeitado — ${deposito.planoNome}`
-                        : `Depósito solicitado — ${deposito.planoNome}`,
+                        ? `Depósito rejeitado — ${escapeHtml(deposito.planoNome)}`
+                        : `Depósito solicitado — ${escapeHtml(deposito.planoNome)}`,
                 valor: deposito.status === 'approved' ? deposito.valor : 0,
                 status: deposito.status === 'approved' ? 'paid' : (deposito.status === 'rejected' ? 'rejected' : 'pending')
             });
@@ -271,7 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
         (comissoesDoUsuario || []).forEach((comissao) => {
             entradas.push({
                 data: comissao.createdAt,
-                descricao: `Comissão de indicação (10%) — plano de ${comissao.fromName || 'indicado'}`,
+                descricao: `Comissão de indicação (10%) — plano de ${escapeHtml(comissao.fromName || 'indicado')}`,
                 valor: comissao.valor,
                 status: 'paid'
             });
@@ -336,7 +358,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return `
                 <tr>
                     <td>${dataFormatada}</td>
-                    <td>${membro.referredName || '-'}</td>
+                    <td>${escapeHtml(membro.referredName) || '-'}</td>
                 </tr>
             `;
         }).join('');
@@ -379,6 +401,12 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        const salvarBtn = document.querySelector('#section-perfil button[onclick="salvarPerfil()"]');
+        if (salvarBtn) {
+            salvarBtn.disabled = true;
+            salvarBtn.innerText = 'Salvando...';
+        }
+
         firebaseDb.ref('users/' + user.uid).update({
             fullName: nomeInput ? nomeInput.value.trim() : '',
             pixTipo: tipoPixInput ? tipoPixInput.value : 'cpf',
@@ -388,6 +416,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }).catch((err) => {
             console.error('Erro ao salvar perfil:', err);
             showToast('error', 'Erro ao salvar', 'Tente novamente em instantes.');
+        }).finally(() => {
+            if (salvarBtn) {
+                salvarBtn.disabled = false;
+                salvarBtn.innerText = 'Salvar Alterações';
+            }
         });
     };
 
@@ -435,8 +468,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const cpfInput = document.getElementById('depositCpf');
         const telefoneInput = document.getElementById('depositTelefone');
 
-        if (!cpfInput.value.trim() || !telefoneInput.value.trim()) {
+        const cpfDigitos = cpfInput.value.replace(/\D/g, '');
+        const telefoneDigitos = telefoneInput.value.replace(/\D/g, '');
+
+        if (!cpfDigitos || !telefoneDigitos) {
             showToast('warning', 'Campos obrigatórios', 'Preencha CPF e Telefone para gerar o Pix.');
+            return;
+        }
+
+        if (cpfDigitos.length !== 11) {
+            showToast('warning', 'CPF inválido', 'Informe um CPF válido, com 11 dígitos.');
+            cpfInput.focus();
+            return;
+        }
+
+        if (telefoneDigitos.length < 10 || telefoneDigitos.length > 11) {
+            showToast('warning', 'Telefone inválido', 'Informe um telefone válido, com DDD.');
+            telefoneInput.focus();
             return;
         }
 
@@ -472,8 +520,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     cliente: {
                         name: currentUserName || user.email || 'Cliente',
                         email: user.email || '',
-                        phone: telefoneInput.value.trim(),
-                        document: cpfInput.value.trim()
+                        phone: telefoneDigitos,
+                        document: cpfDigitos
                     }
                 })
             });
@@ -522,7 +570,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.copiarCodigoPixDeposito = function () {
         const pixCode = document.getElementById('depositPixCode').innerText;
-        navigator.clipboard.writeText(pixCode).then(() => showToast('success', 'Código Pix copiado!'));
+        if (!pixCode) return;
+
+        // Fallback para navegadores/contextos sem suporte à Clipboard API
+        // (ex: página aberta fora de HTTPS) — evita que o botão "trave"
+        // sem feedback nenhum quando navigator.clipboard não existe.
+        function copiarViaFallback() {
+            const textarea = document.createElement('textarea');
+            textarea.value = pixCode;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showToast('success', 'Código Pix copiado!');
+            } catch (err) {
+                console.error('Erro ao copiar código Pix (fallback):', err);
+                showToast('error', 'Não foi possível copiar', 'Selecione e copie o código manualmente.');
+            } finally {
+                document.body.removeChild(textarea);
+            }
+        }
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(pixCode)
+                .then(() => showToast('success', 'Código Pix copiado!'))
+                .catch((err) => {
+                    console.error('Erro ao copiar código Pix:', err);
+                    copiarViaFallback();
+                });
+        } else {
+            copiarViaFallback();
+        }
     };
 
     // ===== Solicitação de Saque (modal de Sacar) =====
@@ -558,7 +639,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (valor < SAQUE_VALOR_MINIMO) {
-            showToast('warning', 'Valor mínimo não atingido', `O valor mínimo para saque é R$ ${SAQUE_VALOR_MINIMO.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}.`);
+            showToast('warning', 'Valor mínimo não atingido', `O valor mínimo para saque é ${formatarMoeda(SAQUE_VALOR_MINIMO)}.`);
             valorInput.focus();
             return;
         }
@@ -569,10 +650,21 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        const user = firebaseAuth.currentUser;
+        if (!user) return;
+
+        // Botão fica desabilitado durante o envio para evitar que um duplo
+        // clique (ou clique repetido por lentidão de rede) crie mais de
+        // uma solicitação de saque para o mesmo pedido.
+        const sacarBtn = document.querySelector('#sacarModal button[onclick="solicitarSaque()"]');
+        if (sacarBtn) {
+            sacarBtn.disabled = true;
+            sacarBtn.innerText = 'Enviando...';
+        }
+
         // Registra o saque como pendente — é isso que faz ele aparecer em
         // "Todos os Saques" no painel admin. O saldo só é debitado quando
         // o admin marcar como pago (evita descontar antes de pagar de fato).
-        const user = firebaseAuth.currentUser;
         firebaseDb.ref('withdrawals').push({
             uid: user.uid,
             userName: currentUserName || user.email || user.uid,
@@ -580,11 +672,19 @@ document.addEventListener('DOMContentLoaded', () => {
             valor,
             status: 'pending',
             createdAt: Date.now()
+        }).then(() => {
+            showToast('success', 'Solicitação de saque enviada!', `Valor: ${formatarMoeda(valor)}`);
+            valorInput.value = '';
+            closeModal('sacarModal');
+        }).catch((err) => {
+            console.error('Erro ao solicitar saque:', err);
+            showToast('error', 'Erro ao solicitar saque', 'Tente novamente em instantes.');
+        }).finally(() => {
+            if (sacarBtn) {
+                sacarBtn.disabled = false;
+                sacarBtn.innerText = 'Solicitar Saque';
+            }
         });
-
-        showToast('success', 'Solicitação de saque enviada!', `Valor: R$ ${valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
-        valorInput.value = '';
-        closeModal('sacarModal');
     };
 
     // Tratamento do formulário de Login
