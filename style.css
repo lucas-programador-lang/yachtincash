@@ -3,14 +3,14 @@
    ============================================================= */
 :root {
     --primary-color: #1fb8ae;
-    --primary-dark: #0b4d49;
-    --primary-darker: #062e2b;
-    --primary-mid: #159089;
-    --primary-light: #52d9cf;
-    --primary-lighter: #9df0e8;
+    --primary-dark: #0a4744;
+    --primary-darker: #051f1d;
+    --primary-mid: #14a89c;
+    --primary-light: #5be3d9;
+    --primary-lighter: #aef5ee;
     --accent-color: #00e5ff;
-    --accent-soft: #8bfaff;
-    --accent-deep: #0098b3;
+    --accent-soft: #a3fbff;
+    --accent-deep: #0089a8;
 
     --sheen: linear-gradient(115deg,
         rgba(255, 255, 255, 0) 20%,
@@ -20,15 +20,15 @@
         rgba(255, 255, 255, 0) 70%);
     --border-gradient: linear-gradient(135deg, rgba(139, 250, 255, 0.6), rgba(31, 184, 174, 0.18) 40%, rgba(255, 255, 255, 0.07) 70%, rgba(0, 229, 255, 0.4));
 
-    --bg-dark: #03060a;
-    --bg-dark-2: #060b13;
-    --bg-card: #0c1620;
-    --bg-card-2: #101f30;
-    --bg-card-3: #142639;
-    --bg-elevated: #182c42;
-    --border-soft: rgba(255, 255, 255, 0.06);
-    --border-soft-2: rgba(255, 255, 255, 0.12);
-    --border-primary: rgba(31, 184, 174, 0.34);
+    --bg-dark: #05080d;
+    --bg-dark-2: #080f19;
+    --bg-card: #0d1a26;
+    --bg-card-2: #122436;
+    --bg-card-3: #16293d;
+    --bg-elevated: #1b3049;
+    --border-soft: rgba(255, 255, 255, 0.07);
+    --border-soft-2: rgba(255, 255, 255, 0.14);
+    --border-primary: rgba(31, 184, 174, 0.38);
 
     --text-color: #f8fafd;
     --text-muted: #9bacc0;
@@ -43,10 +43,10 @@
     --info: #3ea6ff;
     --info-bg: rgba(62, 166, 255, 0.12);
 
-    --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 14px 38px rgba(0, 0, 0, 0.5);
-    --shadow-lg: 0 30px 80px rgba(0, 0, 0, 0.6);
-    --shadow-glow: 0 0 0 1px rgba(31, 184, 174, 0.18), 0 14px 50px rgba(31, 184, 174, 0.2), 0 2px 0 rgba(255, 255, 255, 0.03) inset;
+    --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.32);
+    --shadow-md: 0 14px 38px rgba(0, 0, 0, 0.52);
+    --shadow-lg: 0 30px 80px rgba(0, 0, 0, 0.62);
+    --shadow-glow: 0 0 0 1px rgba(31, 184, 174, 0.22), 0 16px 56px rgba(31, 184, 174, 0.24), 0 2px 0 rgba(255, 255, 255, 0.04) inset;
     --shadow-inset-top: inset 0 1px 0 rgba(255, 255, 255, 0.05);
     --radius-sm: 10px;
     --radius-md: 16px;
@@ -54,14 +54,25 @@
     --transition: 220ms cubic-bezier(0.4, 0, 0.2, 1);
     --transition-slow: 380ms cubic-bezier(0.16, 1, 0.3, 1);
 
-    --accent-gold: #d9b674;
-    --accent-gold-soft: #ecd6a3;
-    --accent-gold-deep: #a97f3f;
+    --accent-gold: #dab876;
+    --accent-gold-soft: #f0dcac;
+    --accent-gold-deep: #a67e42;
     --text-gold-muted: rgba(217, 182, 116, 0.7);
     --border-gradient-gold: linear-gradient(135deg, rgba(236, 214, 163, 0.58), rgba(217, 182, 116, 0.18) 40%, rgba(255, 255, 255, 0.05) 70%, rgba(169, 127, 63, 0.42));
 
     --logo-teal: #3ecac7;
     --logo-teal-deep: #1d8d8a;
+
+    /* Paleta dedicada aos modais: combina o teal da marca com o dourado
+       usado em saldo/planos, para o modal não parecer "genérico" nem
+       destoar do resto do app. */
+    --modal-bg-gradient:
+        radial-gradient(ellipse 460px 280px at 18% -12%, rgba(31, 184, 174, 0.18), transparent 62%),
+        radial-gradient(ellipse 380px 260px at 100% 108%, rgba(217, 182, 116, 0.10), transparent 60%),
+        radial-gradient(ellipse 320px 220px at 100% -8%, rgba(0, 229, 255, 0.10), transparent 58%),
+        linear-gradient(160deg, var(--bg-card) 0%, var(--bg-card-2) 55%, var(--bg-card-3) 100%);
+    --border-gradient-modal: linear-gradient(135deg, rgba(139, 250, 255, 0.55), rgba(217, 182, 116, 0.3) 45%, rgba(31, 184, 174, 0.16) 72%, rgba(0, 229, 255, 0.42));
+    --shadow-modal-glow: 0 26px 80px rgba(1, 3, 6, 0.68), 0 0 0 1px rgba(0, 229, 255, 0.14), 0 0 90px -24px rgba(31, 184, 174, 0.4);
 }
 
 * {
@@ -103,12 +114,12 @@ body::before {
     inset: 0;
     z-index: -3;
     background:
-        radial-gradient(ellipse 1000px 700px at 6% -10%, rgba(31, 184, 174, 0.26), transparent 60%),
-        radial-gradient(ellipse 900px 680px at 108% 6%, rgba(0, 229, 255, 0.17), transparent 58%),
-        radial-gradient(ellipse 700px 520px at 90% 80%, rgba(217, 182, 116, 0.08), transparent 62%),
-        radial-gradient(ellipse 950px 660px at 26% 116%, rgba(11, 77, 73, 0.26), transparent 62%),
-        radial-gradient(ellipse 500px 400px at 50% 45%, rgba(255, 255, 255, 0.015), transparent 70%),
-        linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-dark-2) 100%);
+        radial-gradient(ellipse 1100px 760px at 4% -12%, rgba(31, 184, 174, 0.30), transparent 62%),
+        radial-gradient(ellipse 950px 700px at 106% 4%, rgba(0, 229, 255, 0.20), transparent 60%),
+        radial-gradient(ellipse 760px 560px at 92% 82%, rgba(217, 182, 116, 0.11), transparent 64%),
+        radial-gradient(ellipse 1000px 700px at 22% 118%, rgba(10, 74, 70, 0.30), transparent 64%),
+        radial-gradient(ellipse 620px 460px at 50% 42%, rgba(255, 255, 255, 0.02), transparent 70%),
+        linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-dark-2) 55%, #03050a 100%);
 }
 
 body::after {
@@ -177,7 +188,8 @@ input:focus-visible,
 .card {
     position: relative;
     background:
-        radial-gradient(ellipse 420px 220px at 15% -15%, rgba(0, 229, 255, 0.08), transparent 65%),
+        radial-gradient(ellipse 420px 220px at 15% -15%, rgba(0, 229, 255, 0.09), transparent 65%),
+        radial-gradient(ellipse 360px 200px at 100% 115%, rgba(217, 182, 116, 0.05), transparent 60%),
         linear-gradient(160deg, var(--bg-card) 0%, var(--bg-card-2) 100%);
     border: 1px solid var(--border-primary);
     border-radius: var(--radius-lg);
@@ -223,15 +235,16 @@ input:focus-visible,
 
 .logo-container {
     text-align: center;
-    margin-bottom: 26px;
+    margin-bottom: 28px;
 }
 
 .logo-img {
-    width: 80px;
-    height: 80px;
-    border-radius: 20px;
+    width: clamp(84px, 20vw, 96px);
+    height: clamp(84px, 20vw, 96px);
+    border-radius: 22px;
     object-fit: cover;
-    box-shadow: 0 12px 32px rgba(31, 184, 174, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.08);
+    box-shadow: 0 14px 36px rgba(31, 184, 174, 0.52), 0 0 0 1px rgba(255, 255, 255, 0.09);
+    transition: box-shadow var(--transition);
 }
 
 h1, h2, h3 {
@@ -485,23 +498,23 @@ h3 { font-size: 16px; font-weight: 600; margin-bottom: 10px; }
 .sidebar-brand {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 2px 6px 22px 6px;
+    gap: 13px;
+    padding: 2px 6px 24px 6px;
     margin-bottom: 22px;
     border-bottom: 1px solid var(--border-soft);
 }
 
 .brand-logo-ring {
     flex-shrink: 0;
-    width: 44px;
-    height: 44px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
-    padding: 2.5px;
+    padding: 3px;
     background: conic-gradient(from 180deg, var(--primary-dark), var(--primary-color), var(--logo-teal), var(--primary-light), var(--primary-dark));
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 6px 18px rgba(31, 184, 174, 0.35);
+    box-shadow: 0 7px 20px rgba(31, 184, 174, 0.38);
 }
 
 .brand-logo {
@@ -515,7 +528,7 @@ h3 { font-size: 16px; font-weight: 600; margin-bottom: 10px; }
 
 .brand-name {
     font-weight: 700;
-    font-size: 15.5px;
+    font-size: 16px;
     letter-spacing: 0.02em;
     color: var(--text-color);
 }
@@ -1600,14 +1613,14 @@ h3 { font-size: 16px; font-weight: 600; margin-bottom: 10px; }
     width: 100%;
     max-width: 440px;
     text-align: left;
-    background:
-        radial-gradient(ellipse 420px 260px at 20% -10%, rgba(31, 184, 174, 0.14), transparent 62%),
-        radial-gradient(ellipse 360px 240px at 100% 100%, rgba(0, 229, 255, 0.08), transparent 60%),
-        linear-gradient(160deg, var(--bg-card) 0%, var(--bg-card-2) 100%);
+    background: var(--modal-bg-gradient);
+    border-color: rgba(31, 184, 174, 0.3);
+    box-shadow: var(--shadow-modal-glow), var(--shadow-inset-top);
 }
 
 .modal-card::before {
-    opacity: 0.3;
+    background: var(--border-gradient-modal);
+    opacity: 0.5;
 }
 
 /* Mesma textura de ruído do body::after, só que restrita ao card do
@@ -1902,6 +1915,16 @@ body.modal-open {
 
     h1 { font-size: 31px; }
 
+    .logo-img {
+        width: 116px;
+        height: 116px;
+        border-radius: 26px;
+    }
+
+    .logo-container {
+        margin-bottom: 32px;
+    }
+
     .balance-card h2 {
         font-size: 39px;
     }
@@ -1914,6 +1937,15 @@ body.modal-open {
     .sidebar {
         width: 284px;
         padding: 34px 20px;
+    }
+
+    .brand-logo-ring {
+        width: 58px;
+        height: 58px;
+    }
+
+    .sidebar-brand {
+        gap: 14px;
     }
 
     .main-content {
