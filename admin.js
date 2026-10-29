@@ -115,8 +115,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td>${escapeHtml(p.observacao || '-')}</td>
                     <td>
                         <div class="table-actions">
-                            <button class="btn btn-compact" data-action="criar-plano-mesmo-assim" data-id="${id}">Criar plano mesmo assim</button>
-                            <button class="btn btn-compact btn-outline" data-action="resolver-pendencia" data-id="${id}">Marcar resolvido sem criar</button>
+                            <button class="btn btn-compact" data-action="criar-plano-mesmo-assim" data-id="${escapeHtml(id)}">Criar plano mesmo assim</button>
+                            <button class="btn btn-compact btn-outline" data-action="resolver-pendencia" data-id="${escapeHtml(id)}">Marcar resolvido sem criar</button>
                         </div>
                     </td>
                 </tr>
@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const classes = { pending: 'badge-warning', paid: 'badge-success', approved: 'badge-success', rejected: 'badge-danger' };
         const classe = classes[status] || 'badge-info';
         const texto = textos[status] || status;
-        return `<span class="badge ${classe}">${texto}</span>`;
+        return `<span class="badge ${classe}">${escapeHtml(texto)}</span>`;
     }
 
     function renderSaques() {
@@ -149,8 +149,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td>
                         ${s.status === 'pending' ? `
                             <div class="table-actions">
-                                <button class="btn btn-compact btn-success" data-action="marcar-saque-pago" data-id="${id}">Marcar como pago</button>
-                                <button class="btn btn-compact btn-danger" data-action="rejeitar-saque" data-id="${id}">Rejeitar</button>
+                                <button class="btn btn-compact btn-success" data-action="marcar-saque-pago" data-id="${escapeHtml(id)}">Marcar como pago</button>
+                                <button class="btn btn-compact btn-danger" data-action="rejeitar-saque" data-id="${escapeHtml(id)}">Rejeitar</button>
                             </div>
                         ` : '<span class="muted">—</span>'}
                     </td>
@@ -175,8 +175,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td>
                         ${d.status === 'pending' ? `
                             <div class="table-actions">
-                                <button class="btn btn-compact btn-success" data-action="aprovar-deposito" data-id="${id}">Aprovar</button>
-                                <button class="btn btn-compact btn-danger" data-action="rejeitar-deposito" data-id="${id}">Rejeitar</button>
+                                <button class="btn btn-compact btn-success" data-action="aprovar-deposito" data-id="${escapeHtml(id)}">Aprovar</button>
+                                <button class="btn btn-compact btn-danger" data-action="rejeitar-deposito" data-id="${escapeHtml(id)}">Rejeitar</button>
                             </div>
                         ` : '<span class="muted">—</span>'}
                     </td>
@@ -187,44 +187,46 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ===== Regras de negócio =====
 
-    // Verifica se o usuário já tem, neste momento, um plano ATIVO
-    // (dentro da duração) com o mesmo valor investido do depósito.
-    function temPlanoAtivoMesmoValor(uid, valor) {
-        const user = usersMap[uid];
-        if (!user || !user.planos) return false;
-        return Object.values(user.planos).some((plano) => {
-            const diasPassados = Math.floor((Date.now() - plano.dataAtivacao) / 86400000);
-            const ativo = diasPassados < plano.duracaoDias;
-            return ativo && Math.abs((plano.valorInvestido || 0) - valor) < 0.01;
+    // Comissão de 1º nível = 10% do valor do plano. O arredondamento
+    // garante os valores exatos exigidos pelas regras do Firebase
+    // (R$ 2, R$ 5 e R$ 15), sem erro de ponto flutuante.
+    function calcularComissao(valorPlano) {
+        return Math.round(valorPlano * 10) / 100;
+    }
+
+    // Credita a comissão de 1º nível (10%) para quem indicou o usuário,
+    // se houver. Lê o referredBy direto do banco (não do cache local)
+    // para nunca usar um dado desatualizado.
+    function creditarComissaoIndicacao(uidIndicado, info) {
+        return firebaseDb.ref('users/' + uidIndicado).once('value').then((userSnap) => {
+            const userData = userSnap.val() || {};
+            const referredByUid = userData.referredBy;
+            if (!referredByUid) return false;
+
+            const valorComissao = calcularComissao(info.valor);
+
+            return Promise.all([
+                firebaseDb.ref('commissions/' + referredByUid).push({
+                    fromUid: uidIndicado,
+                    fromName: userData.fullName || userData.email || uidIndicado,
+                    planoNome: info.nome,
+                    valor: valorComissao,
+                    createdAt: Date.now()
+                }),
+                firebaseDb.ref('users/' + referredByUid + '/balance')
+                    .transaction((saldoAtual) => (saldoAtual || 0) + valorComissao)
+            ]).then(() => true);
         });
     }
 
-    // Cria o plano na carteira do usuário e credita a comissão de 1º
-    // nível (10%) para quem o indicou, se houver.
-    function criarPlanoParaUsuario(uid, info) {
-        firebaseDb.ref('users/' + uid + '/planos').push({
-            planoKey: info.planoKey || null,
-            nome: info.nome,
-            valorInvestido: info.valor,
-            retornoDiario: info.retornoDiario,
-            duracaoDias: info.duracaoDias,
-            dataAtivacao: Date.now()
-        });
-
-        const referredByUid = usersMap[uid] ? usersMap[uid].referredBy : null;
-        if (referredByUid) {
-            const valorComissao = info.valor * 0.10;
-            firebaseDb.ref('commissions/' + referredByUid).push({
-                fromUid: uid,
-                fromName: (usersMap[uid] && (usersMap[uid].fullName || usersMap[uid].email)) || uid,
-                planoNome: info.nome,
-                valor: valorComissao,
-                createdAt: Date.now()
-            });
-            firebaseDb.ref('users/' + referredByUid + '/balance').transaction((saldoAtual) => (saldoAtual || 0) + valorComissao);
-        }
-    }
-
+    // Aprova um depósito: marca como aprovado (de forma atômica, para
+    // dois cliques/admins nunca aprovarem o mesmo depósito duas vezes),
+    // cria o plano na carteira e credita a comissão de indicação.
+    //
+    // IMPORTANTE: as transactions são feitas em nós FILHOS de users/{uid}
+    // (planos, balance), nunca em users/{uid} inteiro — as regras do
+    // Realtime Database só definem .write por campo, então uma escrita
+    // no nó pai seria recusada com permission_denied.
     function aprovarDeposito(depositId) {
         const deposito = depositosMap[depositId];
         if (!deposito || deposito.status !== 'pending') return;
@@ -237,43 +239,54 @@ document.addEventListener('DOMContentLoaded', () => {
             planoKey: deposito.planoKey
         };
 
-        // FIX: checagem de duplicidade + criação do plano feitas de forma
-        // atômica dentro de uma transaction no próprio nó do usuário. Antes,
-        // temPlanoAtivoMesmoValor() lia o cache local usersMap e o plano era
-        // criado depois com um push() separado — dois cliques (ou dois
-        // admins) quase simultâneos podiam ambos ler o mesmo estado
-        // desatualizado e passar pela checagem antes que o primeiro push()
-        // fosse refletido, criando plano e comissão duplicados.
-        firebaseDb.ref('users/' + deposito.uid).transaction((userData) => {
-            if (userData === null) return userData;
+        const statusRef = firebaseDb.ref('deposits/' + depositId + '/status');
+        const planosRef = firebaseDb.ref('users/' + deposito.uid + '/planos');
+        const novoPlanoId = planosRef.push().key;
 
-            const planosAtuais = userData.planos ? Object.values(userData.planos) : [];
-            const jaTemPlanoAtivo = planosAtuais.some((plano) => {
-                const diasPassados = Math.floor((Date.now() - plano.dataAtivacao) / 86400000);
-                const ativo = diasPassados < plano.duracaoDias;
-                return ativo && Math.abs((plano.valorInvestido || 0) - info.valor) < 0.01;
+        // Só vira true depois que o plano foi gravado — a partir daí
+        // NÃO devolvemos o depósito para "pending" em caso de erro, senão
+        // um novo clique tentaria criar o plano de novo.
+        let planoJaCriado = false;
+
+        // 1) Reserva o depósito: só continua quem conseguir trocar
+        //    'pending' por 'approved' primeiro.
+        statusRef.transaction((statusAtual) => {
+            return statusAtual === 'pending' ? 'approved' : undefined;
+        }).then((reserva) => {
+            if (!reserva.committed) return null; // outro clique/admin já aprovou
+
+            // 2) Cria o plano, a menos que o usuário já tenha um plano
+            //    ativo do mesmo valor (nesse caso aborta e vira pendência).
+            return planosRef.transaction((planosAtuais) => {
+                const lista = planosAtuais ? Object.values(planosAtuais) : [];
+                const jaTemPlanoAtivo = lista.some((plano) => {
+                    const diasPassados = Math.floor((Date.now() - plano.dataAtivacao) / 86400000);
+                    return diasPassados < plano.duracaoDias &&
+                        Math.abs((plano.valorInvestido || 0) - info.valor) < 0.01;
+                });
+                if (jaTemPlanoAtivo) return; // aborta sem alterar nada
+
+                const novos = planosAtuais || {};
+                novos[novoPlanoId] = {
+                    planoKey: info.planoKey || null,
+                    nome: info.nome,
+                    valorInvestido: info.valor,
+                    retornoDiario: info.retornoDiario,
+                    duracaoDias: info.duracaoDias,
+                    dataAtivacao: Date.now()
+                };
+                return novos;
             });
-
-            if (jaTemPlanoAtivo) {
-                // Aborta a transaction sem alterar nada — sinaliza pendência no .then().
-                return;
-            }
-
-            if (!userData.planos) userData.planos = {};
-            const novoPlanoId = firebaseDb.ref('users/' + deposito.uid + '/planos').push().key;
-            userData.planos[novoPlanoId] = {
-                planoKey: info.planoKey || null,
-                nome: info.nome,
-                valorInvestido: info.valor,
-                retornoDiario: info.retornoDiario,
-                duracaoDias: info.duracaoDias,
-                dataAtivacao: Date.now()
-            };
-            return userData;
         }).then((resultado) => {
+            if (resultado === null) return; // já estava aprovado
+
+            planoJaCriado = true; // a partir daqui, nada de rollback do status
+
+            firebaseDb.ref('deposits/' + depositId).update({ resolvedAt: Date.now() });
+
             if (!resultado.committed) {
-                // Transaction abortada (plano duplicado detectado nesta execução) — cria a pendência.
-                firebaseDb.ref('planPendencies').push({
+                // Duplicidade: cria a pendência para decisão manual
+                return firebaseDb.ref('planPendencies').push({
                     uid: deposito.uid,
                     userName: deposito.userName,
                     valor: info.valor,
@@ -282,77 +295,126 @@ document.addEventListener('DOMContentLoaded', () => {
                     duracaoDias: info.duracaoDias,
                     planoKey: info.planoKey || deposito.planoKey || null,
                     observacao: 'Pix confirmado, mas o usuário já tinha um plano ativo desse valor no momento da confirmação.',
-                    depositId,
+                    depositId: depositId,
                     status: 'open',
                     createdAt: Date.now()
+                }).then(() => {
+                    showToast('warning', 'Depósito aprovado com pendência', 'Usuário já tem plano ativo desse valor — decisão manual necessária em "Pendências de Plano".');
                 });
-                firebaseDb.ref('deposits/' + depositId).update({ status: 'approved', resolvedAt: Date.now() });
-                showToast('warning', 'Depósito aprovado com pendência', 'Usuário já tem plano ativo desse valor — decisão manual necessária em "Pendências de Plano".');
-                return;
             }
 
-            // Plano criado com sucesso — credita a comissão de indicação, se houver.
-            const userDataFinal = resultado.snapshot.val();
-            const referredByUid = userDataFinal ? userDataFinal.referredBy : null;
-            if (referredByUid) {
-                const valorComissao = info.valor * 0.10;
-                firebaseDb.ref('commissions/' + referredByUid).push({
-                    fromUid: deposito.uid,
-                    fromName: (userDataFinal && (userDataFinal.fullName || userDataFinal.email)) || deposito.uid,
-                    planoNome: info.nome,
-                    valor: valorComissao,
-                    createdAt: Date.now()
-                });
-                firebaseDb.ref('users/' + referredByUid + '/balance').transaction((saldoAtual) => (saldoAtual || 0) + valorComissao);
-            }
-
-            firebaseDb.ref('deposits/' + depositId).update({ status: 'approved', resolvedAt: Date.now() });
-            showToast('success', 'Depósito aprovado!', 'O plano foi ativado na carteira do usuário.');
+            // 3) Plano criado: credita a comissão para quem indicou
+            return creditarComissaoIndicacao(deposito.uid, info).then(() => {
+                showToast('success', 'Depósito aprovado!', 'O plano foi ativado na carteira do usuário.');
+            });
         }).catch((err) => {
             console.error('Erro ao aprovar depósito:', err);
-            showToast('error', 'Erro ao aprovar depósito', 'Tente novamente em instantes.');
+
+            if (!planoJaCriado) {
+                // Falhou antes de criar o plano: devolve para pendente
+                // para o admin poder tentar de novo com segurança.
+                statusRef.transaction((s) => (s === 'approved' ? 'pending' : undefined));
+                showToast('error', 'Erro ao aprovar depósito', 'Tente novamente em instantes.');
+            } else {
+                // O plano já foi criado, só a comissão (ou a pendência) falhou.
+                showToast('error', 'Plano criado, mas houve erro depois', 'Confira a comissão do indicador no painel antes de tentar de novo.');
+            }
         });
     }
 
     function rejeitarDeposito(depositId) {
-        firebaseDb.ref('deposits/' + depositId).update({ status: 'rejected', resolvedAt: Date.now() });
-        showToast('info', 'Depósito rejeitado.');
+        const deposito = depositosMap[depositId];
+        if (!deposito || deposito.status !== 'pending') return;
+
+        firebaseDb.ref('deposits/' + depositId + '/status').transaction((statusAtual) => {
+            return statusAtual === 'pending' ? 'rejected' : undefined;
+        }).then((resultado) => {
+            if (!resultado.committed) return;
+            firebaseDb.ref('deposits/' + depositId).update({ resolvedAt: Date.now() });
+            showToast('info', 'Depósito rejeitado.');
+        }).catch((err) => {
+            console.error('Erro ao rejeitar depósito:', err);
+            showToast('error', 'Erro ao rejeitar depósito', 'Tente novamente em instantes.');
+        });
     }
 
+    // Resolve uma pendência de plano criando o plano mesmo com a
+    // duplicidade (ignora o limite) e creditando a comissão.
     function criarPlanoMesmoAssim(pendId) {
         const pend = pendenciasMap[pendId];
-        if (!pend) return;
-        criarPlanoParaUsuario(pend.uid, {
+        if (!pend || pend.status === 'resolved') return;
+
+        const info = {
             nome: pend.nome,
             valor: pend.valor,
             retornoDiario: pend.retornoDiario,
             duracaoDias: pend.duracaoDias,
             planoKey: pend.planoKey
+        };
+
+        let planoJaCriado = false;
+        const statusRef = firebaseDb.ref('planPendencies/' + pendId + '/status');
+
+        // Reserva a pendência de forma atômica (evita duplo clique)
+        statusRef.transaction((statusAtual) => {
+            return statusAtual !== 'resolved' ? 'resolved' : undefined;
+        }).then((reserva) => {
+            if (!reserva.committed) return null;
+
+            return firebaseDb.ref('users/' + pend.uid + '/planos').push({
+                planoKey: info.planoKey || null,
+                nome: info.nome,
+                valorInvestido: info.valor,
+                retornoDiario: info.retornoDiario,
+                duracaoDias: info.duracaoDias,
+                dataAtivacao: Date.now()
+            }).then(() => {
+                planoJaCriado = true;
+                firebaseDb.ref('planPendencies/' + pendId).update({
+                    resolvedAt: Date.now(),
+                    resolucao: 'plano_criado'
+                });
+                return creditarComissaoIndicacao(pend.uid, info);
+            }).then(() => {
+                showToast('success', 'Plano criado mesmo com a duplicidade.');
+            });
+        }).catch((err) => {
+            console.error('Erro ao criar plano pela pendência:', err);
+            if (!planoJaCriado) {
+                statusRef.transaction((s) => (s === 'resolved' ? 'open' : undefined));
+                showToast('error', 'Erro ao criar plano', 'Tente novamente em instantes.');
+            } else {
+                showToast('error', 'Plano criado, mas houve erro depois', 'Confira a comissão do indicador no painel.');
+            }
         });
-        firebaseDb.ref('planPendencies/' + pendId).update({ status: 'resolved', resolvedAt: Date.now(), resolucao: 'plano_criado' });
-        showToast('success', 'Plano criado mesmo com a duplicidade.');
     }
 
     function resolverPendenciaSemCriar(pendId) {
-        firebaseDb.ref('planPendencies/' + pendId).update({ status: 'resolved', resolvedAt: Date.now(), resolucao: 'sem_criar' });
-        showToast('info', 'Pendência marcada como resolvida — nenhum plano foi criado.');
+        const pend = pendenciasMap[pendId];
+        if (!pend || pend.status === 'resolved') return;
+
+        firebaseDb.ref('planPendencies/' + pendId).update({
+            status: 'resolved',
+            resolvedAt: Date.now(),
+            resolucao: 'sem_criar'
+        }).then(() => {
+            showToast('info', 'Pendência marcada como resolvida — nenhum plano foi criado.');
+        }).catch((err) => {
+            console.error('Erro ao resolver pendência:', err);
+            showToast('error', 'Erro ao resolver pendência', 'Tente novamente em instantes.');
+        });
     }
 
     function marcarSaquePago(id) {
         const saque = saquesMap[id];
         if (!saque || saque.status !== 'pending') return;
 
-        // FIX: antes, a transaction sempre "committava" saturando o saldo em
-        // 0 com Math.max(0, ...) mesmo quando o saldo era menor que o valor
-        // do saque — e o saque era marcado como 'paid' de qualquer forma, ou
-        // seja, o admin conseguia pagar mais do que o usuário tinha
-        // disponível sem nenhum aviso. Agora a transaction aborta (retorna
-        // undefined) se o saldo for insuficiente, e o status só é atualizado
-        // se a transaction de fato for aplicada.
+        // A transaction aborta (retorna undefined) se o saldo for
+        // insuficiente, e o status só é atualizado se ela for aplicada.
         firebaseDb.ref('users/' + saque.uid + '/balance').transaction((saldoAtual) => {
             const saldo = saldoAtual || 0;
             if (saldo < saque.valor) {
-                return; // aborta a transaction — saldo insuficiente
+                return; // aborta — saldo insuficiente
             }
             return saldo - saque.valor;
         }).then((resultado) => {
@@ -360,8 +422,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 showToast('warning', 'Saldo insuficiente', 'O saldo atual do usuário é menor que o valor do saque. Verifique antes de marcar como pago.');
                 return;
             }
-            firebaseDb.ref('withdrawals/' + id).update({ status: 'paid', paidAt: Date.now() });
-            showToast('success', 'Saque marcado como pago!', 'O saldo do usuário foi atualizado.');
+            return firebaseDb.ref('withdrawals/' + id).update({ status: 'paid', paidAt: Date.now() }).then(() => {
+                showToast('success', 'Saque marcado como pago!', 'O saldo do usuário foi atualizado.');
+            });
         }).catch((err) => {
             console.error('Erro ao marcar saque como pago:', err);
             showToast('error', 'Erro ao processar saque', 'Tente novamente em instantes.');
@@ -369,8 +432,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function rejeitarSaque(id) {
-        firebaseDb.ref('withdrawals/' + id).update({ status: 'rejected', resolvedAt: Date.now() });
-        showToast('info', 'Saque rejeitado.');
+        const saque = saquesMap[id];
+        if (!saque || saque.status !== 'pending') return;
+
+        firebaseDb.ref('withdrawals/' + id).update({ status: 'rejected', resolvedAt: Date.now() }).then(() => {
+            showToast('info', 'Saque rejeitado.');
+        }).catch((err) => {
+            console.error('Erro ao rejeitar saque:', err);
+            showToast('error', 'Erro ao rejeitar saque', 'Tente novamente em instantes.');
+        });
     }
 
     // ===== Delegação de cliques nas tabelas (evita listener por linha) =====
@@ -403,10 +473,9 @@ document.addEventListener('DOMContentLoaded', () => {
             usersMap = snapshot.val() || {};
             renderUsuarios();
             renderStats();
-            // Reavalia pendências/depósitos também, já que usam dados de usersMap
             renderPendenciasPlano();
             renderDepositos();
-        });
+        }, (err) => console.error('[Admin] Erro ao ler users:', err.code, err.message));
 
         firebaseDb.ref('commissions').on('value', (snapshot) => {
             const data = snapshot.val() || {};
@@ -415,25 +484,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 commissionsMap[uid] = Object.values(entradas || {}).reduce((soma, c) => soma + (c.valor || 0), 0);
             });
             renderUsuarios();
-        });
+        }, (err) => console.error('[Admin] Erro ao ler commissions:', err.code, err.message));
 
         firebaseDb.ref('withdrawals').on('value', (snapshot) => {
             saquesMap = snapshot.val() || {};
             renderSaques();
             renderStats();
-        });
+        }, (err) => console.error('[Admin] Erro ao ler withdrawals:', err.code, err.message));
 
         firebaseDb.ref('deposits').on('value', (snapshot) => {
             depositosMap = snapshot.val() || {};
             renderDepositos();
             renderStats();
-        });
+        }, (err) => console.error('[Admin] Erro ao ler deposits:', err.code, err.message));
 
         firebaseDb.ref('planPendencies').on('value', (snapshot) => {
             pendenciasMap = snapshot.val() || {};
             renderPendenciasPlano();
             renderStats();
-        });
+        }, (err) => console.error('[Admin] Erro ao ler planPendencies:', err.code, err.message));
     }
 
     // ===== Controle de acesso: só entra quem tem users/{uid}/isAdmin === true =====
