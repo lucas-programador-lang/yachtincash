@@ -69,6 +69,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('#depositModal .dep-tab').forEach((t) => {
             const ativa = t.dataset.depTab === nome;
             t.classList.toggle('active', ativa);
+            // Aba ativa usa o botão cheio do site; as outras, o botão contornado
+            t.classList.toggle('btn-outline', !ativa);
             t.setAttribute('aria-selected', ativa ? 'true' : 'false');
         });
     }
@@ -88,7 +90,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function selecionarPlano(chave) {
         planoSelecionado = chave || null;
         document.querySelectorAll('#depositModal .dep-chip').forEach((c) => {
-            c.classList.toggle('selected', c.dataset.plano === planoSelecionado);
+            const marcado = c.dataset.plano === planoSelecionado;
+            c.classList.toggle('selected', marcado);
+            // Valor escolhido usa o botão cheio do site; os demais, o contornado
+            c.classList.toggle('btn-outline', !marcado);
         });
         if (chave) $('depOutroValor').value = '';
     }
