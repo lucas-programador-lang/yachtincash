@@ -205,36 +205,54 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ===== Regras de negócio =====
 
-    // Comissão de 1º nível = 10% do valor do plano. O arredondamento
-    // garante os valores exatos exigidos pelas regras do Firebase
-    // (R$ 2, R$ 5 e R$ 15), sem erro de ponto flutuante.
-    function calcularComissao(valorPlano) {
-        return Math.round(valorPlano * 10) / 100;
+    // Comissão de indicação em 3 níveis: nível 1 = 10%, níveis 2 e 3 = 1%
+    // do valor do plano. O arredondamento garante os valores exatos
+    // exigidos pelas regras do Firebase, sem erro de ponto flutuante.
+    const COMISSAO_NIVEIS = [10, 1, 1]; // percentuais por nível
+
+    function calcularComissao(valorPlano, percentual) {
+        return Math.round(valorPlano * (percentual || 10)) / 100;
     }
 
-    // Credita a comissão de 1º nível (10%) para quem indicou o usuário,
-    // se houver. Lê o referredBy direto do banco (não do cache local)
-    // para nunca usar um dado desatualizado.
-    function creditarComissaoIndicacao(uidIndicado, info) {
-        return firebaseDb.ref('users/' + uidIndicado).once('value').then((userSnap) => {
-            const userData = userSnap.val() || {};
-            const referredByUid = userData.referredBy;
-            if (!referredByUid) return false;
+    // Credita a comissão para quem indicou o usuário (nível 1) e para quem
+    // indicou esse indicador (nível 2) e o seguinte (nível 3), se houver.
+    // Lê o referredBy direto do banco (não do cache local) para nunca usar
+    // um dado desatualizado.
+    async function creditarComissaoIndicacao(uidIndicado, info) {
+        const userSnap = await firebaseDb.ref('users/' + uidIndicado).once('value');
+        const userData = userSnap.val() || {};
+        const nomeOrigem = userData.fullName || userData.email || uidIndicado;
 
-            const valorComissao = calcularComissao(info.valor);
+        const visitados = [uidIndicado]; // evita laço (A indica B que indica A)
+        let referrerUid = userData.referredBy;
+        let creditou = false;
 
-            return Promise.all([
-                firebaseDb.ref('commissions/' + referredByUid).push({
+        for (let i = 0; i < COMISSAO_NIVEIS.length; i++) {
+            if (!referrerUid || visitados.indexOf(referrerUid) !== -1) break;
+            visitados.push(referrerUid);
+
+            const valorComissao = calcularComissao(info.valor, COMISSAO_NIVEIS[i]);
+
+            await Promise.all([
+                firebaseDb.ref('commissions/' + referrerUid).push({
                     fromUid: uidIndicado,
-                    fromName: userData.fullName || userData.email || uidIndicado,
+                    fromName: nomeOrigem,
                     planoNome: info.nome,
+                    nivel: i + 1,
                     valor: valorComissao,
                     createdAt: Date.now()
                 }),
-                firebaseDb.ref('users/' + referredByUid + '/balanceComissao')
+                firebaseDb.ref('users/' + referrerUid + '/balanceComissao')
                     .transaction((saldoAtual) => (saldoAtual || 0) + valorComissao)
-            ]).then(() => true);
-        });
+            ]);
+            creditou = true;
+
+            // Sobe um nível: quem indicou este indicador
+            const proximo = await firebaseDb.ref('users/' + referrerUid + '/referredBy').once('value');
+            referrerUid = proximo.val();
+        }
+
+        return creditou;
     }
 
     // Cashback dos ciclos com VIP (R$ fixo): vai direto para o saldo
