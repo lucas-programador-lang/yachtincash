@@ -15,6 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // ---------- Regras (ajuste aqui) ----------
     const SAQUE_MINIMO = 30;          // valor solicitado, antes da taxa
     const TAXA_PERCENTUAL = 15;
+    let descontoTaxa = 0;             // pontos percentuais ganhos na Roleta (users/{uid}/saqueDesconto)
+    const taxaAtual = () => Math.max(0, TAXA_PERCENTUAL - descontoTaxa);
     const FUSO_HORARIO = 'America/Sao_Paulo'; // horário de Brasília
 
     // Dias: 0 = domingo, 1 = segunda ... 6 = sábado
@@ -81,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function calcularTaxa(valor) {
-        const taxa = Math.round(valor * TAXA_PERCENTUAL) / 100; // centavos exatos
+        const taxa = Math.round(valor * taxaAtual()) / 100; // centavos exatos
         return { taxa: taxa, liquido: arred2(valor - taxa) };
     }
 
@@ -121,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
         rotulo.classList.toggle('is-closed', !aberto);
 
         $('saqueMinimoTexto').textContent = brl(SAQUE_MINIMO);
-        $('saqueTaxaTexto').textContent = TAXA_PERCENTUAL + '%';
+        $('saqueTaxaTexto').textContent = taxaAtual() + '%' + (descontoTaxa > 0 ? ' (desconto da Roleta)' : '');
 
         const chaveEl = $('saqueChavePix');
         if (pixChave) {
@@ -190,6 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const d = snap.val() || {};
             saldoRendimento = Number(d.balance) || 0;
             saldoComissao = Number(d.balanceComissao) || 0;
+            descontoTaxa = Number(d.saqueDesconto) || 0;
             pixChave = d.pixChave || null;
             pixTipo = d.pixTipo || null;
             nomeUsuario = d.fullName || user.displayName || user.email || user.uid;
@@ -264,7 +267,8 @@ document.addEventListener('DOMContentLoaded', () => {
             pixTipo: pixTipo || 'cpf',
             tipo: tipoSelecionado,
             valor: valor,
-            taxaPercentual: TAXA_PERCENTUAL,
+            taxaPercentual: taxaAtual(),
+            descontoRoleta: descontoTaxa,
             taxa: taxa,
             valorLiquido: liquido,
             status: 'pending',
