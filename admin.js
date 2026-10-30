@@ -8,9 +8,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // dois arquivos, já que é o que traduz a "chave" do plano (ex:
     // 'irwin-50') em nome/valor/retorno/duração.
     const PLANOS_INFO = {
-        'teste-20': { nome: 'YACHT Teste', valor: 20, retornoDiario: 2.5, duracaoDias: 4 },
-        'irwin-50': { nome: 'YACHT IRWIN', valor: 50, retornoDiario: 3.35, duracaoDias: 30 },
-        'hunter-150': { nome: 'YACHT HUNTER', valor: 150, retornoDiario: 9, duracaoDias: 30 }
+        'vip1-50': { nome: 'Plano Iniciante', valor: 50, retornoDiario: 1.25, duracaoDias: 24 },
+        'vip2-70': { nome: 'Plano Bronze', valor: 70, retornoDiario: 1.75, duracaoDias: 24 },
+        'vip3-150': { nome: 'Plano Prata', valor: 150, retornoDiario: 3.75, duracaoDias: 24 },
+        'vip4-300': { nome: 'Plano Ouro', valor: 300, retornoDiario: 7.5, duracaoDias: 24 },
+        'vip5-450': { nome: 'Plano Master', valor: 450, retornoDiario: 11.25, duracaoDias: 24 }
     };
 
     function formatarMoeda(valor) {
