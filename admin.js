@@ -255,6 +255,29 @@ document.addEventListener('DOMContentLoaded', () => {
         return creditou;
     }
 
+    // Roleta da Sorte: quando o indicado faz um investimento de R$ 100,00
+    // ou mais, quem o indicou (nível 1) ganha 1 giro. Vale só uma vez por
+    // indicado (marca users/{indicado}/roletaGiroConcedido).
+    const ROLETA_VALOR_MINIMO = 100;
+
+    async function concederGiroRoleta(uidIndicado, info) {
+        if (!info || !(info.valor >= ROLETA_VALOR_MINIMO)) return false;
+
+        const userSnap = await firebaseDb.ref('users/' + uidIndicado).once('value');
+        const userData = userSnap.val() || {};
+        const referrerUid = userData.referredBy;
+        if (!referrerUid || referrerUid === uidIndicado) return false;
+
+        // Marca de forma atômica: só o primeiro investimento qualificado gera giro
+        const marca = await firebaseDb.ref('users/' + uidIndicado + '/roletaGiroConcedido')
+            .transaction((atual) => (atual ? undefined : true));
+        if (!marca.committed) return false;
+
+        await firebaseDb.ref('users/' + referrerUid + '/roletaGiros')
+            .transaction((atual) => (atual || 0) + 1);
+        return true;
+    }
+
     // Cashback dos ciclos com VIP (R$ fixo): vai direto para o saldo
     // (balance) de quem comprou, quando o plano é ativado.
     function creditarCashback(uid, info) {
@@ -369,7 +392,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // 3) Plano criado: credita o cashback (ciclos com VIP) e a comissão para quem indicou
-            return creditarCashback(deposito.uid, info).then(() => creditarComissaoIndicacao(deposito.uid, info)).then(() => {
+            return creditarCashback(deposito.uid, info).then(() => creditarComissaoIndicacao(deposito.uid, info)).then(() => concederGiroRoleta(deposito.uid, info)).then(() => {
                 showToast('success', 'Depósito aprovado!', 'O plano foi ativado na carteira do usuário.');
             });
         }).catch((err) => {
@@ -441,7 +464,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     resolvedAt: Date.now(),
                     resolucao: 'plano_criado'
                 });
-                return creditarCashback(pend.uid, info).then(() => creditarComissaoIndicacao(pend.uid, info));
+                return creditarCashback(pend.uid, info).then(() => creditarComissaoIndicacao(pend.uid, info)).then(() => concederGiroRoleta(pend.uid, info));
             }).then(() => {
                 showToast('success', 'Plano criado mesmo com a duplicidade.');
             });
@@ -493,6 +516,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             return firebaseDb.ref('withdrawals/' + id).update({ status: 'paid', paidAt: Date.now() }).then(() => {
+                // Desconto da Roleta vale para um saque só: zera depois de usado
+                if (saque.descontoRoleta > 0) {
+                    return firebaseDb.ref('users/' + saque.uid + '/saqueDesconto').set(0);
+                }
+            }).then(() => {
                 showToast('success', 'Saque marcado como pago!', 'O saldo do usuário foi atualizado.');
             });
         }).catch((err) => {
