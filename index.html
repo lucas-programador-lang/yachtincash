@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="missoes.css">
     <link rel="stylesheet" href="roleta.css">
     <link rel="stylesheet" href="gerente.css">
+    <link rel="stylesheet" href="grupos.css">
     <link rel="stylesheet" href="investimentos.css">
     <link rel="stylesheet" href="extrato.css">
     <link rel="stylesheet" href="perfil.css">
@@ -66,6 +67,10 @@
                 <button class="nav-item" data-section="gerente">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/><path d="M19 20c0 1.2-1.6 2-4 2h-2"/></svg>
                     <span>Gerente</span>
+                </button>
+                <button class="nav-item" data-section="grupos">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11v3a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1Z"/><path d="M15 9a4 4 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11"/></svg>
+                    <span>Grupos</span>
                 </button>
                 <button class="nav-item" data-section="extrato">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><path d="M9 12h6M9 16h6M9 8h2"/></svg>
@@ -391,6 +396,17 @@
                 </div>
                 <div class="ger-lista" id="gerenteLista"></div>
             </section>
+            <!-- GRUPOS (gerado pelo grupos.js) -->
+            <section class="page-section" id="section-grupos">
+                <div class="gp-header">
+                    <svg class="gp-header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M2.8 19.2c.7-3.1 3.1-5 6.2-5s5.5 1.9 6.2 5"/><circle cx="17.5" cy="8.8" r="2.4"/><path d="M16 11.5c1.9.4 3.3 1.7 3.9 3.9"/></svg>
+                    <div>
+                        <h1 class="page-title">Nossos Grupos</h1>
+                        <p>Entre nos nossos grupos e fique por dentro de todas as novidades, avisos e oportunidades!</p>
+                    </div>
+                </div>
+                <div class="gp-lista" id="gruposLista"></div>
+            </section>
             <!-- EXTRATO -->
             <section class="page-section" id="section-extrato">
                 <h1 class="page-title">Histórico de Transações</h1>
@@ -667,6 +683,7 @@
     <script src="missoes.js"></script>
     <script src="roleta.js"></script>
     <script src="gerente.js"></script>
+    <script src="grupos.js"></script>
     <script src="investimentos.js"></script>
     <script src="saque.js"></script>
     <script src="perfil.js"></script>
