@@ -11,13 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const DEPOSITO_MINIMO = 50;
     const PIX_WORKER_URL = 'https://apidayachtincash.lucas-dev-programador.workers.dev';
 
-    // Mesma tabela do script.js/admin.js/worker.js. O preço REAL é sempre
-    // conferido no Worker; aqui serve para montar a tela e validar.
-    const PLANOS = {
-        'teste-20': { nome: 'YACHT Teste', valor: 20, retornoDiario: 2.5, duracaoDias: 4 },
-        'irwin-50': { nome: 'YACHT IRWIN', valor: 50, retornoDiario: 3.35, duracaoDias: 30 },
-        'hunter-150': { nome: 'YACHT HUNTER', valor: 150, retornoDiario: 9, duracaoDias: 30 }
-    };
+    // Catálogo único de planos (planos.js, carregado antes deste arquivo).
+    // O preço REAL é sempre conferido no Worker; aqui serve para montar a
+    // tela e validar.
+    const PLANOS = window.PLANOS_CATALOGO || {};
 
     let planoSelecionado = null;
     let pararEscutaStatus = null;
@@ -25,6 +22,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const $ = (id) => document.getElementById(id);
     const brl = (v) => 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const toast = (tipo, titulo, msg) => { if (typeof window.showToast === 'function') window.showToast(tipo, titulo, msg); };
+
+    // Botões de valor gerados a partir do catálogo (um por plano)
+    function renderizarChips() {
+        const caixa = $('depChips');
+        if (!caixa) return;
+        caixa.innerHTML = '';
+        Object.entries(PLANOS).forEach(([chave, plano]) => {
+            if (plano.valor < DEPOSITO_MINIMO) return;
+            const botao = document.createElement('button');
+            botao.type = 'button';
+            botao.className = 'dep-chip btn btn-outline';
+            botao.dataset.plano = chave;
+            const valor = document.createElement('strong');
+            valor.textContent = 'R$ ' + plano.valor;
+            const vip = document.createElement('small');
+            vip.textContent = 'VIP ' + plano.vip;
+            botao.append(valor, vip);
+            caixa.appendChild(botao);
+        });
+    }
+    renderizarChips();
 
     // ---------- Máscaras e validações ----------
     function mascaraCpf(valor) {
@@ -113,10 +131,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function planosDisponiveisTexto() {
-        return Object.values(PLANOS)
+        const valores = Object.values(PLANOS)
             .filter((p) => p.valor >= DEPOSITO_MINIMO)
-            .map((p) => brl(p.valor))
-            .join(' e ');
+            .map((p) => brl(p.valor));
+        if (valores.length <= 1) return valores.join('');
+        return valores.slice(0, -1).join(', ') + ' e ' + valores[valores.length - 1];
     }
 
     // ---------- Estado da tela ----------
