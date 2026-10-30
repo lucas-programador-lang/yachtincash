@@ -1,13 +1,16 @@
 /* ============================================================
-   Tela de Depósito — SOMENTE LAYOUT (sem cores próprias).
-   Todas as cores vêm do style.css do site, pelas classes que a tela
-   reutiliza: btn, btn-outline, btn-compact, form-group, info-box,
-   pix-waiting, pix-qr-panel, pix-code-box e muted.
+   Tela de Depósito — usa SOMENTE as variáveis e classes do style.css
+   do site (--primary-light, --border-primary, --text-muted etc.).
+   Nenhuma cor própria: se você mudar a paleta no style.css, esta
+   tela acompanha automaticamente.
+   Classes reutilizadas do site: btn, btn-outline, btn-compact,
+   form-group, info-box, pix-waiting, pix-qr-panel, pix-code-box, muted.
    ============================================================ */
 #depositModal .dep-card {
     width: 100%;
     max-width: 420px;
-    max-height: 94vh;
+    max-height: calc(100vh - 40px);
+    max-height: calc(100dvh - 40px);
     overflow-y: auto;
 }
 
@@ -26,44 +29,51 @@
 }
 #depositModal .dep-back,
 #depositModal .dep-header-spacer {
-    width: 34px;
-    height: 34px;
-    flex: 0 0 34px;
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
 }
 #depositModal .dep-back {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     padding: 0;
-    background: transparent;
-    border: 0;
-    border-radius: 10px;
-    color: inherit;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border-soft-2);
+    border-radius: 50%;
+    color: var(--text-muted);
     cursor: pointer;
+    transition: background var(--transition), color var(--transition);
 }
-#depositModal .dep-back svg { width: 22px; height: 22px; }
+#depositModal .dep-back:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-color);
+}
+#depositModal .dep-back svg { width: 18px; height: 18px; }
 
-/* ---------- Abas (usam .btn / .btn-outline do site) ---------- */
+/* ---------- Abas (botões do site: cheio = ativa, contornado = inativa) ---------- */
 #depositModal .dep-tabs {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 8px;
-    margin-bottom: 16px;
+    margin-bottom: 18px;
 }
 #depositModal .dep-tab {
     width: auto;
     margin: 0;
+    padding: 11px 8px;
 }
 
 #depositModal .dep-panel { display: none; }
 #depositModal .dep-panel.active { display: block; }
 
-/* ---------- Banner "Deposite via Pix" (usa .info-box) ---------- */
+/* ---------- Banner "Deposite via Pix" (caixa .info-box do site) ---------- */
 #depositModal .dep-banner {
     display: flex;
     align-items: center;
     gap: 14px;
-    margin-bottom: 18px;
+    margin-top: 0;
+    margin-bottom: 20px;
 }
 #depositModal .dep-banner-icon {
     width: 56px;
@@ -72,23 +82,26 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid color-mix(in srgb, currentColor 35%, transparent);
-    border-radius: 14px;
+    background: rgba(31, 184, 174, 0.08);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-md);
+    color: var(--primary-light);
 }
-#depositModal .dep-banner-icon svg { width: 32px; height: 32px; }
+#depositModal .dep-banner-icon svg { width: 30px; height: 30px; }
 #depositModal .dep-banner strong { display: block; font-size: 1.05rem; }
 #depositModal .dep-banner span { display: block; margin-top: 2px; font-size: 0.82rem; }
 
 /* ---------- Valor ---------- */
 #depositModal .dep-label {
     margin: 0 0 10px;
-    font-size: 1.05rem;
+    font-size: 1rem;
+    text-align: left;
 }
 #depositModal .dep-chips {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
-    margin-bottom: 14px;
+    margin-bottom: 16px;
 }
 #depositModal .dep-chip {
     width: auto;
@@ -99,37 +112,40 @@
     justify-content: center;
     gap: 2px;
 }
-#depositModal .dep-chip strong { font-size: 1.05rem; }
-#depositModal .dep-chip small { font-size: 0.7rem; opacity: 0.75; letter-spacing: 0.04em; }
+#depositModal .dep-chip strong { font-size: 1.1rem; font-weight: 800; }
+#depositModal .dep-chip small { font-size: 0.7rem; font-weight: 600; opacity: 0.8; letter-spacing: 0.04em; }
 
 #depositModal .dep-hint {
-    margin: 4px 2px 14px;
+    margin: 2px 2px 12px;
     font-size: 0.82rem;
+    line-height: 1.5;
 }
+#depositModal .dep-hint strong { color: var(--text-color); }
 #depositModal .dep-note {
-    margin: 0 0 14px;
+    margin: -4px 0 16px;
     font-size: 0.84rem;
 }
 #depositModal .dep-link {
     padding: 0;
     background: none;
     border: 0;
-    color: inherit;
+    color: var(--accent-color);
     font: inherit;
     font-weight: 700;
     text-decoration: underline;
     cursor: pointer;
 }
+#depositModal .dep-link:hover { color: var(--accent-soft); }
 
 /* ---------- Resultado do Pix ---------- */
-#depositModal #depositQrView { margin-top: 16px; }
-/* Fundo branco é necessário para o QR Code ser lido pela câmera */
-#depositModal #qrcodeCanvas {
-    display: inline-block;
-    padding: 10px;
-    background: #fff;
-    border-radius: 12px;
+#depositModal #depositQrView { margin-top: 18px; }
+#depositModal .pix-waiting.ok {
+    background: var(--success-bg);
+    border-color: rgba(23, 219, 160, 0.3);
+    color: var(--success);
 }
+/* Fundo branco é necessário para o QR Code ser lido pela câmera
+   (o style.css do site já usa o mesmo branco aqui) */
 #depositModal #qrcodeCanvas img,
 #depositModal #qrcodeCanvas canvas { display: block; }
 
@@ -138,25 +154,32 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 8px;
-    margin-top: 20px;
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border-soft);
     text-align: center;
+    color: var(--text-muted);
 }
 #depositModal .dep-feature {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 6px;
+    gap: 7px;
     font-size: 0.7rem;
+    font-weight: 600;
     line-height: 1.25;
 }
 #depositModal .dep-feature svg {
-    width: 34px;
-    height: 34px;
-    padding: 7px;
-    border: 1px solid color-mix(in srgb, currentColor 35%, transparent);
+    width: 36px;
+    height: 36px;
+    padding: 8px;
+    color: var(--primary-light);
+    background: rgba(31, 184, 174, 0.08);
+    border: 1px solid var(--border-primary);
     border-radius: 50%;
 }
 
 @media (max-width: 380px) {
     #depositModal .dep-banner-icon { width: 48px; height: 48px; flex-basis: 48px; }
+    #depositModal .dep-tab { font-size: 0.85rem; }
 }
