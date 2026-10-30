@@ -288,12 +288,13 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        // Comissões de indicação (10%) recebidas — uma linha por indicado
-        // que teve um plano aprovado, identificando quem gerou a comissão.
+        // Comissões de indicação recebidas (nível 1 = 10%, níveis 2 e 3 = 1%)
+        // — uma linha por indicado que teve um plano aprovado.
         (comissoesDoUsuario || []).forEach((comissao) => {
+            const nivel = (comissao.nivel >= 1 && comissao.nivel <= 3) ? comissao.nivel : 1;
             entradas.push({
                 data: comissao.createdAt,
-                descricao: `Comissão de indicação (10%) — plano de ${escapeHtml(comissao.fromName || 'indicado')}`,
+                descricao: `Comissão de indicação (${nivel === 1 ? '10' : '1'}%, nível ${nivel}) — plano de ${escapeHtml(comissao.fromName || 'indicado')}`,
                 valor: comissao.valor,
                 status: 'paid'
             });
@@ -364,17 +365,81 @@ document.addEventListener('DOMContentLoaded', () => {
         }).join('');
     }
 
-    // Soma as comissões recebidas (commissions/{uid}) e atualiza o card
-    // "Comissões (1º Nível - 10%)" tanto da Equipe quanto do Início.
+    // Soma as comissões recebidas (commissions/{uid}): total, por nível
+    // (1 = 10%, 2 e 3 = 1%), hoje / semana / mês e a lista do histórico.
+    // Comissões antigas, sem o campo "nivel", contam como nível 1.
     function renderizarComissoes(commissionsData) {
-        const comissaoEl = document.getElementById('comissaoNivel1');
-        const comissaoInicioEl = document.getElementById('comissaoNivel1Inicio');
-        if (!comissaoEl && !comissaoInicioEl) return;
         const comissoes = commissionsData ? Object.values(commissionsData) : [];
-        const total = comissoes.reduce((soma, c) => soma + (c.valor || 0), 0);
-        if (comissaoEl) comissaoEl.textContent = formatarMoeda(total);
-        if (comissaoInicioEl) comissaoInicioEl.textContent = formatarMoeda(total);
+
+        const agora = new Date();
+        const inicioHoje = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate()).getTime();
+        const diaDaSemana = (agora.getDay() + 6) % 7; // segunda-feira = 0
+        const inicioSemana = inicioHoje - diaDaSemana * 86400000;
+        const inicioMes = new Date(agora.getFullYear(), agora.getMonth(), 1).getTime();
+
+        const porNivel = [0, 0, 0];
+        let total = 0;
+        let hoje = 0;
+        let semana = 0;
+        let mes = 0;
+
+        comissoes.forEach((c) => {
+            const valor = c.valor || 0;
+            const nivel = (c.nivel >= 1 && c.nivel <= 3) ? c.nivel : 1;
+            const quando = c.createdAt || 0;
+            porNivel[nivel - 1] += valor;
+            total += valor;
+            if (quando >= inicioHoje) hoje += valor;
+            if (quando >= inicioSemana) semana += valor;
+            if (quando >= inicioMes) mes += valor;
+        });
+
+        const mostrar = (id, valor) => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = formatarMoeda(Math.round(valor * 100) / 100);
+        };
+        mostrar('comissaoTotal', total);
+        mostrar('comissaoNivel1Inicio', total);
+        mostrar('comissaoNivel1', porNivel[0]);
+        mostrar('comissaoNivel2', porNivel[1]);
+        mostrar('comissaoNivel3', porNivel[2]);
+        mostrar('comissaoHoje', hoje);
+        mostrar('comissaoSemana', semana);
+        mostrar('comissaoMes', mes);
+
+        const corpo = document.getElementById('historicoComissoesBody');
+        if (!corpo) return;
+        if (!comissoes.length) {
+            corpo.innerHTML = '<tr><td colspan="4" class="muted">Nenhuma comissão recebida ainda.</td></tr>';
+            return;
+        }
+        corpo.innerHTML = comissoes
+            .slice()
+            .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
+            .slice(0, 100)
+            .map((c) => {
+                const nivel = (c.nivel >= 1 && c.nivel <= 3) ? c.nivel : 1;
+                const data = c.createdAt ? new Date(c.createdAt).toLocaleDateString('pt-BR') : '-';
+                return `
+                <tr>
+                    <td>${data}</td>
+                    <td>Nível ${nivel} (${nivel === 1 ? '10' : '1'}%)</td>
+                    <td>${escapeHtml(c.fromName || '-')}</td>
+                    <td>${formatarMoeda(c.valor || 0)}</td>
+                </tr>`;
+            }).join('');
     }
+
+    // Botão "Histórico de Comissões": abre e fecha a lista
+    document.addEventListener('click', (e) => {
+        const botao = e.target.closest('#btnHistoricoComissoes');
+        if (!botao) return;
+        const caixa = document.getElementById('historicoComissoes');
+        if (!caixa) return;
+        const abrir = caixa.hidden;
+        caixa.hidden = !abrir;
+        botao.setAttribute('aria-expanded', abrir ? 'true' : 'false');
+    });
 
     // Rótulos amigáveis para o tipo de chave PIX, usados no modal de Saque
     const PIX_TIPO_LABEL = {
