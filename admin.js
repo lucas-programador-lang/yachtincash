@@ -4,15 +4,16 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    // Mesma tabela de planos usada no script.js — precisa ficar igual nos
-    // dois arquivos, já que é o que traduz a "chave" do plano (ex:
-    // 'irwin-50') em nome/valor/retorno/duração.
+    // Mesma tabela do planos.js (e do worker.js) — precisa ficar igual nos
+    // três, já que é o que traduz a "chave" do plano (ex: 'ciclone3-250')
+    // em nome/valor/retorno/duração/cashback.
+    const LIMITE_COMPRAS = 10; // máximo de planos ativos do mesmo valor por usuário
     const PLANOS_INFO = {
-        'vip1-50': { nome: 'Plano Iniciante', valor: 50, retornoDiario: 1.25, duracaoDias: 24 },
-        'vip2-70': { nome: 'Plano Bronze', valor: 70, retornoDiario: 1.75, duracaoDias: 24 },
-        'vip3-150': { nome: 'Plano Prata', valor: 150, retornoDiario: 3.75, duracaoDias: 24 },
-        'vip4-300': { nome: 'Plano Ouro', valor: 300, retornoDiario: 7.5, duracaoDias: 24 },
-        'vip5-450': { nome: 'Plano Master', valor: 450, retornoDiario: 11.25, duracaoDias: 24 }
+        'ciclone1-50': { nome: 'Ciclone 1', valor: 50, retornoDiario: 0.5, duracaoDias: 50, cashback: 0 },
+        'ciclone2-100': { nome: 'Ciclone 2', valor: 100, retornoDiario: 1, duracaoDias: 50, cashback: 0 },
+        'ciclone3-250': { nome: 'Ciclone 3', valor: 250, retornoDiario: 2.5, duracaoDias: 50, cashback: 5 },
+        'ciclone4-500': { nome: 'Ciclone 4', valor: 500, retornoDiario: 5, duracaoDias: 50, cashback: 10 },
+        'ciclone5-1000': { nome: 'Ciclone 5', valor: 1000, retornoDiario: 10, duracaoDias: 50, cashback: 15 }
     };
 
     function formatarMoeda(valor) {
@@ -227,6 +228,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Cashback do plano (R$ fixo, só nos planos com VIP): vai direto para
+    // o saldo (balance) de quem comprou, quando o plano é ativado.
+    function creditarCashback(uid, info) {
+        const valor = info.cashback || 0;
+        if (!valor) return Promise.resolve(false);
+        return firebaseDb.ref('users/' + uid + '/balance')
+            .transaction((saldoAtual) => Math.round(((saldoAtual || 0) + valor) * 100) / 100)
+            .then(() => true);
+    }
+
     // Aprova um depósito: marca como aprovado (de forma atômica, para
     // dois cliques/admins nunca aprovarem o mesmo depósito duas vezes),
     // cria o plano na carteira e credita a comissão de indicação.
@@ -239,11 +250,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const deposito = depositosMap[depositId];
         if (!deposito || deposito.status !== 'pending') return;
 
-        const info = PLANOS_INFO[deposito.planoKey] || {
+        const infoTabela = PLANOS_INFO[deposito.planoKey];
+        const info = infoTabela ? Object.assign({ planoKey: deposito.planoKey }, infoTabela) : {
             nome: deposito.planoNome,
             valor: deposito.valor,
             retornoDiario: deposito.retornoDiario || 0,
             duracaoDias: deposito.duracaoDias || 0,
+            cashback: 0,
             planoKey: deposito.planoKey
         };
 
@@ -263,16 +276,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }).then((reserva) => {
             if (!reserva.committed) return null; // outro clique/admin já aprovou
 
-            // 2) Cria o plano, a menos que o usuário já tenha um plano
-            //    ativo do mesmo valor (nesse caso aborta e vira pendência).
+            // 2) Cria o plano, a menos que o usuário já tenha 10 planos
+            //    ativos do mesmo valor (nesse caso aborta e vira pendência).
             return planosRef.transaction((planosAtuais) => {
                 const lista = planosAtuais ? Object.values(planosAtuais) : [];
-                const jaTemPlanoAtivo = lista.some((plano) => {
+                const ativosDoMesmoValor = lista.filter((plano) => {
                     const diasPassados = Math.floor((Date.now() - plano.dataAtivacao) / 86400000);
                     return diasPassados < plano.duracaoDias &&
                         Math.abs((plano.valorInvestido || 0) - info.valor) < 0.01;
-                });
-                if (jaTemPlanoAtivo) return; // aborta sem alterar nada
+                }).length;
+                if (ativosDoMesmoValor >= LIMITE_COMPRAS) return; // limite atingido: aborta sem alterar nada
 
                 const novos = planosAtuais || {};
                 novos[novoPlanoId] = {
@@ -302,18 +315,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     nome: info.nome,
                     retornoDiario: info.retornoDiario,
                     duracaoDias: info.duracaoDias,
+                    cashback: info.cashback || 0,
                     planoKey: info.planoKey || deposito.planoKey || null,
-                    observacao: 'Pix confirmado, mas o usuário já tinha um plano ativo desse valor no momento da confirmação.',
+                    observacao: 'Pix confirmado, mas o usuário já tinha 10 planos ativos desse valor (limite) no momento da confirmação.',
                     depositId: depositId,
                     status: 'open',
                     createdAt: Date.now()
                 }).then(() => {
-                    showToast('warning', 'Depósito aprovado com pendência', 'Usuário já tem plano ativo desse valor — decisão manual necessária em "Pendências de Plano".');
+                    showToast('warning', 'Depósito aprovado com pendência', 'Usuário já tem 10 planos ativos desse valor — decisão manual necessária em "Pendências de Plano".');
                 });
             }
 
-            // 3) Plano criado: credita a comissão para quem indicou
-            return creditarComissaoIndicacao(deposito.uid, info).then(() => {
+            // 3) Plano criado: credita o cashback do plano e a comissão para quem indicou
+            return creditarCashback(deposito.uid, info).then(() => creditarComissaoIndicacao(deposito.uid, info)).then(() => {
                 showToast('success', 'Depósito aprovado!', 'O plano foi ativado na carteira do usuário.');
             });
         }).catch((err) => {
@@ -358,6 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
             valor: pend.valor,
             retornoDiario: pend.retornoDiario,
             duracaoDias: pend.duracaoDias,
+            cashback: pend.cashback || 0,
             planoKey: pend.planoKey
         };
 
@@ -384,7 +399,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     resolvedAt: Date.now(),
                     resolucao: 'plano_criado'
                 });
-                return creditarComissaoIndicacao(pend.uid, info);
+                return creditarCashback(pend.uid, info).then(() => creditarComissaoIndicacao(pend.uid, info));
             }).then(() => {
                 showToast('success', 'Plano criado mesmo com a duplicidade.');
             });
