@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="equipe.css">
     <link rel="stylesheet" href="missoes.css">
     <link rel="stylesheet" href="investimentos.css">
+    <link rel="stylesheet" href="extrato.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body class="app-body">
@@ -330,28 +331,17 @@
             </section>
             <!-- EXTRATO -->
             <section class="page-section" id="section-extrato">
-                <h1 class="page-title">Extrato de Recebimentos</h1>
-                <h3 class="section-subtitle">Histórico Geral de Valores Recebidos</h3>
-                <div class="info-box">
-                    <div class="table-scroll">
-                        <table class="extrato-table">
-                            <thead>
-                                <tr>
-                                    <th>Data e Horário</th>
-                                    <th>Mês / Ano</th>
-                                    <th>Descrição / Origem</th>
-                                    <th>Status</th>
-                                    <th>Valor Recebido</th>
-                                </tr>
-                            </thead>
-                            <tbody id="extratoBody">
-                                <tr>
-                                    <td colspan="5" class="muted">Nenhuma movimentação registrada ainda.</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                <h1 class="page-title">Histórico de Transações</h1>
+                <div class="hist-tabs" role="tablist">
+                    <button type="button" class="btn" data-hist-filtro="todos" role="tab" aria-selected="true">Todos</button>
+                    <button type="button" class="btn btn-outline" data-hist-filtro="depositos" role="tab" aria-selected="false">Depósitos</button>
+                    <button type="button" class="btn btn-outline" data-hist-filtro="saques" role="tab" aria-selected="false">Saques</button>
+                    <button type="button" class="btn btn-outline" data-hist-filtro="investimentos" role="tab" aria-selected="false">Investimentos</button>
                 </div>
+                <div class="hist-lista" id="extratoLista">
+                    <div class="info-box muted">Nenhuma movimentação registrada ainda.</div>
+                </div>
+                <button type="button" class="btn btn-outline hist-mais" id="extratoMais" hidden>Ver mais</button>
             </section>
             <!-- PERFIL -->
             <section class="page-section" id="section-perfil">
@@ -570,6 +560,7 @@
 
     <script src="auth.js"></script>
     <script src="script.js"></script>
+    <script src="extrato.js"></script>
     <script src="planos.js"></script>
     <script src="deposito.js"></script>
     <script src="inicio.js"></script>
