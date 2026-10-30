@@ -90,23 +90,32 @@
 }
 
 .plan-art {
-    width: 96px;
-    height: 64px;
+    position: relative;
+    width: 120px;
+    height: 80px;
     display: flex;
     align-items: flex-end;
     justify-content: center;
 }
 
-.plan-coins {
-    width: 100%;
-    height: 100%;
-    filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.45));
+/* Brilho dourado suave atrás das moedas (mesmo dourado do saldo) */
+.plan-art::before {
+    content: "";
+    position: absolute;
+    inset: -8px -6px -2px;
+    background: radial-gradient(ellipse 60% 55% at 50% 72%, rgba(217, 182, 116, 0.22), transparent 70%);
+    pointer-events: none;
 }
 
-/* Moedas no dourado que o site já usa (saldo e selo VIP) */
-.plan-coins .coin-top  { fill: var(--accent-gold-soft); }
-.plan-coins .coin-side { fill: var(--accent-gold-deep); }
-.plan-coins .coin-ring { fill: none; stroke: var(--accent-gold); stroke-width: 1; opacity: 0.8; }
+.plan-coins {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.4));
+}
+
+.plan-coins .coin-spark { fill: var(--accent-gold-soft); opacity: 0.9; }
 
 .plan-photo {
     width: 100%;
@@ -116,7 +125,10 @@
 }
 
 .plan-buy {
-    min-width: 96px;
+    position: relative;
+    z-index: 1;
+    min-width: 104px;
+    margin-top: -8px;
 }
 
 @media (min-width: 1024px) {
@@ -132,8 +144,8 @@
     .plan-icon { flex-basis: 40px; width: 40px; height: 40px; border-radius: 12px; }
     .plan-icon svg { width: 22px; height: 22px; }
     .plan-price { font-size: 19px; }
-    .plan-art { width: 76px; height: 50px; }
-    .plan-buy { min-width: 76px; padding: 10px 12px; }
+    .plan-art { width: 96px; height: 64px; }
+    .plan-buy { min-width: 88px; padding: 10px 12px; }
 }
 
 @media (max-width: 340px) {
