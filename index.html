@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="deposito.css">
     <link rel="stylesheet" href="inicio.css">
+    <link rel="stylesheet" href="saque.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body class="app-body">
@@ -457,39 +458,79 @@
             </div>
         </div>
     </div>
-    <!-- MODAL: SACAR -->
+   <!-- MODAL: SACAR (substitui o bloco antigo inteiro) — usa as classes e cores do seu style.css -->
     <div class="modal-overlay" id="sacarModal" onclick="if(event.target===this) closeModal('sacarModal')">
-        <div class="modal-card card">
-            <button class="modal-close" onclick="closeModal('sacarModal')" aria-label="Fechar">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5l14 14M19 5 5 19"/></svg>
-            </button>
+        <div class="modal-card card saque-card" role="dialog" aria-modal="true" aria-labelledby="saqueTitle">
+
+            <header class="saque-header">
+                <button type="button" class="saque-icon-btn" onclick="closeModal('sacarModal')" aria-label="Voltar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                </button>
+                <h2 id="saqueTitle">Saque</h2>
+                <button type="button" class="saque-icon-btn" data-saque-goto="extrato" aria-label="Histórico">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><path d="M12 7v5l3 2"/></svg>
+                </button>
+            </header>
+
+            <h3 class="saque-label">Origem do saque</h3>
+            <div class="saque-origens">
+                <button type="button" class="saque-origem btn" data-tipo="rendimento">
+                    <small>Rendimento</small>
+                    <strong id="saqueSaldoRendimento">R$ 0,00</strong>
+                </button>
+                <button type="button" class="saque-origem btn btn-outline" data-tipo="comissao">
+                    <small>Comissão</small>
+                    <strong id="saqueSaldoComissao">R$ 0,00</strong>
+                </button>
+            </div>
+
             <div class="withdraw-balance-box">
                 <span>Saldo Disponível:</span>
-                <strong id="sacarSaldoDisponivel">R$ 5,00</strong>
+                <strong id="saqueSaldoSelecionado">R$ 0,00</strong>
             </div>
-            <h2 style="text-align:left;">Realizar Saque</h2>
-            <p class="subtitle" style="text-align:left; margin-bottom: 18px;">Solicite a retirada do seu saldo disponível via Pix.</p>
-            <div class="withdraw-summary">
+            <p class="saque-regra muted" id="saqueRegraTexto"></p>
+
+            <div class="form-group">
+                <label for="saqueValor">Valor do Saque (R$)</label>
+                <input type="text" id="saqueValor" inputmode="decimal" placeholder="0,00" autocomplete="off">
+            </div>
+
+            <div class="saque-info">
+                <div class="withdraw-summary">
+                    <span>Saque mínimo</span>
+                    <strong id="saqueMinimoTexto">R$ 30,00</strong>
+                </div>
+                <div class="withdraw-summary">
+                    <span>Taxa de saque</span>
+                    <strong id="saqueTaxaTexto">15%</strong>
+                </div>
+            </div>
+
+            <div class="withdraw-summary saque-resumo">
                 <div class="withdraw-summary-row">
-                    <span>Valor Mínimo:</span>
-                    <strong>R$ 30,00</strong>
+                    <span>Taxa descontada:</span>
+                    <strong id="saqueTaxaValor">R$ 0,00</strong>
+                </div>
+                <div class="withdraw-summary-row saque-liquido">
+                    <span>Você recebe:</span>
+                    <strong id="saqueLiquidoValor">R$ 0,00</strong>
                 </div>
             </div>
-            <div class="withdraw-summary">
+
+            <h3 class="saque-label">Método de Saque</h3>
+            <div class="saque-metodo">
+                <span>Pix</span>
+                <span class="saque-radio" aria-hidden="true"></span>
+            </div>
+            <div class="withdraw-summary saque-chave">
                 <div class="withdraw-summary-row withdraw-summary-row-stack">
-                    <span>Chave PIX de recebimento:</span>
-                    <strong class="withdraw-key-missing" id="sacarChavePix">Nenhuma chave cadastrada — vá em Perfil e cadastre uma.</strong>
+                    <span>Chave Pix cadastrada</span>
+                    <strong class="withdraw-key-missing" id="saqueChavePix">Nenhuma chave cadastrada.</strong>
                 </div>
             </div>
-            <div class="form-group" style="margin-top: 18px; margin-bottom: 10px;">
-                <label for="sacarValor">Valor do Saque (R$)</label>
-                <input type="number" id="sacarValor" placeholder="Digite o valor" min="30" step="0.01">
-            </div>
-            <p class="muted withdraw-days">Saques disponíveis de Terça a Sexta, das 10h às 17h.</p>
-            <button class="btn btn-success" onclick="solicitarSaque()">Solicitar Saque</button>
-            <div class="modal-actions">
-                <button class="btn btn-outline" onclick="closeModal('sacarModal')">Cancelar</button>
-            </div>
+
+            <button type="button" class="btn btn-success" id="saqueBtn" onclick="solicitarSaque()">SOLICITAR SAQUE</button>
+            <p class="saque-nota muted">Pagamento via Pix após a análise do saque.</p>
         </div>
     </div>
     <!-- Toasts (substitui os alert() nativos do navegador) -->
