@@ -327,9 +327,9 @@
             </section>
         </main>
     </div>
-    <!-- MODAL: DEPOSITAR (substitui o bloco antigo inteiro) -->
+    <!-- MODAL: DEPOSITAR (substitui o bloco antigo inteiro) — usa as classes e cores do seu style.css -->
     <div class="modal-overlay" id="depositModal" onclick="if(event.target===this) closeModal('depositModal')">
-        <div class="modal-card dep-card" role="dialog" aria-modal="true" aria-labelledby="depTitle">
+        <div class="modal-card card dep-card" role="dialog" aria-modal="true" aria-labelledby="depTitle">
 
             <header class="dep-header">
                 <button type="button" class="dep-back" onclick="closeModal('depositModal')" aria-label="Voltar">
@@ -340,88 +340,85 @@
             </header>
 
             <div class="dep-tabs" role="tablist">
-                <button type="button" class="dep-tab active" role="tab" data-dep-tab="pix" aria-selected="true">Pix</button>
-                <button type="button" class="dep-tab" role="tab" data-dep-tab="cartao" aria-selected="false">Cartão</button>
-                <button type="button" class="dep-tab" role="tab" data-dep-tab="outros" aria-selected="false">Outros</button>
+                <button type="button" class="dep-tab active btn btn-compact" role="tab" data-dep-tab="pix" aria-selected="true">Pix</button>
+                <button type="button" class="dep-tab btn btn-compact btn-outline" role="tab" data-dep-tab="cartao" aria-selected="false">Cartão</button>
+                <button type="button" class="dep-tab btn btn-compact btn-outline" role="tab" data-dep-tab="outros" aria-selected="false">Outros</button>
             </div>
 
             <!-- ABA PIX: escolha do valor e geração do QR Code -->
             <div class="dep-panel active" data-dep-panel="pix">
-                <div class="dep-banner">
+                <div class="info-box dep-banner">
                     <div class="dep-banner-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h3M20 17v4"/></svg>
                     </div>
                     <div>
                         <strong>Deposite via Pix</strong>
-                        <span>Rápido, seguro e automático</span>
+                        <span class="muted">Rápido, seguro e automático</span>
                     </div>
                 </div>
 
                 <h3 class="dep-label">Valor do Depósito</h3>
                 <div class="dep-chips" id="depChips">
-                    <button type="button" class="dep-chip" data-plano="irwin-50">
+                    <button type="button" class="dep-chip btn btn-outline" data-plano="irwin-50">
                         <strong>R$ 50</strong>
                         <small>YACHT IRWIN</small>
                     </button>
-                    <button type="button" class="dep-chip" data-plano="hunter-150">
+                    <button type="button" class="dep-chip btn btn-outline" data-plano="hunter-150">
                         <strong>R$ 150</strong>
                         <small>YACHT HUNTER</small>
                     </button>
                 </div>
 
-                <div class="dep-other">
-                    <label for="depOutroValor">Outro valor</label>
-                    <div class="dep-other-row">
-                        <span>R$</span>
-                        <input type="text" id="depOutroValor" inputmode="decimal" placeholder="0,00" autocomplete="off">
-                    </div>
+                <div class="form-group">
+                    <label for="depOutroValor">Outro valor (R$)</label>
+                    <input type="text" id="depOutroValor" inputmode="decimal" placeholder="0,00" autocomplete="off">
                 </div>
 
-                <p class="dep-hint">Depósito mínimo: <strong>R$ 50,00</strong></p>
-                <p class="dep-hint">Para gerar o Pix, preencha seu CPF e telefone na aba
+                <p class="dep-hint muted">Depósito mínimo: <strong>R$ 50,00</strong></p>
+                <p class="dep-hint muted">Para gerar o Pix, preencha seu CPF e telefone na aba
                     <button type="button" class="dep-link" data-dep-tab="cartao">Cartão</button>.</p>
 
-                <button type="button" class="dep-submit" id="depGerarPix" onclick="gerarQrCodeDeposito()">GERAR PIX</button>
+                <button type="button" class="btn" id="depGerarPix" onclick="gerarQrCodeDeposito()">GERAR PIX</button>
 
                 <!-- Aparece assim que o QR Code é gerado -->
                 <div id="depositQrView" style="display:none;">
-                    <div class="dep-waiting" id="depWaiting">⏳ Aguardando confirmação do pagamento...</div>
-                    <div class="dep-qr-panel">
+                    <div class="pix-waiting" id="depWaiting">⏳ Aguardando confirmação do pagamento...</div>
+                    <div class="pix-qr-panel">
                         <p><strong>Escaneie o QR Code abaixo para pagar:</strong></p>
                         <div id="qrcodeCanvas"></div>
-                        <div class="dep-code" id="depositPixCode"></div>
+                        <div class="pix-code-box" id="depositPixCode"></div>
                     </div>
-                    <button type="button" class="dep-copy" onclick="copiarCodigoPixDeposito()">Copiar código Pix</button>
+                    <button type="button" class="btn btn-outline" onclick="copiarCodigoPixDeposito()">Copiar código Pix</button>
                 </div>
             </div>
 
             <!-- ABA CARTÃO: CPF e telefone (obrigatórios para gerar o Pix) -->
             <div class="dep-panel" data-dep-panel="cartao">
                 <h3 class="dep-label">Seus dados</h3>
-                <p class="dep-note">Obrigatórios para gerar o Pix.</p>
-                <div class="dep-field">
+                <p class="dep-note muted">Obrigatórios para gerar o Pix.</p>
+                <div class="form-group">
                     <label for="depositCpf">CPF</label>
                     <input type="text" id="depositCpf" inputmode="numeric" placeholder="000.000.000-00" autocomplete="off">
                 </div>
-                <div class="dep-field">
+                <div class="form-group">
                     <label for="depositTelefone">Telefone</label>
                     <input type="text" id="depositTelefone" inputmode="tel" placeholder="(00) 00000-0000" autocomplete="off">
                 </div>
-                <button type="button" class="dep-submit" data-dep-tab="pix">CONTINUAR</button>
+                <button type="button" class="btn" data-dep-tab="pix">CONTINUAR</button>
             </div>
 
             <!-- ABA OUTROS: número de WhatsApp -->
             <div class="dep-panel" data-dep-panel="outros">
                 <h3 class="dep-label">Contato</h3>
-                <p class="dep-note">Informe seu número de WhatsApp para contato (opcional).</p>
-                <div class="dep-field">
+                <p class="dep-note muted">Informe seu número de WhatsApp para contato (opcional).</p>
+                <div class="form-group">
                     <label for="depositWhatsapp">WhatsApp</label>
                     <input type="text" id="depositWhatsapp" inputmode="tel" placeholder="(00) 00000-0000" autocomplete="off">
                 </div>
-                <button type="button" class="dep-submit" data-dep-tab="pix">CONTINUAR</button>
+                <button type="button" class="btn" data-dep-tab="pix">CONTINUAR</button>
             </div>
 
-            <div class="dep-features">
+            <div class="dep-features muted">
                 <div class="dep-feature">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
                     <span>Processamento Automático</span>
