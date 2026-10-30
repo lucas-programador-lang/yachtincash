@@ -273,7 +273,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     valorInvestido: info.valor,
                     retornoDiario: info.retornoDiario,
                     duracaoDias: info.duracaoDias,
-                    dataAtivacao: Date.now()
+                    dataAtivacao: Date.now(),
+                    diasCreditados: 0
                 };
                 return novos;
             });
@@ -367,7 +368,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 valorInvestido: info.valor,
                 retornoDiario: info.retornoDiario,
                 duracaoDias: info.duracaoDias,
-                dataAtivacao: Date.now()
+                dataAtivacao: Date.now(),
+                diasCreditados: 0
             }).then(() => {
                 planoJaCriado = true;
                 firebaseDb.ref('planPendencies/' + pendId).update({
