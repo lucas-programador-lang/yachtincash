@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="inicio.css">
     <link rel="stylesheet" href="saque.css">
     <link rel="stylesheet" href="planos.css">
+    <link rel="stylesheet" href="equipe.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body class="app-body">
@@ -116,7 +117,7 @@
                         <h2 id="rendimentoAcumuladoInicio">R$ 0,00</h2>
                     </div>
                     <div class="stat-card stat-card-left">
-                        <span>Comissões (1º Nível - 10%)</span>
+                        <span>Comissões (3 níveis)</span>
                         <h2 id="comissaoNivel1Inicio">R$ 0,00</h2>
                     </div>
                 </div>
@@ -146,6 +147,7 @@
                     <p>• Saque de comissão: Segunda a Sexta (10:00 às 17:00).</p>
                     <p>• Saque mínimo: R$ 30,00 &nbsp;|&nbsp; Taxa de saque: 15%.</p>
                     <p>• Planos: 2,5% ao dia até atingir 60% do valor investido.</p>
+                    <p>• Comissão de indicação: Nível 1 = 10%, Nível 2 = 1% e Nível 3 = 1% do valor do plano.</p>
                     <p>• Ciclos: 1% ao dia até atingir 50% do valor investido (50 dias). Limite de 10 por ciclo.</p>
                     <p>• Grupo Oficial Telegram: <a href="https://t.me/yachtincash" target="_blank">Entrar no Grupo</a></p>
                 </div>
@@ -197,9 +199,17 @@
                     </div>
                 </div>
             </section>
-            <!-- EQUIPE -->
+            <!-- EQUIPE / COMISSÃO -->
             <section class="page-section" id="section-equipe">
                 <h1 class="page-title">Equipe</h1>
+
+                <div class="com-intro">
+                    <span class="com-intro-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M2.8 19.2c.7-3.1 3.1-5 6.2-5s5.5 1.9 6.2 5"/><circle cx="17" cy="9" r="2.6"/><path d="M16.5 14.2c2.6.1 4.3 1.8 4.9 4.6"/></svg>
+                    </span>
+                    <p>Convide amigos e ganhe comissões sobre os investimentos deles, em até 3 níveis.</p>
+                </div>
+
                 <div class="info-box">
                     <p><strong>Seu link de indicação</strong></p>
                     <div class="ref-link-row">
@@ -207,14 +217,73 @@
                         <button class="btn btn-compact" onclick="navigator.clipboard.writeText(document.getElementById('refLink').value); showToast('success', 'Link copiado!');">Copiar</button>
                     </div>
                 </div>
-                <h3 class="section-subtitle">Comissão</h3>
+
+                <div class="com-total">
+                    <span class="com-total-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V9"/><path d="M10 19V5"/><path d="M16 19v-7"/><path d="M22 19H2"/></svg>
+                    </span>
+                    <div>
+                        <span class="com-label">Total de Comissões</span>
+                        <h2 id="comissaoTotal">R$ 0,00</h2>
+                    </div>
+                </div>
+
+                <h3 class="section-subtitle">Níveis</h3>
+                <div class="com-grid">
+                    <div class="com-card">
+                        <span class="com-label">Nível 1 • 10%</span>
+                        <strong id="comissaoNivel1">R$ 0,00</strong>
+                    </div>
+                    <div class="com-card">
+                        <span class="com-label">Nível 2 • 1%</span>
+                        <strong id="comissaoNivel2">R$ 0,00</strong>
+                    </div>
+                    <div class="com-card">
+                        <span class="com-label">Nível 3 • 1%</span>
+                        <strong id="comissaoNivel3">R$ 0,00</strong>
+                    </div>
+                </div>
+
+                <h3 class="section-subtitle">Detalhes</h3>
+                <div class="com-grid">
+                    <div class="com-card">
+                        <span class="com-label">Hoje</span>
+                        <strong id="comissaoHoje">R$ 0,00</strong>
+                    </div>
+                    <div class="com-card">
+                        <span class="com-label">Esta Semana</span>
+                        <strong id="comissaoSemana">R$ 0,00</strong>
+                    </div>
+                    <div class="com-card">
+                        <span class="com-label">Este Mês</span>
+                        <strong id="comissaoMes">R$ 0,00</strong>
+                    </div>
+                </div>
+
+                <button type="button" class="btn com-historico-btn" id="btnHistoricoComissoes" aria-expanded="false">Histórico de Comissões</button>
+                <div class="info-box com-historico" id="historicoComissoes" hidden>
+                    <div class="table-scroll">
+                        <table class="extrato-table">
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Nível</th>
+                                    <th>Indicado</th>
+                                    <th>Valor</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historicoComissoesBody">
+                                <tr>
+                                    <td colspan="4" class="muted">Nenhuma comissão recebida ainda.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
                 <div class="grid-stats">
                     <div class="stat-card">
-                        <span>Comissões (1º Nível - 10%)</span>
-                        <h2 id="comissaoNivel1">R$ 0,00</h2>
-                    </div>
-                    <div class="stat-card">
-                        <span>Total de Indicados</span>
+                        <span>Total de Indicados (Nível 1)</span>
                         <h2 id="totalIndicados">0</h2>
                     </div>
                 </div>
