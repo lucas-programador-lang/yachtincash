@@ -1,0 +1,104 @@
+/* ============================================================
+   Tela Equipe / Comissão — usa SOMENTE as variáveis do style.css
+   (as cores do site não mudam).
+   ============================================================ */
+.com-intro {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 16px;
+}
+
+.com-intro p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text-muted);
+}
+
+.com-intro-icon,
+.com-total-icon {
+    flex: 0 0 52px;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(31, 184, 174, 0.1);
+    border: 1px solid var(--border-primary);
+    border-radius: 14px;
+    color: var(--primary-light);
+}
+
+.com-intro-icon svg,
+.com-total-icon svg {
+    width: 28px;
+    height: 28px;
+}
+
+.com-total {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 16px;
+    padding: 16px 18px;
+    background: linear-gradient(160deg, var(--bg-card), var(--bg-card-2));
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.com-total h2 {
+    margin: 2px 0 0;
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--text-color);
+    font-variant-numeric: tabular-nums;
+}
+
+.com-label {
+    display: block;
+    font-size: 12.5px;
+    color: var(--text-muted);
+}
+
+.com-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.com-card {
+    padding: 14px 12px;
+    background: linear-gradient(160deg, var(--bg-card), var(--bg-card-2));
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    min-width: 0;
+}
+
+.com-card strong {
+    display: block;
+    margin-top: 6px;
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--text-color);
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+}
+
+.com-historico-btn {
+    margin-top: 16px;
+}
+
+.com-historico[hidden] {
+    display: none;
+}
+
+@media (max-width: 420px) {
+    .com-grid { gap: 8px; }
+    .com-card { padding: 12px 8px; }
+    .com-card strong { font-size: 14px; }
+    .com-intro-icon, .com-total-icon { flex-basis: 44px; width: 44px; height: 44px; }
+}
