@@ -1,0 +1,119 @@
+/* ============================================================
+   Aba "Gerente" — atendimento por WhatsApp (visual dourado)
+   ============================================================ */
+#section-gerente {
+    --ger-gold: #f0b429;
+    --ger-gold-light: #ffe08a;
+    --ger-gold-dark: #b8860b;
+}
+
+.ger-header {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+    border-radius: 18px;
+    border: 1px solid rgba(240, 180, 41, 0.45);
+    background:
+        radial-gradient(circle at 90% 20%, rgba(240, 180, 41, 0.22), transparent 55%),
+        linear-gradient(135deg, #0b0b0b, #14110a);
+    box-shadow: 0 0 22px rgba(240, 180, 41, 0.12);
+}
+.ger-header-icon {
+    flex: 0 0 auto;
+    width: 54px;
+    height: 54px;
+    color: var(--ger-gold);
+    filter: drop-shadow(0 0 8px rgba(240, 180, 41, 0.55));
+}
+.ger-header h1 {
+    margin: 0 0 4px;
+    background: linear-gradient(180deg, #fff3c4, var(--ger-gold));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+.ger-header p { margin: 0; color: #cfc6ae; font-size: 14px; line-height: 1.45; }
+
+.ger-lista { display: grid; gap: 12px; }
+
+.ger-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+    border-radius: 16px;
+    border: 1px solid rgba(240, 180, 41, 0.35);
+    background: linear-gradient(135deg, #0d0d0d, #17130b);
+}
+.ger-avatar {
+    flex: 0 0 auto;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 2px solid var(--ger-gold);
+    background: #050505;
+    box-shadow: 0 0 12px rgba(240, 180, 41, 0.4);
+    overflow: hidden;
+}
+.ger-avatar svg { width: 100%; height: 100%; display: block; }
+
+.ger-info { flex: 1 1 auto; min-width: 0; }
+.ger-nome { margin: 0 0 2px; font-size: 18px; font-weight: 800; color: #fff; }
+.ger-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #1ee56b;
+}
+.ger-status::before {
+    content: '';
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 8px currentColor;
+}
+.ger-status.is-offline { color: #8a8a8a; }
+.ger-desc {
+    margin: 6px 0 0;
+    padding-top: 6px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 13px;
+    color: #b9b2a0;
+    line-height: 1.4;
+}
+
+.ger-btn {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border: 0;
+    border-radius: 12px;
+    cursor: pointer;
+    text-align: left;
+    font: inherit;
+    font-weight: 800;
+    font-size: 13px;
+    line-height: 1.2;
+    color: #2a1b00;
+    background: linear-gradient(180deg, var(--ger-gold-light), var(--ger-gold) 60%, var(--ger-gold-dark));
+    box-shadow: 0 0 14px rgba(240, 180, 41, 0.35);
+    transition: transform 0.15s ease, filter 0.15s ease;
+}
+.ger-btn:hover { transform: translateY(-1px); filter: brightness(1.06); }
+.ger-btn svg { width: 24px; height: 24px; flex: 0 0 auto; }
+.ger-btn .ger-seta { width: 16px; height: 16px; }
+
+@media (max-width: 560px) {
+    .ger-card { flex-wrap: wrap; }
+    .ger-info { flex-basis: calc(100% - 80px); }
+    .ger-btn { width: 100%; justify-content: space-between; }
+}
