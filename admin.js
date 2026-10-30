@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .filter((p) => p.status !== 'resolved').length;
 
         const saldoTotal = Object.values(usersMap)
-            .reduce((soma, u) => soma + (u.balance || 0), 0);
+            .reduce((soma, u) => soma + (u.balance || 0) + (u.balanceComissao || 0), 0);
 
         setText('statSaquesPendentes', formatarMoeda(saquesPendentesTotal));
         setText('statDepositosPendentes', formatarMoeda(depositosPendentesTotal));
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <tr>
                         <td>${escapeHtml(u.fullName || '-')}</td>
                         <td>${escapeHtml(u.email || '-')}</td>
-                        <td>${formatarMoeda(u.balance)}</td>
+                        <td>${formatarMoeda((u.balance || 0) + (u.balanceComissao || 0))}</td>
                         <td>${formatarMoeda(comissao)}</td>
                         <td>
                             ${isAdmin ? '<span class="badge badge-success">Admin</span>' : '<span class="muted">—</span>'}
@@ -144,7 +144,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td>${formatarDataHora(s.createdAt)}</td>
                     <td>${escapeHtml(s.userName || s.uid)}</td>
                     <td>${escapeHtml(s.pixChave || '-')}</td>
-                    <td>${formatarMoeda(s.valor)}</td>
+                    <td>
+                        ${formatarMoeda(s.valor)}
+                        <div class="muted" style="font-size:12px; line-height:1.4;">
+                            ${s.tipo === 'comissao' ? 'Comissão' : 'Rendimento'}
+                            ${s.valorLiquido != null ? ' • Pagar ' + formatarMoeda(s.valorLiquido) + ' (taxa ' + formatarMoeda(s.taxa) + ')' : ''}
+                        </div>
+                    </td>
                     <td>${badgeStatus(s.status)}</td>
                     <td>
                         ${s.status === 'pending' ? `
@@ -213,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     valor: valorComissao,
                     createdAt: Date.now()
                 }),
-                firebaseDb.ref('users/' + referredByUid + '/balance')
+                firebaseDb.ref('users/' + referredByUid + '/balanceComissao')
                     .transaction((saldoAtual) => (saldoAtual || 0) + valorComissao)
             ]).then(() => true);
         });
@@ -413,7 +419,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // A transaction aborta (retorna undefined) se o saldo for
         // insuficiente, e o status só é atualizado se ela for aplicada.
-        firebaseDb.ref('users/' + saque.uid + '/balance').transaction((saldoAtual) => {
+        // Saques de comissão saem de balanceComissao; os de rendimento (e os
+        // antigos, sem "tipo") saem de balance.
+        const campoSaldo = saque.tipo === 'comissao' ? 'balanceComissao' : 'balance';
+        firebaseDb.ref('users/' + saque.uid + '/' + campoSaldo).transaction((saldoAtual) => {
             const saldo = saldoAtual || 0;
             if (saldo < saque.valor) {
                 return; // aborta — saldo insuficiente
