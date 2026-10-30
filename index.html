@@ -141,14 +141,489 @@
                     <p>• Saque de rendimento: Segunda, Terça e Domingo.</p>
                     <p>• Saque de comissão: Segunda a Sexta (10:00 às 17:00).</p>
                     <p>• Saque mínimo: R$ 30,00 &nbsp;|&nbsp; Taxa de saque: 15%.</p>
-                    <p>• Planos: 2,5% ao dia até atingir 60% do valor investido.</p>
+                    <p>• Planos: 1% ao dia até atingir 50% do valor investido (50 dias). Limite de 10 por plano.</p>
                     <p>• Grupo Oficial Telegram: <a href="https://t.me/yachtincash" target="_blank">Entrar no Grupo</a></p>
                 </div>
             </section>
             <!-- INVESTIR -->
             <section class="page-section" id="section-investir">
                 <h1 class="page-title">Planos de Rendimento</h1>
-                <p class="page-subtitle">Escolha um plano e receba 2,5% ao dia até atingir 60% do valor investido.</p>
+                <p class="page-subtitle">Escolha um plano e receba 1% ao dia até atingir 50% do valor investido, por 50 dias.</p>
+                <div class="plan-list" id="planList"></div>
+            </section>
+            <!-- CARTEIRA -->
+            <section class="page-section" id="section-carteira">
+                <h1 class="page-title">Minha Carteira de Planos</h1>
+                <div class="grid-stats">
+                    <div class="stat-card">
+                        <span>Total Investido em Planos</span>
+                        <h2 id="totalInvestidoPlanos">R$ 0,00</h2>
+                    </div>
+                    <div class="stat-card">
+                        <span>Rendimento Total dos Planos</span>
+                        <h2 id="rendimentoTotalPlanos">R$ 0,00</h2>
+                    </div>
+                </div>
+                <h3 class="section-subtitle">Planos Ativos e Rendimentos Diários</h3>
+                <div class="info-box">
+                    <div class="table-scroll">
+                        <table class="extrato-table">
+                            <thead>
+                                <tr>
+                                    <th>Data da Ativação</th>
+                                    <th>Plano / Valor</th>
+                                    <th>Rendimento Diário</th>
+                                    <th>Rendimento Acumulado</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="planosAtivosBody">
+                                <tr>
+                                    <td colspan="5" class="muted">Você ainda não possui planos ativos. Vá até <strong>Investir</strong> para alugar seu primeiro Yacht.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            <!-- EQUIPE -->
+            <section class="page-section" id="section-equipe">
+                <h1 class="page-title">Equipe</h1>
+                <div class="info-box">
+                    <p><strong>Seu link de indicação</strong></p>
+                    <div class="ref-link-row">
+                        <input type="text" id="refLink" class="ref-input" readonly value="https://yachtincash.com/register?ref=SEUUSUARIO">
+                        <button class="btn btn-compact" onclick="navigator.clipboard.writeText(document.getElementById('refLink').value); showToast('success', 'Link copiado!');">Copiar</button>
+                    </div>
+                </div>
+                <h3 class="section-subtitle">Comissão</h3>
+                <div class="grid-stats">
+                    <div class="stat-card">
+                        <span>Comissões (1º Nível - 10%)</span>
+                        <h2 id="comissaoNivel1">R$ 0,00</h2>
+                    </div>
+                    <div class="stat-card">
+                        <span>Total de Indicados</span>
+                        <h2 id="totalIndicados">0</h2>
+                    </div>
+                </div>
+                <h3 class="section-subtitle">Membros da Rede</h3>
+                <div class="info-box">
+                    <div class="table-scroll">
+                        <table class="extrato-table">
+                            <thead>
+                                <tr>
+                                    <th>Data de Cadastro</th>
+                                    <th>Nome</th>
+                                </tr>
+                            </thead>
+                            <tbody id="membrosRedeBody">
+                                <tr>
+                                    <td colspan="2" class="muted">Nenhum membro na sua rede ainda. Compartilhe seu link de indicação para começar.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            <!-- EXTRATO -->
+            <section class="page-section" id="section-extrato">
+                <h1 class="page-title">Extrato de Recebimentos</h1>
+                <h3 class="section-subtitle">Histórico Geral de Valores Recebidos</h3>
+                <div class="info-box">
+                    <div class="table-scroll">
+                        <table class="extrato-table">
+                            <thead>
+                                <tr>
+                                    <th>Data e Horário</th>
+                                    <th>Mês / Ano</th>
+                                    <th>Descrição / Origem</th>
+                                    <th>Status</th>
+                                    <th>Valor Recebido</th>
+                                </tr>
+                            </thead>
+                            <tbody id="extratoBody">
+                                <tr>
+                                    <td colspan="5" class="muted">Nenhuma movimentação registrada ainda.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            <!-- PERFIL -->
+            <section class="page-section" id="section-perfil">
+                <h1 class="page-title">Configurações de Perfil</h1>
+                <p class="page-subtitle">Gerencie suas informações de cadastro e dados para recebimento via PIX.</p>
+                <div class="profile-card">
+                    <h3 class="profile-card-title">Dados Pessoais</h3>
+                    <div class="form-group">
+                        <label for="perfilNomeCompleto">Nome Completo</label>
+                        <input type="text" id="perfilNomeCompleto" placeholder="Digite seu nome completo">
+                    </div>
+                </div>
+                <div class="profile-card">
+                    <h3 class="profile-card-title">Chave PIX Padrão para Saques</h3>
+                    <p class="muted form-box-note">Estes dados serão preenchidos automaticamente na solicitação de saque.</p>
+                    <div class="form-group">
+                        <label for="perfilTipoPix">Tipo de Chave PIX</label>
+                        <select id="perfilTipoPix">
+                            <option value="cpf">CPF</option>
+                            <option value="email">E-mail</option>
+                            <option value="telefone">Telefone</option>
+                            <option value="aleatoria">Chave Aleatória</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="perfilChavePix">Sua Chave PIX</label>
+                        <input type="text" id="perfilChavePix" placeholder="Digite sua chave PIX">
+                    </div>
+                    <button class="btn" onclick="salvarPerfil()">Salvar Alterações</button>
+                </div>
+            </section>
+        </main>
+    </div>
+    <!-- MODAL: DEPOSITAR (substitui o bloco antigo inteiro) — usa as classes e cores do seu style.css -->
+    <div class="modal-overlay" id="depositModal" onclick="if(event.target===this) closeModal('depositModal')">
+        <div class="modal-card card dep-card" role="dialog" aria-modal="true" aria-labelledby="depTitle">
+
+            <header class="dep-header">
+                <button type="button" class="dep-back" onclick="closeModal('depositModal')" aria-label="Voltar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                </button>
+                <h2 id="depTitle">Depósito</h2>
+                <span class="dep-header-spacer"></span>
+            </header>
+
+            <div class="dep-tabs" role="tablist">
+                <button type="button" class="dep-tab active btn btn-compact" role="tab" data-dep-tab="pix" aria-selected="true">Pix</button>
+                <button type="button" class="dep-tab btn btn-compact btn-outline" role="tab" data-dep-tab="cartao" aria-selected="false">Cartão</button>
+                <button type="button" class="dep-tab btn btn-compact btn-outline" role="tab" data-dep-tab="outros" aria-selected="false">Outros</button>
+            </div>
+
+            <!-- ABA PIX: escolha do valor e geração do QR Code -->
+            <div class="dep-panel active" data-dep-panel="pix">
+                <div class="info-box dep-banner">
+                    <div class="dep-banner-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h3M20 17v4"/></svg>
+                    </div>
+                    <div>
+                        <strong>Deposite via Pix</strong>
+                        <span class="muted">Rápido, seguro e automático</span>
+                    </div>
+                </div>
+
+                <h3 class="dep-label">Valor do Depósito</h3>
+                <div class="dep-chips" id="depChips">
+                    <!-- gerado pelo deposito.js a partir do catálogo de planos -->
+                </div>
+
+                <div class="form-group">
+                    <label for="depOutroValor">Outro valor (R$)</label>
+                    <input type="text" id="depOutroValor" inputmode="decimal" placeholder="0,00" autocomplete="off">
+                </div>
+
+                <p class="dep-hint muted">Depósito mínimo: <strong>R$ 50,00</strong></p>
+                <p class="dep-hint muted">Para gerar o Pix, preencha seu CPF e telefone na aba
+                    <button type="button" class="dep-link" data-dep-tab="cartao">Cartão</button>.</p>
+
+                <button type="button" class="btn" id="depGerarPix" onclick="gerarQrCodeDeposito()">GERAR PIX</button>
+
+                <!-- Aparece assim que o QR Code é gerado -->
+                <div id="depositQrView" style="display:none;">
+                    <div class="pix-waiting" id="depWaiting">⏳ Aguardando confirmação do pagamento...</div>
+                    <div class="pix-qr-panel">
+                        <p><strong>Escaneie o QR Code abaixo para pagar:</strong></p>
+                        <div id="qrcodeCanvas"></div>
+                        <div class="pix-code-box" id="depositPixCode"></div>
+                    </div>
+                    <button type="button" class="btn btn-outline" onclick="copiarCodigoPixDeposito()">Copiar código Pix</button>
+                </div>
+            </div>
+
+            <!-- ABA CARTÃO: CPF e telefone (obrigatórios para gerar o Pix) -->
+            <div class="dep-panel" data-dep-panel="cartao">
+                <h3 class="dep-label">Seus dados</h3>
+                <p class="dep-note muted">Obrigatórios para gerar o Pix.</p>
+                <div class="form-group">
+                    <label for="depositCpf">CPF</label>
+                    <input type="text" id="depositCpf" inputmode="numeric" placeholder="000.000.000-00" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="depositTelefone">Telefone</label>
+                    <input type="text" id="depositTelefone" inputmode="tel" placeholder="(00) 00000-0000" autocomplete="off">
+                </div>
+                <button type="button" class="btn" data-dep-tab="pix">CONTINUAR</button>
+            </div>
+
+            <!-- ABA OUTROS: número de WhatsApp -->
+            <div class="dep-panel" data-dep-panel="outros">
+                <h3 class="dep-label">Contato</h3>
+                <p class="dep-note muted">Informe seu número de WhatsApp para contato (opcional).</p>
+                <div class="form-group">
+                    <label for="depositWhatsapp">WhatsApp</label>
+                    <input type="text" id="depositWhatsapp" inputmode="tel" placeholder="(00) 00000-0000" autocomplete="off">
+                </div>
+                <button type="button" class="btn" data-dep-tab="pix">CONTINUAR</button>
+            </div>
+
+            <div class="dep-features muted">
+                <div class="dep-feature">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+                    <span>Processamento Automático</span>
+                </div>
+                <div class="dep-feature">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                    <span>Crédito Imediato</span>
+                </div>
+                <div class="dep-feature">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6.5V11c0 5 3.4 8.9 8 10 4.6-1.1 8-5 8-10V6.5L12 3Z"/><path d="M9 12l2 2 4-4"/></svg>
+                    <span>Ambiente Seguro</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- MODAL: SACAR (substitui o bloco antigo inteiro) — usa as classes e cores do seu style.css -->
+    <div class="modal-overlay" id="sacarModal" onclick="if(event.target===this) closeModal('sacarModal')">
+        <div class="modal-card card saque-card" role="dialog" aria-modal="true" aria-labelledby="saqueTitle">
+
+            <header class="saque-header">
+                <button type="button" class="saque-icon-btn" onclick="closeModal('sacarModal')" aria-label="Voltar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                </button>
+                <h2 id="saqueTitle">Saque</h2>
+                <button type="button" class="saque-icon-btn" data-saque-goto="extrato" aria-label="Histórico">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><path d="M12 7v5l3 2"/></svg>
+                </button>
+            </header>
+
+            <h3 class="saque-label">Origem do saque</h3>
+            <div class="saque-origens">
+                <button type="button" class="saque-origem btn" data-tipo="rendimento">
+                    <small>Rendimento</small>
+                    <strong id="saqueSaldoRendimento">R$ 0,00</strong>
+                </button>
+                <button type="button" class="saque-origem btn btn-outline" data-tipo="comissao">
+                    <small>Comissão</small>
+                    <strong id="saqueSaldoComissao">R$ 0,00</strong>
+                </button>
+            </div>
+
+            <div class="withdraw-balance-box">
+                <span>Saldo Disponível:</span>
+                <strong id="saqueSaldoSelecionado">R$ 0,00</strong>
+            </div>
+            <p class="saque-regra muted" id="saqueRegraTexto"></p>
+
+            <div class="form-group">
+                <label for="saqueValor">Valor do Saque (R$)</label>
+                <input type="text" id="saqueValor" inputmode="decimal" placeholder="0,00" autocomplete="off">
+            </div>
+
+            <div class="saque-info">
+                <div class="withdraw-summary">
+                    <span>Saque mínimo</span>
+                    <strong id="saqueMinimoTexto">R$ 30,00</strong>
+                </div>
+                <div class="withdraw-summary">
+                    <span>Taxa de saque</span>
+                    <strong id="saqueTaxaTexto">15%</strong>
+                </div>
+            </div>
+
+            <div class="withdraw-summary saque-resumo">
+                <div class="withdraw-summary-row">
+                    <span>Taxa descontada:</span>
+                    <strong id="saqueTaxaValor">R$ 0,00</strong>
+                </div>
+                <div class="withdraw-summary-row saque-liquido">
+                    <span>Você recebe:</span>
+                    <strong id="saqueLiquidoValor">R$ 0,00</strong>
+                </div>
+            </div>
+
+            <h3 class="saque-label">Método de Saque</h3>
+            <div class="saque-metodo">
+                <span>Pix</span>
+                <span class="saque-radio" aria-hidden="true"></span>
+            </div>
+            <div class="withdraw-summary saque-chave">
+                <div class="withdraw-summary-row withdraw-summary-row-stack">
+                    <span>Chave Pix cadastrada</span>
+                    <strong class="withdraw-key-missing" id="saqueChavePix">Nenhuma chave cadastrada.</strong>
+                </div>
+            </div>
+
+            <button type="button" class="btn btn-success" id="saqueBtn" onclick="solicitarSaque()">SOLICITAR SAQUE</button>
+            <p class="saque-nota muted">Pagamento via Pix após a análise do saque.</p>
+        </div>
+    </div>
+    <!-- Toasts (substitui os alert() nativos do navegador) -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Firebase SDK (compat) — precisa vir antes de auth.js e script.js -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+    <script src="auth.js"></script>
+    <script src="script.js"></script>
+    <script src="planos.js"></script>
+    <script src="deposito.js"></script>
+    <script src="inicio.js"></script>
+    <script src="saque.js"></script>
+</body>
+</html><!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YACHTINCASH - Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="deposito.css">
+    <link rel="stylesheet" href="inicio.css">
+    <link rel="stylesheet" href="saque.css">
+    <link rel="stylesheet" href="planos.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body class="app-body">
+    <div class="app-layout">
+        <!-- Scrim behind the mobile off-canvas drawer -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <!-- SIDEBAR (desktop / tablet, and off-canvas drawer on mobile) -->
+        <aside class="sidebar" id="sidebar">
+            <button class="sidebar-close" id="sidebarClose" aria-label="Fechar menu">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5l14 14M19 5 5 19"/></svg>
+            </button>
+            <div class="sidebar-brand">
+                <span class="brand-logo-ring"><img src="logo.png" alt="Logo" class="brand-logo"></span>
+                <span class="brand-name">YACHTINCASH</span>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-item active" data-section="inicio">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5 12 4l8 7.5"/><path d="M6 10v9a1 1 0 0 0 1 1h3v-6h4v6h3a1 1 0 0 0 1-1v-9"/></svg>
+                    <span>Início</span>
+                </button>
+                <button class="nav-item" data-section="investir">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9"/><path d="M10 19V5"/><path d="M16 19v-7"/><path d="M22 19H2"/></svg>
+                    <span>Investir</span>
+                </button>
+                <button class="nav-item" data-section="carteira">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6.5" width="19" height="13" rx="2.2"/><path d="M2.5 10.5h19"/><path d="M16.5 14.5h2.5"/></svg>
+                    <span>Carteira</span>
+                </button>
+                <button class="nav-item" data-section="equipe">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M2.8 19.2c.7-3.1 3.1-5 6.2-5s5.5 1.9 6.2 5"/><circle cx="17.5" cy="8.8" r="2.4"/><path d="M16 11.5c1.9.4 3.3 1.7 3.9 3.9"/></svg>
+                    <span>Equipe</span>
+                </button>
+                <button class="nav-item" data-section="extrato">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><path d="M9 12h6M9 16h6M9 8h2"/></svg>
+                    <span>Extrato</span>
+                </button>
+                <button class="nav-item" data-section="perfil">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 19.5c1.1-3.6 4-5.6 7.5-5.6s6.4 2 7.5 5.6"/></svg>
+                    <span>Perfil</span>
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="https://t.me/yachtincash" target="_blank" class="telegram-btn" title="Grupo Oficial no Telegram">
+                    <span class="telegram-mark" aria-hidden="true">
+                        <svg viewBox="0 0 240 240" width="22" height="22">
+                            <circle cx="120" cy="120" r="120" fill="url(#tg-grad)"/>
+                            <path fill="#fff" d="M170.6 72.3 149.2 178c-1.6 7.1-5.8 8.8-11.7 5.5l-32.4-23.9-15.6 15c-1.7 1.7-3.2 3.2-6.5 3.2l2.3-33.1 60.3-54.5c2.6-2.3-.6-3.6-4.1-1.3l-74.6 47-32.1-10c-7-2.2-7.1-7 1.5-10.3l125.5-48.4c5.8-2.1 10.9 1.4 9 10.1Z"/>
+                            <defs>
+                                <linearGradient id="tg-grad" x1="0" y1="0" x2="240" y2="240" gradientUnits="userSpaceOnUse">
+                                    <stop offset="0" stop-color="#54c6eb"/>
+                                    <stop offset="1" stop-color="#1e96c8"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </span>
+                    <span>Telegram</span>
+                </a>
+                <button onclick="Auth.logout()" class="logout-btn">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3"/><path d="M15.5 16.5 20 12l-4.5-4.5"/><path d="M20 12H9"/></svg>
+                    <span>Sair</span>
+                </button>
+            </div>
+        </aside>
+        <!-- TOP BAR (mobile only) -->
+        <header class="mobile-topbar">
+            <button class="hamburger-btn" id="hamburgerBtn" aria-label="Abrir menu" aria-expanded="false" aria-controls="sidebar">
+                <span></span><span></span><span></span>
+            </button>
+            <span class="mobile-topbar-title" id="mobileTopbarTitle">Início</span>
+        </header>
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+            <!-- INÍCIO -->
+            <section class="page-section active" id="section-inicio">
+                <div class="home-header">
+                    <span class="home-avatar" id="homeAvatar" aria-hidden="true">?</span>
+                    <div class="home-user">
+                        <h1 class="home-greeting">Olá, <span id="homeNome">visitante</span></h1>
+                        <div class="home-meta">
+                            <span class="vip-badge is-none" id="homeVip">
+                                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5L3 8Z"/></svg>
+                                <span id="homeVipTexto">VIP 0</span>
+                            </span>
+                            <span class="home-id">ID: <strong id="homeId">—</strong></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="balance-card">
+                    <div class="balance-card-header">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="2"/><path d="M2.5 10h19"/></svg>
+                        <span>Saldo Total Disponível</span>
+                    </div>
+                    <h2 id="userBalance">R$ 0,00</h2>
+                </div>
+                <div class="grid-stats">
+                    <div class="stat-card stat-card-left">
+                        <span>Rendimento Acumulado</span>
+                        <h2 id="rendimentoAcumuladoInicio">R$ 0,00</h2>
+                    </div>
+                    <div class="stat-card stat-card-left">
+                        <span>Comissões (1º Nível - 10%)</span>
+                        <h2 id="comissaoNivel1Inicio">R$ 0,00</h2>
+                    </div>
+                </div>
+                <div class="quick-actions">
+                    <button type="button" class="quick-action" onclick="openModal('depositModal')">
+                        <span class="quick-action-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg>
+                        </span>
+                        <span>Depósito</span>
+                    </button>
+                    <button type="button" class="quick-action" onclick="openModal('sacarModal')">
+                        <span class="quick-action-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V5"/><path d="M7 9l5-5 5 5"/><path d="M5 20h14"/></svg>
+                        </span>
+                        <span>Saque</span>
+                    </button>
+                    <button type="button" class="quick-action" data-goto="investir">
+                        <span class="quick-action-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9"/><path d="M10 19V5"/><path d="M16 19v-7"/><path d="M22 19H2"/></svg>
+                        </span>
+                        <span>Planos</span>
+                    </button>
+                </div>
+                <div class="rules-box">
+                    <p><strong>Regras Importantes:</strong></p>
+                    <p>• Saque de rendimento: Segunda, Terça e Domingo.</p>
+                    <p>• Saque de comissão: Segunda a Sexta (10:00 às 17:00).</p>
+                    <p>• Saque mínimo: R$ 30,00 &nbsp;|&nbsp; Taxa de saque: 15%.</p>
+                    <p>• Planos: 1% ao dia até atingir 50% do valor investido (50 dias). Limite de 10 por plano.</p>
+                    <p>• Grupo Oficial Telegram: <a href="https://t.me/yachtincash" target="_blank">Entrar no Grupo</a></p>
+                </div>
+            </section>
+            <!-- INVESTIR -->
+            <section class="page-section" id="section-investir">
+                <h1 class="page-title">Planos de Rendimento</h1>
+                <p class="page-subtitle">Escolha um plano e receba 1% ao dia até atingir 50% do valor investido, por 50 dias.</p>
                 <div class="plan-list" id="planList"></div>
             </section>
             <!-- CARTEIRA -->
