@@ -49,6 +49,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const nivel = calcularVip(dadosUsuario.planos);
         $('homeVipTexto').textContent = 'VIP ' + nivel;
         $('homeVip').classList.toggle('is-none', nivel === 0);
+
+        // Mesmos dados no cabeçalho da tela Perfil (se existir)
+        if ($('perfilNome')) {
+            $('perfilNome').textContent = nomeCompleto || 'visitante';
+            $('perfilAvatar').textContent = nome.charAt(0) || '?';
+            $('perfilId').textContent = dadosUsuario.refCode || '—';
+            $('perfilVipTexto').textContent = 'VIP ' + nivel;
+            $('perfilVip').classList.toggle('is-none', nivel === 0);
+        }
     }
 
     // ---------- Dados do usuário em tempo real ----------
