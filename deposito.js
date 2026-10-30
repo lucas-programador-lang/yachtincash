@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const valor = document.createElement('strong');
             valor.textContent = 'R$ ' + plano.valor;
             const vip = document.createElement('small');
-            vip.textContent = 'VIP ' + plano.vip;
+            vip.textContent = plano.vip > 0 ? 'VIP ' + plano.vip : 'Sem VIP';
             botao.append(valor, vip);
             caixa.appendChild(botao);
         });
@@ -213,6 +213,21 @@ document.addEventListener('DOMContentLoaded', () => {
         pararEscutaStatus = () => ref.off('value', callback);
     }
 
+    // Conta os planos ainda válidos do usuário com o mesmo valor
+    async function contarPlanosAtivosDoValor(uid, valor) {
+        try {
+            const snap = await firebaseDb.ref('users/' + uid + '/planos').once('value');
+            const lista = snap.val() ? Object.values(snap.val()) : [];
+            return lista.filter((p) => {
+                const dias = Math.floor((Date.now() - p.dataAtivacao) / 86400000);
+                return dias < p.duracaoDias && Math.abs((p.valorInvestido || 0) - valor) < 0.01;
+            }).length;
+        } catch (err) {
+            console.error('Não foi possível conferir o limite de planos:', err);
+            return 0; // não bloqueia a tela; a conferência final é feita na aprovação
+        }
+    }
+
     async function nomeDoUsuario(user) {
         try {
             const snap = await firebaseDb.ref('users/' + user.uid + '/fullName').once('value');
@@ -302,6 +317,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const info = PLANOS[chave];
+
+            // Limite: no máximo 10 planos ativos do mesmo valor por usuário
+            // (o admin confere de novo na aprovação; o Worker deve conferir também).
+            const limite = info.limiteCompras || window.PLANOS_LIMITE_COMPRAS || 10;
+            const ativos = await contarPlanosAtivosDoValor(user.uid, info.valor);
+            if (ativos >= limite) {
+                toast('warning', 'Limite atingido', `Você já tem ${limite} planos ativos de ${brl(info.valor)}.`);
+                return;
+            }
+
             const userName = await nomeDoUsuario(user);
 
             // Cria o depósito como PENDENTE; o ID gerado é o "identifier"
