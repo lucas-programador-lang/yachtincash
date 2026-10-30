@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="deposito.css">
     <link rel="stylesheet" href="inicio.css">
     <link rel="stylesheet" href="saque.css">
+    <link rel="stylesheet" href="planos.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body class="app-body">
@@ -140,85 +141,15 @@
                     <p>• Saque de rendimento: Segunda, Terça e Domingo.</p>
                     <p>• Saque de comissão: Segunda a Sexta (10:00 às 17:00).</p>
                     <p>• Saque mínimo: R$ 30,00 &nbsp;|&nbsp; Taxa de saque: 15%.</p>
+                    <p>• Planos: 2,5% ao dia até atingir 60% do valor investido.</p>
                     <p>• Grupo Oficial Telegram: <a href="https://t.me/yachtincash" target="_blank">Entrar no Grupo</a></p>
                 </div>
             </section>
             <!-- INVESTIR -->
             <section class="page-section" id="section-investir">
-                <h1 class="page-title">Investir</h1>
-                <p class="page-subtitle">Escolha um plano Yacht e comece a gerar rendimento diário.</p>
-                <div class="grid-yacht">
-                    <div class="yacht-card">
-                        <img src="yacht-teste.png" alt="YACHT Teste" class="yacht-card-img">
-                        <div class="yacht-card-header">
-                            <h3>YACHT Teste</h3>
-                            <span class="yacht-badge">4 dias</span>
-                        </div>
-                        <div class="yacht-return">
-                            <span class="yacht-return-label">Retorno Diário</span>
-                            <span class="yacht-return-value">R$ 2,50</span>
-                        </div>
-                        <div class="yacht-divider"></div>
-                        <div class="yacht-meta">
-                            <div class="yacht-meta-item">
-                                <span>Investimento</span>
-                                <strong>R$ 20,00</strong>
-                            </div>
-                            <div class="yacht-meta-item">
-                                <span>Duração</span>
-                                <strong>4 dias</strong>
-                            </div>
-                        </div>
-                        <button class="btn" onclick="abrirDepositoComPlano('teste-20')">Alugar</button>
-                    </div>
-                    <div class="yacht-card yacht-card-popular">
-                        <span class="yacht-popular-tag">Mais Popular</span>
-                        <img src="yacht-irwin.png" alt="YACHT IRWIN" class="yacht-card-img">
-                        <div class="yacht-card-header">
-                            <h3>YACHT IRWIN</h3>
-                            <span class="yacht-badge">30 dias</span>
-                        </div>
-                        <div class="yacht-return">
-                            <span class="yacht-return-label">Retorno Diário</span>
-                            <span class="yacht-return-value">R$ 3,35</span>
-                        </div>
-                        <div class="yacht-divider"></div>
-                        <div class="yacht-meta">
-                            <div class="yacht-meta-item">
-                                <span>Investimento</span>
-                                <strong>R$ 50,00</strong>
-                            </div>
-                            <div class="yacht-meta-item">
-                                <span>Duração</span>
-                                <strong>30 dias</strong>
-                            </div>
-                        </div>
-                        <button class="btn" onclick="abrirDepositoComPlano('irwin-50')">Alugar</button>
-                    </div>
-                    <div class="yacht-card">
-                        <img src="yacht-hunter.png" alt="YACHT HUNTER" class="yacht-card-img">
-                        <div class="yacht-card-header">
-                            <h3>YACHT HUNTER</h3>
-                            <span class="yacht-badge">30 dias</span>
-                        </div>
-                        <div class="yacht-return">
-                            <span class="yacht-return-label">Retorno Diário</span>
-                            <span class="yacht-return-value">R$ 9,00</span>
-                        </div>
-                        <div class="yacht-divider"></div>
-                        <div class="yacht-meta">
-                            <div class="yacht-meta-item">
-                                <span>Investimento</span>
-                                <strong>R$ 150,00</strong>
-                            </div>
-                            <div class="yacht-meta-item">
-                                <span>Duração</span>
-                                <strong>30 dias</strong>
-                            </div>
-                        </div>
-                        <button class="btn" onclick="abrirDepositoComPlano('hunter-150')">Alugar</button>
-                    </div>
-                </div>
+                <h1 class="page-title">Planos de Rendimento</h1>
+                <p class="page-subtitle">Escolha um plano e receba 2,5% ao dia até atingir 60% do valor investido.</p>
+                <div class="plan-list" id="planList"></div>
             </section>
             <!-- CARTEIRA -->
             <section class="page-section" id="section-carteira">
@@ -384,14 +315,7 @@
 
                 <h3 class="dep-label">Valor do Depósito</h3>
                 <div class="dep-chips" id="depChips">
-                    <button type="button" class="dep-chip btn btn-outline" data-plano="irwin-50">
-                        <strong>R$ 50</strong>
-                        <small>YACHT IRWIN</small>
-                    </button>
-                    <button type="button" class="dep-chip btn btn-outline" data-plano="hunter-150">
-                        <strong>R$ 150</strong>
-                        <small>YACHT HUNTER</small>
-                    </button>
+                    <!-- gerado pelo deposito.js a partir do catálogo de planos -->
                 </div>
 
                 <div class="form-group">
@@ -544,6 +468,7 @@
 
     <script src="auth.js"></script>
     <script src="script.js"></script>
+    <script src="planos.js"></script>
     <script src="deposito.js"></script>
     <script src="inicio.js"></script>
     <script src="saque.js"></script>
