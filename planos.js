@@ -1,8 +1,11 @@
 // ============================================================
 // Catálogo de planos — FONTE ÚNICA da tela (Investir, Depósito e VIP).
 //
-// Regra: todos rendem 2,5% ao dia sobre o capital, até somar 60% do
-// valor investido (60 / 2,5 = 24 dias de rendimento).
+// Regra: todos rendem 1% ao dia sobre o capital, até somar 50% do
+// valor investido (50 / 1 = 50 dias de rendimento). O rendimento diário
+// é fixo (não cai) e cada plano vale por 50 dias.
+// Cada usuário pode ter no máximo 10 planos ativos de cada valor.
+// Planos com VIP pagam um cashback (em reais) quando o plano é ativado.
 //
 // ATENÇÃO: o admin.js e o worker.js têm a mesma tabela (o Worker é quem
 // confere o preço de verdade). Se mudar um plano aqui, mude nos três.
@@ -10,38 +13,42 @@
 // Carregue ESTE arquivo ANTES do deposito.js e do inicio.js.
 // ============================================================
 (function () {
-    const TAXA_DIARIA_PERCENTUAL = 2.5;
-    const LIMITE_PERCENTUAL = 60;
-    const DURACAO_DIAS = LIMITE_PERCENTUAL / TAXA_DIARIA_PERCENTUAL; // 24
+    const TAXA_DIARIA_PERCENTUAL = 1;
+    const LIMITE_PERCENTUAL = 50;
+    const DURACAO_DIAS = LIMITE_PERCENTUAL / TAXA_DIARIA_PERCENTUAL; // 50
+    const LIMITE_COMPRAS = 10; // máximo de planos ativos do mesmo valor por usuário
 
     // ---------- FOTOS DOS PLANOS ----------
     // Para usar uma foto sua em um plano, coloque o arquivo na mesma pasta
     // do index.html e escreva o nome aqui. Plano sem foto (ou foto que não
     // carregar) mostra a ilustração de moedas.
-    // Exemplo:  'vip1-50': 'plano-iniciante.png',
+    // Exemplo:  'ciclone1-50': 'ciclone-1.png',
     const IMAGENS = {
-        // 'vip1-50': 'plano-iniciante.png',
-        // 'vip2-70': 'plano-bronze.png',
-        // 'vip3-150': 'plano-prata.png',
-        // 'vip4-300': 'plano-ouro.png',
-        // 'vip5-450': 'plano-master.png'
+        // 'ciclone1-50': 'ciclone-1.png',
+        // 'ciclone2-100': 'ciclone-2.png',
+        // 'ciclone3-250': 'ciclone-3.png',
+        // 'ciclone4-500': 'ciclone-4.png',
+        // 'ciclone5-1000': 'ciclone-5.png'
     };
 
-    // [chave, nome, valor investido, nível VIP]
+    // [chave, nome, valor investido, nível VIP (0 = sem VIP), cashback em R$]
     const LISTA = [
-        ['vip1-50', 'Plano Iniciante', 50, 1],
-        ['vip2-70', 'Plano Bronze', 70, 2],
-        ['vip3-150', 'Plano Prata', 150, 3],
-        ['vip4-300', 'Plano Ouro', 300, 4],
-        ['vip5-450', 'Plano Master', 450, 5]
+        ['ciclone1-50', 'Ciclone 1', 50, 0, 0],
+        ['ciclone2-100', 'Ciclone 2', 100, 0, 0],
+        ['ciclone3-250', 'Ciclone 3', 250, 4, 5],
+        ['ciclone4-500', 'Ciclone 4', 500, 5, 10],
+        ['ciclone5-1000', 'Ciclone 5', 1000, 6, 15]
     ];
 
     const catalogo = {};
-    LISTA.forEach(([chave, nome, valor, vip]) => {
+    LISTA.forEach(([chave, nome, valor, vip, cashback], indice) => {
         catalogo[chave] = {
             nome: nome,
             valor: valor,
             vip: vip,
+            cashback: cashback,
+            ordem: indice + 1, // 1 a 5: só para o desenho das moedas
+            limiteCompras: LIMITE_COMPRAS,
             imagem: IMAGENS[chave] || null,
             retornoDiario: Math.round(valor * TAXA_DIARIA_PERCENTUAL * 100) / 10000,
             duracaoDias: DURACAO_DIAS,
@@ -52,6 +59,7 @@
     window.PLANOS_CATALOGO = catalogo;
     window.PLANOS_TAXA_DIARIA = TAXA_DIARIA_PERCENTUAL;
     window.PLANOS_LIMITE = LIMITE_PERCENTUAL;
+    window.PLANOS_LIMITE_COMPRAS = LIMITE_COMPRAS;
 
     const brl = (v) => 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const pct = (v) => String(v).replace('.', ',');
@@ -86,7 +94,9 @@
             + ' L' + (x - t * 0.28) + ' ' + (y - t * 0.28) + ' Z" class="coin-spark"/>';
     }
 
-    function pilhaMoedas(vip) {
+    // "nivel" = ordem do plano (1 a 5): define o tamanho das pilhas
+    function pilhaMoedas(nivel) {
+        const vip = nivel;
         const ids = { lado: 'cs' + vip, topo: 'ct' + vip };
         const defs = '<defs>'
             + '<linearGradient id="' + ids.lado + '" x1="0" y1="0" x2="1" y2="0">'
@@ -118,19 +128,27 @@
 
         lista.innerHTML = Object.entries(catalogo).map(([chave, p]) => {
             const arte = p.imagem
-                ? '<img class="plan-photo" src="' + p.imagem + '" alt="' + p.nome + '" data-vip="' + p.vip + '" loading="lazy">'
-                : pilhaMoedas(p.vip);
+                ? '<img class="plan-photo" src="' + p.imagem + '" alt="' + p.nome + '" data-vip="' + p.ordem + '" loading="lazy">'
+                : pilhaMoedas(p.ordem);
+            const selo = p.vip > 0
+                ? '<span class="vip-badge">' + ICONE_COROA_CHEIA + '<span>VIP ' + p.vip + '</span></span>'
+                : '<span class="vip-badge is-none"><span>Sem VIP</span></span>';
+            const cashback = p.cashback > 0
+                ? '<div class="plan-meta muted">Cashback de ' + brl(p.cashback) + ' na ativação</div>'
+                : '';
             return `
             <div class="plan-row">
                 <span class="plan-icon">${ICONE_COROA}</span>
                 <div class="plan-info">
                     <div class="plan-name">
                         <span>${p.nome}</span>
-                        <span class="vip-badge">${ICONE_COROA_CHEIA}<span>VIP ${p.vip}</span></span>
+                        ${selo}
                     </div>
                     <div class="plan-price">${brl(p.valor)}</div>
                     <div class="plan-rate">${pct(TAXA_DIARIA_PERCENTUAL)}% ao dia</div>
                     <div class="plan-meta muted">${p.duracaoDias} dias • rendimento total ${brl(p.totalRendimento)} (${LIMITE_PERCENTUAL}%)</div>
+                    ${cashback}
+                    <div class="plan-meta muted">Limitado a ${p.limiteCompras} por usuário</div>
                 </div>
                 <div class="plan-side">
                     <div class="plan-art">${arte}</div>
