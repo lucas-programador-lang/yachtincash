@@ -1,0 +1,151 @@
+/* ============================================================
+   Tela de Saque — usa SOMENTE variáveis e classes do style.css do site.
+   Classes reutilizadas: btn, btn-outline, btn-success, form-group,
+   withdraw-balance-box, withdraw-summary, withdraw-key-missing/set, muted.
+   ============================================================ */
+#sacarModal .saque-card {
+    width: 100%;
+    max-width: 420px;
+    max-height: calc(100vh - 40px);
+    max-height: calc(100dvh - 40px);
+    overflow-y: auto;
+}
+
+/* ---------- Cabeçalho ---------- */
+#sacarModal .saque-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+#sacarModal .saque-header h2 {
+    margin: 0;
+    flex: 1;
+    text-align: center;
+    font-size: 1.25rem;
+}
+#sacarModal .saque-icon-btn {
+    flex: 0 0 36px;
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border-soft-2);
+    border-radius: 50%;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: background var(--transition), color var(--transition);
+}
+#sacarModal .saque-icon-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-color);
+}
+#sacarModal .saque-icon-btn svg { width: 18px; height: 18px; }
+
+#sacarModal .saque-label {
+    margin: 0 0 10px;
+    font-size: 1rem;
+    text-align: left;
+}
+
+/* ---------- Origem: Rendimento / Comissão (botões do site) ---------- */
+#sacarModal .saque-origens {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 14px;
+}
+#sacarModal .saque-origem {
+    width: auto;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+}
+#sacarModal .saque-origem small {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    opacity: 0.85;
+}
+#sacarModal .saque-origem strong { font-size: 1.05rem; font-weight: 800; }
+
+#sacarModal .withdraw-balance-box { margin-bottom: 8px; }
+#sacarModal .saque-regra {
+    margin: 0 2px 18px;
+    font-size: 0.8rem;
+    line-height: 1.5;
+}
+#sacarModal .saque-regra.is-open { color: var(--success); }
+#sacarModal .saque-regra.is-closed { color: var(--warning); }
+
+/* ---------- Mínimo e taxa lado a lado ---------- */
+#sacarModal .saque-info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 12px;
+}
+#sacarModal .saque-info .withdraw-summary {
+    margin: 0;
+    gap: 4px;
+}
+#sacarModal .saque-info span,
+#sacarModal .saque-resumo span { font-size: 0.78rem; color: var(--text-muted); }
+#sacarModal .saque-info strong { font-size: 1.05rem; color: var(--text-color); }
+
+#sacarModal .saque-resumo { margin-bottom: 18px; }
+#sacarModal .saque-resumo .withdraw-summary-row strong { font-size: 0.95rem; }
+#sacarModal .saque-resumo .saque-liquido strong { color: var(--success); font-size: 1.05rem; }
+
+/* ---------- Método de saque ---------- */
+#sacarModal .saque-metodo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    background: rgba(31, 184, 174, 0.06);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+}
+#sacarModal .saque-radio {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--primary-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#sacarModal .saque-radio::after {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--primary-light);
+}
+#sacarModal .saque-chave { margin-bottom: 18px; }
+#sacarModal .saque-link {
+    padding: 0;
+    background: none;
+    border: 0;
+    color: var(--accent-color);
+    font: inherit;
+    font-weight: 700;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+#sacarModal .saque-nota {
+    margin: 12px 0 0;
+    text-align: center;
+    font-size: 0.78rem;
+}
