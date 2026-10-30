@@ -1,0 +1,152 @@
+/* ============================================================
+   Perfil ("Meu Perfil") — cabeçalho, atalhos e menu em lista.
+   Usa SOMENTE as variáveis do style.css (e reaproveita .vip-badge
+   do inicio.css), então acompanha a paleta do site.
+   ============================================================ */
+.perfil-view[hidden] { display: none; }
+
+/* ---------- Cabeçalho ---------- */
+.perfil-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.perfil-avatar {
+    flex: 0 0 76px;
+    width: 76px;
+    height: 76px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: linear-gradient(160deg, var(--bg-card-2), var(--bg-card-3));
+    border: 2px solid var(--accent-gold);
+    box-shadow: 0 8px 24px rgba(217, 182, 116, 0.22);
+    color: var(--accent-gold-soft);
+    font-size: 2rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.perfil-user { min-width: 0; }
+
+.perfil-nome {
+    margin: 0 0 4px 0;
+    text-align: left;
+    font-size: clamp(20px, 5vw, 24px);
+    font-weight: 800;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.perfil-id {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.perfil-id strong { color: var(--text-color); }
+
+/* ---------- Atalhos (Meus Investimentos / Meus Saques) ---------- */
+.perfil-atalhos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.perfil-atalho {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 14px 10px;
+    background: linear-gradient(160deg, var(--bg-card), var(--bg-card-2));
+    border: 1px solid var(--accent-gold);
+    border-radius: var(--radius-md);
+    color: var(--text-color);
+    font: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.perfil-atalho:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.perfil-atalho svg { width: 22px; height: 22px; flex-shrink: 0; color: var(--accent-gold); }
+
+/* ---------- Menu em lista ---------- */
+.perfil-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.perfil-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    padding: 14px 16px;
+    background: linear-gradient(160deg, var(--bg-card), var(--bg-card-2));
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-md);
+    color: var(--text-color);
+    font: inherit;
+    font-size: 15px;
+    font-weight: 500;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: border-color var(--transition), transform var(--transition);
+}
+
+.perfil-item:hover { border-color: var(--accent-gold); transform: translateX(2px); }
+
+.perfil-item-icone {
+    flex: 0 0 22px;
+    width: 22px;
+    height: 22px;
+    color: var(--accent-gold);
+}
+
+.perfil-item-texto { flex: 1; min-width: 0; }
+
+.perfil-item-seta {
+    flex: 0 0 18px;
+    width: 18px;
+    height: 18px;
+    color: var(--text-muted);
+}
+
+.perfil-item.is-sair .perfil-item-icone { color: var(--danger); }
+
+/* ---------- Meus Dados (sub-tela) ---------- */
+.perfil-voltar {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    padding: 0;
+    background: none;
+    border: 0;
+    color: var(--text-muted);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.perfil-voltar:hover { color: var(--text-color); }
+.perfil-voltar svg { width: 18px; height: 18px; }
+
+@media (max-width: 420px) {
+    .perfil-avatar { flex-basis: 64px; width: 64px; height: 64px; font-size: 1.7rem; }
+    .perfil-atalho { font-size: 12.5px; gap: 7px; }
+}
