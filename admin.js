@@ -517,7 +517,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             return firebaseDb.ref('withdrawals/' + id).update({ status: 'paid', paidAt: Date.now() }).then(() => {
                 // Desconto da Roleta vale para um saque só: zera depois de usado
-                if (saque.descontoRoleta > 0) {
+                if ((saque.taxaPercentual || 15) < 15) {
                     return firebaseDb.ref('users/' + saque.uid + '/saqueDesconto').set(0);
                 }
             }).then(() => {
