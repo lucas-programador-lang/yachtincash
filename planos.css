@@ -80,9 +80,43 @@
     line-height: 1.4;
 }
 
-.plan-buy {
+/* Coluna da direita: arte (moedas ou foto) + botão Investir */
+.plan-side {
     flex-shrink: 0;
-    align-self: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.plan-art {
+    width: 96px;
+    height: 64px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.plan-coins {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.45));
+}
+
+/* Moedas no dourado que o site já usa (saldo e selo VIP) */
+.plan-coins .coin-top  { fill: var(--accent-gold-soft); }
+.plan-coins .coin-side { fill: var(--accent-gold-deep); }
+.plan-coins .coin-ring { fill: none; stroke: var(--accent-gold); stroke-width: 1; opacity: 0.8; }
+
+.plan-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: var(--radius-sm);
+}
+
+.plan-buy {
+    min-width: 96px;
 }
 
 @media (min-width: 1024px) {
@@ -93,8 +127,15 @@
     }
 }
 
-@media (max-width: 380px) {
+@media (max-width: 420px) {
     .plan-row { gap: 10px; padding: 12px; }
-    .plan-icon { flex-basis: 44px; width: 44px; height: 44px; }
+    .plan-icon { flex-basis: 40px; width: 40px; height: 40px; border-radius: 12px; }
+    .plan-icon svg { width: 22px; height: 22px; }
     .plan-price { font-size: 19px; }
+    .plan-art { width: 76px; height: 50px; }
+    .plan-buy { min-width: 76px; padding: 10px 12px; }
+}
+
+@media (max-width: 340px) {
+    .plan-icon { display: none; }
 }
