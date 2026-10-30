@@ -59,28 +59,57 @@
     const ICONE_COROA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5L3 8Z"/><path d="M5 19h14"/></svg>';
     const ICONE_COROA_CHEIA = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5L3 8Z"/></svg>';
 
-    // Ilustração: duas pilhas de moedas que crescem com o nível VIP
-    // (as cores vêm do planos.css, que usa o dourado do site).
-    function moeda(cx, topoY) {
-        return '<ellipse class="coin-side" cx="' + cx + '" cy="' + (topoY + 7) + '" rx="22" ry="6"/>'
-            + '<rect class="coin-side" x="' + (cx - 22) + '" y="' + topoY + '" width="44" height="7"/>'
-            + '<ellipse class="coin-top" cx="' + cx + '" cy="' + topoY + '" rx="22" ry="6"/>'
-            + '<ellipse class="coin-ring" cx="' + cx + '" cy="' + topoY + '" rx="14" ry="3.6"/>';
+    // Ilustração: duas pilhas de moedas que crescem com o nível VIP, com
+    // sombreado, brilho e sombra no chão. As cores são o dourado do site
+    // (variáveis do style.css), então acompanham a paleta.
+    function pilha(cx, base, rx, ry, altura, quantidade, ids) {
+        let svg = '';
+        for (let i = 0; i < quantidade; i++) {
+            const topo = base - i * altura;
+            const fundo = topo + altura;
+            svg += '<ellipse cx="' + cx + '" cy="' + fundo + '" rx="' + rx + '" ry="' + ry + '" fill="url(#' + ids.lado + ')"/>'
+                + '<rect x="' + (cx - rx) + '" y="' + topo + '" width="' + (rx * 2) + '" height="' + altura + '" fill="url(#' + ids.lado + ')"/>'
+                + '<path d="M' + (cx - rx) + ' ' + fundo + ' A' + rx + ' ' + ry + ' 0 0 0 ' + (cx + rx) + ' ' + fundo + '" fill="none" stroke="rgba(52,34,8,0.55)" stroke-width="0.9"/>';
+        }
+        const topoFinal = base - (quantidade - 1) * altura;
+        svg += '<ellipse cx="' + cx + '" cy="' + topoFinal + '" rx="' + rx + '" ry="' + ry + '" fill="url(#' + ids.topo + ')" stroke="rgba(52,34,8,0.5)" stroke-width="0.8"/>'
+            + '<ellipse cx="' + cx + '" cy="' + topoFinal + '" rx="' + (rx * 0.66) + '" ry="' + (ry * 0.62) + '" fill="none" stroke="rgba(120,84,26,0.55)" stroke-width="1"/>'
+            + '<rect x="' + (cx - rx + 4) + '" y="' + topoFinal + '" width="3.2" height="' + ((quantidade - 1) * altura + altura - 1) + '" rx="1.6" fill="#fff" opacity="0.16"/>';
+        return svg;
+    }
+
+    function brilho(x, y, tamanho) {
+        const t = tamanho;
+        return '<path d="M' + x + ' ' + (y - t) + ' L' + (x + t * 0.28) + ' ' + (y - t * 0.28) + ' L' + (x + t) + ' ' + y
+            + ' L' + (x + t * 0.28) + ' ' + (y + t * 0.28) + ' L' + x + ' ' + (y + t)
+            + ' L' + (x - t * 0.28) + ' ' + (y + t * 0.28) + ' L' + (x - t) + ' ' + y
+            + ' L' + (x - t * 0.28) + ' ' + (y - t * 0.28) + ' Z" class="coin-spark"/>';
     }
 
     function pilhaMoedas(vip) {
-        const base = 56;
-        let desenho = '';
-        // pilha menor, atrás, à esquerda
-        for (let i = 0; i < Math.max(1, vip); i++) {
-            desenho += moeda(28, base - i * 7 - 4).replace(/rx="22"/g, 'rx="17"').replace(/rx="14"/g, 'rx="10"')
-                .replace(/width="44"/g, 'width="34"').replace(new RegExp('x="' + (28 - 22) + '"', 'g'), 'x="' + (28 - 17) + '"');
+        const ids = { lado: 'cs' + vip, topo: 'ct' + vip };
+        const defs = '<defs>'
+            + '<linearGradient id="' + ids.lado + '" x1="0" y1="0" x2="1" y2="0">'
+            + '<stop offset="0" style="stop-color:var(--accent-gold-deep)"/>'
+            + '<stop offset="0.3" style="stop-color:var(--accent-gold)"/>'
+            + '<stop offset="0.62" style="stop-color:var(--accent-gold)"/>'
+            + '<stop offset="1" style="stop-color:var(--accent-gold-deep)"/></linearGradient>'
+            + '<linearGradient id="' + ids.topo + '" x1="0" y1="0" x2="1" y2="1">'
+            + '<stop offset="0" style="stop-color:var(--accent-gold-soft)"/>'
+            + '<stop offset="1" style="stop-color:var(--accent-gold)"/></linearGradient></defs>';
+
+        let desenho = defs
+            + '<ellipse cx="60" cy="74" rx="52" ry="5.5" fill="#000" opacity="0.38"/>'
+            + pilha(34, 70, 20, 5.6, 6.5, Math.max(1, vip), ids)   // pilha menor, atrás
+            + pilha(78, 68, 26, 7, 8, vip + 2, ids);               // pilha principal, à frente
+
+        // brilhos: aparecem a partir do VIP 3
+        const pontos = [[100, 16, 5], [16, 34, 3.6], [60, 8, 4]];
+        for (let i = 0; i < Math.max(0, vip - 2); i++) {
+            desenho += brilho(pontos[i][0], pontos[i][1], pontos[i][2]);
         }
-        // pilha principal, à frente, à direita
-        for (let i = 0; i < vip + 2; i++) {
-            desenho += moeda(62, base - i * 7);
-        }
-        return '<svg class="plan-coins" viewBox="0 0 96 64" aria-hidden="true">' + desenho + '</svg>';
+
+        return '<svg class="plan-coins" viewBox="0 0 120 80" aria-hidden="true">' + desenho + '</svg>';
     }
 
     function renderizarPlanos() {
