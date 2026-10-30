@@ -1,0 +1,123 @@
+/* ============================================================
+   Aba "Grupos" — WhatsApp e Telegram (visual dourado)
+   ============================================================ */
+#section-grupos { --gp-gold: #f0b429; }
+
+.gp-header {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+    border-radius: 18px;
+    border: 1px solid rgba(240, 180, 41, 0.45);
+    background:
+        radial-gradient(circle at 92% 20%, rgba(240, 180, 41, 0.22), transparent 55%),
+        linear-gradient(135deg, #0b0b0b, #14110a);
+    box-shadow: 0 0 22px rgba(240, 180, 41, 0.12);
+}
+.gp-header-icon {
+    flex: 0 0 auto;
+    width: 54px;
+    height: 54px;
+    color: var(--gp-gold);
+    filter: drop-shadow(0 0 8px rgba(240, 180, 41, 0.55));
+}
+.gp-header h1 {
+    margin: 0 0 4px;
+    background: linear-gradient(180deg, #fff3c4, var(--gp-gold));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+.gp-header p { margin: 0; color: #cfc6ae; font-size: 14px; line-height: 1.45; }
+
+.gp-lista { display: grid; gap: 14px; }
+
+.gp-card {
+    --cor: #1ee56b;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 14px 16px;
+    padding: 16px;
+    border-radius: 18px;
+    border: 1px solid var(--cor);
+    background: linear-gradient(135deg, #070707, #0d1410);
+    box-shadow: 0 0 18px color-mix(in srgb, var(--cor) 25%, transparent);
+}
+.gp-card.is-telegram { --cor: #2f9bff; background: linear-gradient(135deg, #070707, #0a1220); }
+
+.gp-badge {
+    grid-row: span 2;
+    align-self: start;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    color: #fff;
+    background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--cor) 80%, #fff), var(--cor) 70%);
+    border: 3px solid var(--gp-gold);
+    box-shadow: 0 0 16px color-mix(in srgb, var(--cor) 55%, transparent);
+}
+.gp-badge svg { width: 38px; height: 38px; }
+
+.gp-titulo { margin: 0 0 4px; font-size: 20px; font-weight: 800; color: #fff; }
+.gp-titulo span { color: var(--cor); }
+.gp-desc { margin: 0; font-size: 13px; color: #b9b2a0; line-height: 1.45; }
+
+.gp-beneficios {
+    grid-column: 1 / -1;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 8px 14px;
+}
+.gp-beneficios li { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #ddd6c2; }
+.gp-beneficios .gp-ico {
+    flex: 0 0 auto;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    color: var(--cor);
+    border: 1.5px solid var(--cor);
+    background: color-mix(in srgb, var(--cor) 12%, transparent);
+}
+.gp-beneficios .gp-ico svg { width: 16px; height: 16px; }
+
+.gp-btn {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 18px;
+    border: 0;
+    border-radius: 14px;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 800;
+    font-size: 15px;
+    color: #04210f;
+    background: linear-gradient(180deg, #5cf59a, var(--cor));
+    box-shadow: 0 0 16px color-mix(in srgb, var(--cor) 45%, transparent);
+    transition: transform 0.15s ease, filter 0.15s ease;
+}
+.gp-card.is-telegram .gp-btn { color: #fff; background: linear-gradient(180deg, #5db4ff, var(--cor)); }
+.gp-btn:hover { transform: translateY(-1px); filter: brightness(1.06); }
+.gp-btn svg { width: 24px; height: 24px; }
+.gp-btn .gp-btn-txt { display: flex; align-items: center; gap: 10px; }
+
+@media (min-width: 900px) {
+    .gp-card { grid-template-columns: auto 1fr 1.1fr auto; align-items: center; }
+    .gp-badge { grid-row: auto; width: 96px; height: 96px; align-self: center; }
+    .gp-badge svg { width: 50px; height: 50px; }
+    .gp-beneficios { grid-column: auto; grid-template-columns: 1fr; }
+    .gp-btn { grid-column: auto; min-width: 190px; }
+}
