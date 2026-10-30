@@ -200,103 +200,75 @@ document.addEventListener('DOMContentLoaded', () => {
         if (typeof window.renderizarMeusInvestimentos === 'function') window.renderizarMeusInvestimentos(planosData);
     }
 
-    // Preenche o Extrato de Recebimentos: cada dia já rendido de cada plano
-    // ativo vira uma linha (mesma base de dados/cálculo da Carteira), mais
-    // depósitos aprovados/rejeitados, saques pagos e comissões de indicação.
+    // Monta o Extrato (Histórico de Transações): converte planos, depósitos,
+    // saques e comissões no formato { tipo, valor, data, status, detalhe? }
+    // e entrega para window.desenharHistorico (extrato.js), que desenha a
+    // lista com filtros. Atualiza em tempo real pelos listeners do Firebase.
     function renderizarExtrato(planosData, saquesDoUsuario, depositosDoUsuario, comissoesDoUsuario) {
-        const tbody = document.getElementById('extratoBody');
-        if (!tbody) return;
+        if (typeof window.desenharHistorico !== 'function') return;
 
-        const planos = planosData ? Object.values(planosData) : [];
         const entradas = [];
+        const planos = planosData ? Object.values(planosData) : [];
 
         planos.forEach((plano) => {
+            // Compra do plano = Investimento
+            entradas.push({
+                tipo: 'investimento',
+                valor: plano.valor,
+                data: plano.dataAtivacao,
+                status: 'paid',
+                detalhe: plano.nome
+            });
+
+            // Cada dia já rendido = Rendimento
             const diasPassados = Math.floor((Date.now() - plano.dataAtivacao) / 86400000);
             const diasContados = Math.max(0, Math.min(diasPassados, plano.duracaoDias));
-
             for (let dia = 1; dia <= diasContados; dia++) {
                 entradas.push({
-                    data: plano.dataAtivacao + dia * 86400000,
-                    descricao: `Rendimento Diário — ${escapeHtml(plano.nome)}`,
+                    tipo: 'rendimento',
                     valor: plano.retornoDiario,
-                    status: 'paid'
+                    data: plano.dataAtivacao + dia * 86400000,
+                    status: 'paid',
+                    detalhe: plano.nome
                 });
             }
         });
 
-        // Saques aparecem assim que solicitados (Pendente) e o status
-        // muda sozinho — via listener em tempo real do Firebase — quando
-        // o admin marca como pago ou rejeita, sem precisar recarregar a página.
+        // Saques aparecem assim que solicitados (Pendente); o status muda
+        // sozinho quando o admin paga ou rejeita.
         (saquesDoUsuario || []).forEach((saque) => {
             entradas.push({
+                tipo: 'saque',
+                valor: saque.valor,
                 data: saque.paidAt || saque.resolvedAt || saque.createdAt,
-                descricao: 'Saque via Pix',
-                valor: saque.status === 'paid' ? -saque.valor : 0,
                 status: saque.status === 'paid' ? 'paid' : (saque.status === 'rejected' ? 'rejected' : 'pending')
             });
         });
 
-        // Depósitos também aparecem desde a solicitação (Pendente) — antes
-        // só entravam no Extrato quando já aprovados ou rejeitados.
+        // Depósitos aparecem desde a solicitação (Pendente)
         (depositosDoUsuario || []).forEach((deposito) => {
             entradas.push({
+                tipo: 'deposito',
+                valor: deposito.valor,
                 data: deposito.resolvedAt || deposito.createdAt,
-                descricao: deposito.status === 'approved'
-                    ? `Depósito aprovado — ${escapeHtml(deposito.planoNome)}`
-                    : deposito.status === 'rejected'
-                        ? `Depósito rejeitado — ${escapeHtml(deposito.planoNome)}`
-                        : `Depósito solicitado — ${escapeHtml(deposito.planoNome)}`,
-                valor: deposito.status === 'approved' ? deposito.valor : 0,
-                status: deposito.status === 'approved' ? 'paid' : (deposito.status === 'rejected' ? 'rejected' : 'pending')
+                status: deposito.status === 'approved' ? 'paid' : (deposito.status === 'rejected' ? 'rejected' : 'pending'),
+                detalhe: deposito.planoNome
             });
         });
 
-        // Comissões de indicação recebidas (nível 1 = 10%, níveis 2 e 3 = 1%)
-        // — uma linha por indicado que teve um plano aprovado.
+        // Comissões de indicação (nível 1 = 10%, níveis 2 e 3 = 1%)
         (comissoesDoUsuario || []).forEach((comissao) => {
             const nivel = (comissao.nivel >= 1 && comissao.nivel <= 3) ? comissao.nivel : 1;
             entradas.push({
-                data: comissao.createdAt,
-                descricao: `Comissão de indicação (${nivel === 1 ? '10' : '1'}%, nível ${nivel}) — plano de ${escapeHtml(comissao.fromName || 'indicado')}`,
+                tipo: 'comissao',
                 valor: comissao.valor,
-                status: 'paid'
+                data: comissao.createdAt,
+                status: 'paid',
+                detalhe: `Nível ${nivel} (${nivel === 1 ? '10' : '1'}%) — ${comissao.fromName || 'indicado'}`
             });
         });
 
-        if (!entradas.length) {
-            tbody.innerHTML = '<tr><td colspan="5" class="muted">Nenhuma movimentação registrada ainda.</td></tr>';
-            return;
-        }
-
-        entradas.sort((a, b) => b.data - a.data);
-
-        // Mesmo padrão visual de badge já usado no Painel Admin —
-        // pendente em amarelo, pago em verde, rejeitado em vermelho.
-        const STATUS_BADGE = {
-            pending: '<span class="badge badge-warning">Pendente</span>',
-            paid: '<span class="badge badge-success">Pago</span>',
-            rejected: '<span class="badge badge-danger">Rejeitado</span>'
-        };
-
-        tbody.innerHTML = entradas.map((entrada) => {
-            const dataObj = new Date(entrada.data);
-            const dataHora = dataObj.toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-            const mesAno = dataObj.toLocaleDateString('pt-BR', { month: '2-digit', year: 'numeric' });
-            const valorFormatado = entrada.valor < 0
-                ? `- ${formatarMoeda(Math.abs(entrada.valor))}`
-                : formatarMoeda(entrada.valor);
-            const statusBadge = STATUS_BADGE[entrada.status] || STATUS_BADGE.paid;
-
-            return `
-                <tr>
-                    <td>${dataHora}</td>
-                    <td>${mesAno}</td>
-                    <td>${entrada.descricao}</td>
-                    <td>${statusBadge}</td>
-                    <td>${valorFormatado}</td>
-                </tr>
-            `;
-        }).join('');
+        window.desenharHistorico(entradas);
     }
 
     // Preenche a tabela "Membros da Rede" e o "Total de Indicados" (Equipe)
