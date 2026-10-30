@@ -14,6 +14,19 @@
     const LIMITE_PERCENTUAL = 60;
     const DURACAO_DIAS = LIMITE_PERCENTUAL / TAXA_DIARIA_PERCENTUAL; // 24
 
+    // ---------- FOTOS DOS PLANOS ----------
+    // Para usar uma foto sua em um plano, coloque o arquivo na mesma pasta
+    // do index.html e escreva o nome aqui. Plano sem foto (ou foto que não
+    // carregar) mostra a ilustração de moedas.
+    // Exemplo:  'vip1-50': 'plano-iniciante.png',
+    const IMAGENS = {
+        // 'vip1-50': 'plano-iniciante.png',
+        // 'vip2-70': 'plano-bronze.png',
+        // 'vip3-150': 'plano-prata.png',
+        // 'vip4-300': 'plano-ouro.png',
+        // 'vip5-450': 'plano-master.png'
+    };
+
     // [chave, nome, valor investido, nível VIP]
     const LISTA = [
         ['vip1-50', 'Plano Iniciante', 50, 1],
@@ -29,6 +42,7 @@
             nome: nome,
             valor: valor,
             vip: vip,
+            imagem: IMAGENS[chave] || null,
             retornoDiario: Math.round(valor * TAXA_DIARIA_PERCENTUAL * 100) / 10000,
             duracaoDias: DURACAO_DIAS,
             totalRendimento: Math.round(valor * LIMITE_PERCENTUAL) / 100
@@ -45,11 +59,39 @@
     const ICONE_COROA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5L3 8Z"/><path d="M5 19h14"/></svg>';
     const ICONE_COROA_CHEIA = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5L3 8Z"/></svg>';
 
+    // Ilustração: duas pilhas de moedas que crescem com o nível VIP
+    // (as cores vêm do planos.css, que usa o dourado do site).
+    function moeda(cx, topoY) {
+        return '<ellipse class="coin-side" cx="' + cx + '" cy="' + (topoY + 7) + '" rx="22" ry="6"/>'
+            + '<rect class="coin-side" x="' + (cx - 22) + '" y="' + topoY + '" width="44" height="7"/>'
+            + '<ellipse class="coin-top" cx="' + cx + '" cy="' + topoY + '" rx="22" ry="6"/>'
+            + '<ellipse class="coin-ring" cx="' + cx + '" cy="' + topoY + '" rx="14" ry="3.6"/>';
+    }
+
+    function pilhaMoedas(vip) {
+        const base = 56;
+        let desenho = '';
+        // pilha menor, atrás, à esquerda
+        for (let i = 0; i < Math.max(1, vip); i++) {
+            desenho += moeda(28, base - i * 7 - 4).replace(/rx="22"/g, 'rx="17"').replace(/rx="14"/g, 'rx="10"')
+                .replace(/width="44"/g, 'width="34"').replace(new RegExp('x="' + (28 - 22) + '"', 'g'), 'x="' + (28 - 17) + '"');
+        }
+        // pilha principal, à frente, à direita
+        for (let i = 0; i < vip + 2; i++) {
+            desenho += moeda(62, base - i * 7);
+        }
+        return '<svg class="plan-coins" viewBox="0 0 96 64" aria-hidden="true">' + desenho + '</svg>';
+    }
+
     function renderizarPlanos() {
         const lista = document.getElementById('planList');
         if (!lista) return;
 
-        lista.innerHTML = Object.entries(catalogo).map(([chave, p]) => `
+        lista.innerHTML = Object.entries(catalogo).map(([chave, p]) => {
+            const arte = p.imagem
+                ? '<img class="plan-photo" src="' + p.imagem + '" alt="' + p.nome + '" data-vip="' + p.vip + '" loading="lazy">'
+                : pilhaMoedas(p.vip);
+            return `
             <div class="plan-row">
                 <span class="plan-icon">${ICONE_COROA}</span>
                 <div class="plan-info">
@@ -61,9 +103,19 @@
                     <div class="plan-rate">${pct(TAXA_DIARIA_PERCENTUAL)}% ao dia</div>
                     <div class="plan-meta muted">${p.duracaoDias} dias • rendimento total ${brl(p.totalRendimento)} (${LIMITE_PERCENTUAL}%)</div>
                 </div>
-                <button type="button" class="btn btn-compact plan-buy" onclick="abrirDepositoComPlano('${chave}')">Investir</button>
-            </div>
-        `).join('');
+                <div class="plan-side">
+                    <div class="plan-art">${arte}</div>
+                    <button type="button" class="btn btn-compact plan-buy" onclick="abrirDepositoComPlano('${chave}')">Investir</button>
+                </div>
+            </div>`;
+        }).join('');
+
+        // Foto que não carregar volta para a ilustração de moedas
+        lista.querySelectorAll('img.plan-photo').forEach((img) => {
+            img.addEventListener('error', () => {
+                img.outerHTML = pilhaMoedas(Number(img.dataset.vip) || 1);
+            });
+        });
     }
 
     document.addEventListener('DOMContentLoaded', renderizarPlanos);
