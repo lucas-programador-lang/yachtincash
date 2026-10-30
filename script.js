@@ -182,59 +182,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }).then((ref) => ref.key);
     }
 
-    // Preenche a página Carteira (totais + tabela de planos ativos) a
-    // partir dos dados de users/{uid}/planos no Realtime Database.
-    // Também atualiza o "Rendimento Acumulado" do Início, que usa a
-    // mesma base de cálculo.
+    // Atualiza o "Rendimento Acumulado" do Início (soma de todos os planos
+    // e ciclos) e entrega os planos para a tela Meus Investimentos
+    // (investimentos.js), a partir de users/{uid}/planos no Realtime Database.
     function renderizarCarteira(planosData) {
-        const tbody = document.getElementById('planosAtivosBody');
-        const totalInvestidoEl = document.getElementById('totalInvestidoPlanos');
-        const rendimentoTotalEl = document.getElementById('rendimentoTotalPlanos');
         const rendimentoInicioEl = document.getElementById('rendimentoAcumuladoInicio');
-        if (!tbody) return;
-
         const planos = planosData ? Object.values(planosData) : [];
 
-        if (!planos.length) {
-            tbody.innerHTML = '<tr><td colspan="5" class="muted">Você ainda não possui planos ativos. Vá até <strong>Investir</strong> para alugar seu primeiro Yacht.</td></tr>';
-            if (totalInvestidoEl) totalInvestidoEl.textContent = formatarMoeda(0);
-            if (rendimentoTotalEl) rendimentoTotalEl.textContent = formatarMoeda(0);
-            if (rendimentoInicioEl) rendimentoInicioEl.textContent = formatarMoeda(0);
-            return;
-        }
-
-        let totalInvestido = 0;
         let rendimentoTotal = 0;
-
-        const linhas = planos.map((plano) => {
+        planos.forEach((plano) => {
             const diasPassados = Math.floor((Date.now() - plano.dataAtivacao) / 86400000);
             const diasContados = Math.max(0, Math.min(diasPassados, plano.duracaoDias));
-            const rendimentoAcumulado = diasContados * plano.retornoDiario;
-            const finalizado = diasPassados >= plano.duracaoDias;
+            rendimentoTotal += diasContados * plano.retornoDiario;
+        });
 
-            totalInvestido += plano.valorInvestido;
-            rendimentoTotal += rendimentoAcumulado;
-
-            const dataFormatada = new Date(plano.dataAtivacao).toLocaleDateString('pt-BR');
-            const statusBadge = finalizado
-                ? '<span class="badge badge-info">Concluído</span>'
-                : '<span class="badge badge-success">Ativo</span>';
-
-            return `
-                <tr>
-                    <td>${dataFormatada}</td>
-                    <td>${escapeHtml(plano.nome)} — ${formatarMoeda(plano.valorInvestido)}</td>
-                    <td>${formatarMoeda(plano.retornoDiario)}</td>
-                    <td>${formatarMoeda(rendimentoAcumulado)}</td>
-                    <td>${statusBadge}</td>
-                </tr>
-            `;
-        }).join('');
-
-        tbody.innerHTML = linhas;
-        if (totalInvestidoEl) totalInvestidoEl.textContent = formatarMoeda(totalInvestido);
-        if (rendimentoTotalEl) rendimentoTotalEl.textContent = formatarMoeda(rendimentoTotal);
         if (rendimentoInicioEl) rendimentoInicioEl.textContent = formatarMoeda(rendimentoTotal);
+        if (typeof window.renderizarMeusInvestimentos === 'function') window.renderizarMeusInvestimentos(planosData);
     }
 
     // Preenche o Extrato de Recebimentos: cada dia já rendido de cada plano
