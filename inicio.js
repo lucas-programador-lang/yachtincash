@@ -10,23 +10,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const $ = (id) => document.getElementById(id);
 
-    // ---------- Regra do VIP (ajuste aqui) ----------
-    // O nível é definido pelo MAIOR plano ativo do usuário. O primeiro
-    // item cujo valorMinimo for atingido vale. Sem plano ativo = VIP 0.
-    const VIP_NIVEIS = [
-        { nivel: 2, valorMinimo: 150 }, // YACHT HUNTER
-        { nivel: 1, valorMinimo: 1 }    // qualquer outro plano ativo
-    ];
+    // ---------- VIP ----------
+    // O nível é o do MAIOR plano ativo (tabela em planos.js). Sem plano
+    // ativo = VIP 0.
+    function vipDoPlano(plano) {
+        const catalogo = window.PLANOS_CATALOGO || {};
+        if (plano.planoKey && catalogo[plano.planoKey]) return catalogo[plano.planoKey].vip;
+        // Planos antigos (sem chave no catálogo): maior plano que cabe no valor investido
+        return Object.values(catalogo)
+            .filter((p) => p.valor <= (plano.valorInvestido || 0))
+            .reduce((max, p) => Math.max(max, p.vip), 0);
+    }
 
     function calcularVip(planos) {
         const lista = planos ? Object.values(planos) : [];
-        const ativos = lista.filter((p) => {
-            const diasPassados = Math.floor((Date.now() - p.dataAtivacao) / 86400000);
-            return diasPassados < p.duracaoDias;
-        });
-        const maior = ativos.reduce((max, p) => Math.max(max, p.valorInvestido || 0), 0);
-        const faixa = VIP_NIVEIS.find((n) => maior >= n.valorMinimo);
-        return faixa ? faixa.nivel : 0;
+        return lista
+            .filter((p) => Math.floor((Date.now() - p.dataAtivacao) / 86400000) < p.duracaoDias)
+            .reduce((max, p) => Math.max(max, vipDoPlano(p)), 0);
     }
 
     function primeiroNome(texto) {
