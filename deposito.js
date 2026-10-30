@@ -24,22 +24,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const toast = (tipo, titulo, msg) => { if (typeof window.showToast === 'function') window.showToast(tipo, titulo, msg); };
 
     // Botões de valor gerados a partir do catálogo (um por plano)
+    // Planos primeiro e, abaixo, os Ciclos (com título separando os grupos)
     function renderizarChips() {
         const caixa = $('depChips');
         if (!caixa) return;
         caixa.innerHTML = '';
-        Object.entries(PLANOS).forEach(([chave, plano]) => {
-            if (plano.valor < DEPOSITO_MINIMO) return;
-            const botao = document.createElement('button');
-            botao.type = 'button';
-            botao.className = 'dep-chip btn btn-outline';
-            botao.dataset.plano = chave;
-            const valor = document.createElement('strong');
-            valor.textContent = 'R$ ' + plano.valor;
-            const vip = document.createElement('small');
-            vip.textContent = plano.vip > 0 ? 'VIP ' + plano.vip : 'Sem VIP';
-            botao.append(valor, vip);
-            caixa.appendChild(botao);
+        [['planos', 'Planos'], ['ciclos', 'Ciclos']].forEach(([grupo, titulo]) => {
+            const doGrupo = Object.entries(PLANOS).filter(([, p]) => p.grupo === grupo && p.valor >= DEPOSITO_MINIMO);
+            if (!doGrupo.length) return;
+
+            const rotulo = document.createElement('div');
+            rotulo.className = 'dep-chips-title';
+            rotulo.textContent = titulo;
+            caixa.appendChild(rotulo);
+
+            doGrupo.forEach(([chave, plano]) => {
+                const botao = document.createElement('button');
+                botao.type = 'button';
+                botao.className = 'dep-chip btn btn-outline';
+                botao.dataset.plano = chave;
+                const valor = document.createElement('strong');
+                valor.textContent = 'R$ ' + plano.valor;
+                const info = document.createElement('small');
+                info.textContent = grupo === 'ciclos'
+                    ? plano.nome
+                    : 'VIP ' + plano.vip;
+                botao.append(valor, info);
+                caixa.appendChild(botao);
+            });
         });
     }
     renderizarChips();
@@ -126,13 +138,15 @@ document.addEventListener('DOMContentLoaded', () => {
     $('depositTelefone').addEventListener('input', (e) => { e.target.value = mascaraTelefone(e.target.value); });
     $('depositWhatsapp').addEventListener('input', (e) => { e.target.value = mascaraTelefone(e.target.value); });
 
+    // Valor digitado em "Outro valor" só vale para os planos; os Ciclos
+    // (que repetem R$ 50 e R$ 100) são escolhidos pelos botões.
     function planoPorValor(valor) {
-        return Object.keys(PLANOS).find((k) => Math.abs(PLANOS[k].valor - valor) < 0.001) || null;
+        return Object.keys(PLANOS).find((k) => PLANOS[k].grupo === 'planos' && Math.abs(PLANOS[k].valor - valor) < 0.001) || null;
     }
 
     function planosDisponiveisTexto() {
         const valores = Object.values(PLANOS)
-            .filter((p) => p.valor >= DEPOSITO_MINIMO)
+            .filter((p) => p.grupo === 'planos' && p.valor >= DEPOSITO_MINIMO)
             .map((p) => brl(p.valor));
         if (valores.length <= 1) return valores.join('');
         return valores.slice(0, -1).join(', ') + ' e ' + valores[valores.length - 1];
@@ -213,17 +227,17 @@ document.addEventListener('DOMContentLoaded', () => {
         pararEscutaStatus = () => ref.off('value', callback);
     }
 
-    // Conta os planos ainda válidos do usuário com o mesmo valor
-    async function contarPlanosAtivosDoValor(uid, valor) {
+    // Conta os ciclos ainda válidos do usuário com a mesma chave
+    async function contarCiclosAtivos(uid, chave) {
         try {
             const snap = await firebaseDb.ref('users/' + uid + '/planos').once('value');
             const lista = snap.val() ? Object.values(snap.val()) : [];
             return lista.filter((p) => {
                 const dias = Math.floor((Date.now() - p.dataAtivacao) / 86400000);
-                return dias < p.duracaoDias && Math.abs((p.valorInvestido || 0) - valor) < 0.01;
+                return p.planoKey === chave && dias < p.duracaoDias;
             }).length;
         } catch (err) {
-            console.error('Não foi possível conferir o limite de planos:', err);
+            console.error('Não foi possível conferir o limite de ciclos:', err);
             return 0; // não bloqueia a tela; a conferência final é feita na aprovação
         }
     }
@@ -318,13 +332,15 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const info = PLANOS[chave];
 
-            // Limite: no máximo 10 planos ativos do mesmo valor por usuário
-            // (o admin confere de novo na aprovação; o Worker deve conferir também).
-            const limite = info.limiteCompras || window.PLANOS_LIMITE_COMPRAS || 10;
-            const ativos = await contarPlanosAtivosDoValor(user.uid, info.valor);
-            if (ativos >= limite) {
-                toast('warning', 'Limite atingido', `Você já tem ${limite} planos ativos de ${brl(info.valor)}.`);
-                return;
+            // Ciclos: no máximo 10 ativos do mesmo tipo por usuário (o admin
+            // confere de novo na aprovação; o Worker também deve conferir).
+            if (info.grupo === 'ciclos') {
+                const limite = info.limiteCompras || window.CICLOS_LIMITE_COMPRAS || 10;
+                const ativos = await contarCiclosAtivos(user.uid, chave);
+                if (ativos >= limite) {
+                    toast('warning', 'Limite atingido', `Você já tem ${limite} ciclos ${info.nome} ativos.`);
+                    return;
+                }
             }
 
             const userName = await nomeDoUsuario(user);
