@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="planos.css">
     <link rel="stylesheet" href="equipe.css">
     <link rel="stylesheet" href="missoes.css">
+    <link rel="stylesheet" href="roleta.css">
     <link rel="stylesheet" href="investimentos.css">
     <link rel="stylesheet" href="extrato.css">
     <link rel="stylesheet" href="perfil.css">
@@ -56,6 +57,10 @@
                 <button class="nav-item" data-section="missoes">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M17 5h3v2a3 3 0 0 1-3 3"/><path d="M7 5H4v2a3 3 0 0 0 3 3"/></svg>
                     <span>Missões</span>
+                </button>
+                <button class="nav-item" data-section="roleta">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.4"/><path d="M12 3v6.6M12 14.4V21M3 12h6.6M14.4 12H21"/></svg>
+                    <span>Roleta</span>
                 </button>
                 <button class="nav-item" data-section="extrato">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><path d="M9 12h6M9 16h6M9 8h2"/></svg>
@@ -329,6 +334,46 @@
                 </div>
 
                 <button type="button" class="btn mis-resgatar" id="btnResgatarMissoes" disabled>Complete tudo para ganhar R$ 5,00</button>
+            </section>
+            <!-- ROLETA DA SORTE (gerado pelo roleta.js) -->
+            <section class="page-section" id="section-roleta">
+                <h1 class="page-title">Roleta da Sorte</h1>
+                <div class="rol-intro">
+                    <p>Convidou 1 pessoa que investiu <strong>R$ 100,00 ou mais</strong>? Você ganha <strong>1 giro</strong>! Prêmios: <strong>R$ 2,00</strong> no saldo ou <strong>desconto na taxa de saque</strong>.</p>
+                </div>
+
+                <div class="rol-stage">
+                    <div class="rol-pointer"></div>
+                    <div id="roletaRodaBox"></div>
+                    <button type="button" class="rol-btn-girar" id="roletaGirar" disabled>GIRAR</button>
+                </div>
+
+                <div class="rol-resumo">
+                    <div class="rol-card"><span>Giros disponíveis</span><strong id="roletaGiros">0</strong></div>
+                    <div class="rol-card"><span>Desconto no próximo saque</span><strong id="roletaDesconto">Nenhum</strong></div>
+                </div>
+
+                <div class="rol-premios">
+                    <h3>Recompensas possíveis</h3>
+                    <ul>
+                        <li>R$ 2,00 direto no saldo de Rendimento</li>
+                        <li>Desconto na taxa do próximo saque</li>
+                    </ul>
+                </div>
+
+                <h3>Últimos giros</h3>
+                <table class="rol-historico">
+                    <thead><tr><th>Data</th><th>Prêmio</th></tr></thead>
+                    <tbody id="roletaHistorico"><tr><td colspan="2" class="muted">Carregando...</td></tr></tbody>
+                </table>
+
+                <div class="rol-resultado" id="roletaResultado">
+                    <div class="rol-resultado-box">
+                        <h2 id="roletaResTitulo"></h2>
+                        <p id="roletaResTexto"></p>
+                        <button type="button" class="btn" id="roletaResFechar">OK</button>
+                    </div>
+                </div>
             </section>
             <!-- EXTRATO -->
             <section class="page-section" id="section-extrato">
@@ -604,6 +649,7 @@
     <script src="deposito.js"></script>
     <script src="inicio.js"></script>
     <script src="missoes.js"></script>
+    <script src="roleta.js"></script>
     <script src="investimentos.js"></script>
     <script src="saque.js"></script>
     <script src="perfil.js"></script>
