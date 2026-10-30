@@ -1,0 +1,200 @@
+/* ============================================================
+   Tela Missões — usa SOMENTE as variáveis do style.css
+   (as cores do site não mudam).
+   ============================================================ */
+.mis-intro {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 16px;
+}
+
+.mis-intro p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text-muted);
+}
+
+.mis-intro-icon {
+    flex: 0 0 52px;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(31, 184, 174, 0.1);
+    border: 1px solid var(--border-primary);
+    border-radius: 14px;
+    color: var(--primary-light);
+}
+
+.mis-intro-icon svg { width: 28px; height: 28px; }
+
+.mis-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.mis-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    background: linear-gradient(160deg, var(--bg-card), var(--bg-card-2));
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.mis-row.is-done {
+    border-color: var(--border-primary);
+}
+
+.mis-icon {
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(31, 184, 174, 0.1);
+    border: 1px solid var(--border-primary);
+    border-radius: 12px;
+    color: var(--primary-light);
+}
+
+.mis-row.is-done .mis-icon {
+    background: var(--success-bg);
+    color: var(--success);
+}
+
+.mis-icon svg { width: 24px; height: 24px; }
+
+.mis-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.mis-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.mis-points {
+    margin-top: 2px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--success);
+}
+
+.mis-bar {
+    height: 6px;
+    margin-top: 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+}
+
+.mis-bar span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+    transition: width 0.4s ease;
+}
+
+.mis-side {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.mis-count {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.mis-go { min-width: 92px; }
+
+.mis-done {
+    display: inline-block;
+    min-width: 92px;
+    padding: 8px 12px;
+    text-align: center;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--success);
+    background: var(--success-bg);
+    border: 1px solid var(--success);
+    border-radius: var(--radius-sm);
+}
+
+.mis-progress {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 16px;
+    padding: 16px 18px;
+    background: linear-gradient(160deg, var(--bg-card), var(--bg-card-2));
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.mis-progress-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.mis-progress-info strong {
+    display: block;
+    font-size: 14px;
+    color: var(--text-color);
+}
+
+.mis-progress-info .mis-bar { height: 10px; margin-top: 10px; }
+
+.mis-progress-info small {
+    display: block;
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.mis-gift {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    color: var(--primary-light);
+}
+
+.mis-gift svg { width: 44px; height: 44px; }
+
+.mis-gift strong {
+    font-size: 16px;
+    color: var(--text-color);
+    font-variant-numeric: tabular-nums;
+}
+
+.mis-resgatar { margin-top: 16px; }
+
+.mis-resgatar:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+@media (max-width: 420px) {
+    .mis-row { gap: 10px; padding: 12px; }
+    .mis-icon { flex-basis: 38px; width: 38px; height: 38px; }
+    .mis-go, .mis-done { min-width: 80px; padding: 8px; }
+    .mis-intro-icon { flex-basis: 44px; width: 44px; height: 44px; }
+}
