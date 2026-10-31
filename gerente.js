@@ -26,12 +26,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
     const AVATAR = '<svg viewBox="0 0 64 64" aria-hidden="true">' +
-        '<path d="M8 64c2-14 12-20 24-20s22 6 24 20Z" fill="#1a1a1a" stroke="#f0b429" stroke-width="1.2"/>' +
-        '<path d="M28 44l4 8 4-8" fill="#f0b429"/>' +
-        '<circle cx="32" cy="27" r="13" fill="#f0b429"/>' +
+        '<path d="M8 64c2-14 12-20 24-20s22 6 24 20Z" fill="#1a1a1a" stroke="#d8b56a" stroke-width="1.2"/>' +
+        '<path d="M28 44l4 8 4-8" fill="#d8b56a"/>' +
+        '<circle cx="32" cy="27" r="13" fill="#d8b56a"/>' +
         '<path d="M17 28v-3a15 15 0 0 1 30 0v3" fill="none" stroke="#1a1a1a" stroke-width="3.5" stroke-linecap="round"/>' +
-        '<rect x="13" y="25" width="6" height="11" rx="3" fill="#1a1a1a" stroke="#f0b429" stroke-width="1.2"/>' +
-        '<rect x="45" y="25" width="6" height="11" rx="3" fill="#1a1a1a" stroke="#f0b429" stroke-width="1.2"/>' +
+        '<rect x="13" y="25" width="6" height="11" rx="3" fill="#1a1a1a" stroke="#d8b56a" stroke-width="1.2"/>' +
+        '<rect x="45" y="25" width="6" height="11" rx="3" fill="#1a1a1a" stroke="#d8b56a" stroke-width="1.2"/>' +
         '<path d="M48 35c0 6-6 8-12 8" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>' +
         '</svg>';
 
