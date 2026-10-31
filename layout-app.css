@@ -1,0 +1,88 @@
+/* ============================================================
+   LAYOUT DO APP — menu inferior, banner, "Meus Ativos", olhinho.
+   Usa SÓ as variáveis originais do style.css (cores do site),
+   então acompanha a paleta atual. Carregue por último no <head>.
+   ============================================================ */
+
+/* ---------- Início ---------- */
+.quick-actions { grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.quick-action { padding: 14px 4px 12px; font-size: 12px; }
+.quick-action-icon { width: 42px; height: 42px; }
+
+.home-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 16px 0 18px;
+    padding: 20px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-primary);
+    background:
+        radial-gradient(ellipse 240px 160px at 100% 50%, rgba(64, 210, 210, 0.16), transparent 70%),
+        linear-gradient(135deg, var(--bg-card-2), var(--bg-card));
+}
+.home-banner strong {
+    font-size: clamp(16px, 4.6vw, 21px);
+    line-height: 1.2;
+    text-transform: uppercase;
+    letter-spacing: .02em;
+    color: var(--text-color);
+}
+.home-banner svg { flex: 0 0 auto; width: 60px; height: 60px; color: var(--primary-light); opacity: .9; }
+
+.home-ativos-titulo { margin: 4px 0 10px; font-size: 17px; font-weight: 700; color: var(--text-color); text-align: left; }
+.home-ativos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 18px; }
+.home-ativo {
+    padding: 12px 8px;
+    text-align: center;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-soft-2);
+    background: linear-gradient(160deg, var(--bg-card-2), var(--bg-card));
+}
+.home-ativo span { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+.home-ativo strong { font-size: 16px; color: var(--success); }
+.home-ativo.is-accent strong { color: var(--primary-light); }
+
+.balance-eye { margin-left: auto; background: none; border: 0; cursor: pointer; color: var(--primary-light); display: inline-flex; padding: 2px; }
+.balance-eye svg { width: 22px; height: 22px; }
+.balance-card-header { display: flex; align-items: center; gap: 8px; }
+.balance-card.is-hidden #userBalance { filter: blur(9px); user-select: none; }
+
+/* ---------- Menu inferior (celular/tablet) ---------- */
+.app-bottom-nav { display: none; }
+@media (max-width: 1023px) {
+    .app-bottom-nav {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 90;
+        display: flex;
+        justify-content: space-around;
+        padding: 8px 4px calc(8px + env(safe-area-inset-bottom, 0px));
+        background: rgba(9, 16, 25, 0.96);
+        border-top: 1px solid var(--border-soft-2);
+        box-shadow: 0 -6px 22px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(14px);
+    }
+    .app-bottom-nav button {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+        padding: 4px 0;
+        background: none;
+        border: 0;
+        cursor: pointer;
+        color: var(--text-faint);
+        font: inherit;
+        font-size: 11px;
+        font-weight: 600;
+        transition: color .2s ease;
+    }
+    .app-bottom-nav svg { width: 24px; height: 24px; }
+    .app-bottom-nav button.is-active { color: var(--primary-light); }
+    .main-content { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)) !important; }
+}
