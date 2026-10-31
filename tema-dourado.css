@@ -1,0 +1,292 @@
+/* ============================================================
+   TEMA DOURADO — preto + dourado (visual dos protótipos do app)
+   Carregue POR ÚLTIMO no <head>. Troca a paleta pelas variáveis do
+   style.css e acrescenta o acabamento (bordas douradas, brilho,
+   menu inferior). Não muda IDs nem textos: o JS continua igual.
+   ============================================================ */
+:root {
+    --gold-1: #fff0b8;
+    --gold-2: #f6c945;
+    --gold-3: #d99a1c;
+    --gold-4: #8a5a0a;
+    --gold-line: rgba(246, 201, 69, 0.38);
+    --gold-line-strong: rgba(246, 201, 69, 0.7);
+    --gold-glow: 0 0 18px rgba(246, 201, 69, 0.22);
+
+    --primary-color: #f6c945;
+    --primary-dark: #4a3206;
+    --primary-darker: #1a1204;
+    --primary-mid: #e0a91f;
+    --primary-light: #ffd966;
+    --primary-lighter: #fff0b8;
+    --accent-color: #ffd966;
+    --accent-soft: #fff0b8;
+    --accent-deep: #b97a0a;
+
+    --sheen: linear-gradient(115deg, rgba(255,255,255,0) 20%, rgba(255,255,255,.07) 36%, rgba(255,217,102,.16) 45%, rgba(255,255,255,.07) 54%, rgba(255,255,255,0) 70%);
+    --border-gradient: linear-gradient(135deg, rgba(255,217,102,.7), rgba(246,201,69,.18) 40%, rgba(255,255,255,.06) 70%, rgba(217,154,28,.45));
+
+    --bg-dark: #060503;
+    --bg-dark-2: #0b0905;
+    --bg-card: #100d07;
+    --bg-card-2: #17120a;
+    --bg-card-3: #1f1809;
+    --bg-elevated: #271e0c;
+    --border-soft: rgba(246, 201, 69, 0.12);
+    --border-soft-2: rgba(246, 201, 69, 0.24);
+    --border-primary: rgba(246, 201, 69, 0.45);
+
+    --text-color: #fbf6e8;
+    --text-muted: #c9bd9c;
+    --text-faint: #8d8266;
+
+    --success: #25e07a;
+    --success-bg: rgba(37, 224, 122, 0.12);
+    --danger: #ff5a5f;
+    --danger-bg: rgba(255, 90, 95, 0.12);
+    --warning: #f6c945;
+    --warning-bg: rgba(246, 201, 69, 0.12);
+    --info: #5aa9ff;
+    --info-bg: rgba(90, 169, 255, 0.12);
+
+    --shadow-glow: 0 0 0 1px rgba(246,201,69,.25), 0 14px 44px rgba(246,201,69,.16), 0 1px 0 rgba(255,255,255,.05) inset;
+    --logo-teal: #f6c945;
+    --logo-teal-deep: #b97a0a;
+
+    --modal-bg-gradient:
+        radial-gradient(ellipse 460px 280px at 18% -12%, rgba(246,201,69,.16), transparent 62%),
+        radial-gradient(ellipse 380px 260px at 100% 108%, rgba(217,154,28,.10), transparent 60%),
+        linear-gradient(160deg, #100d07 0%, #17120a 55%, #1f1809 100%);
+    --border-gradient-modal: linear-gradient(135deg, rgba(255,217,102,.6), rgba(217,154,28,.3) 45%, rgba(246,201,69,.14) 72%, rgba(255,217,102,.45));
+    --shadow-modal-glow: 0 26px 80px rgba(0,0,0,.75), 0 0 0 1px rgba(246,201,69,.2), 0 0 90px -24px rgba(246,201,69,.35);
+}
+
+/* ---------- Fundo ---------- */
+body::before {
+    background:
+        radial-gradient(ellipse 900px 620px at 8% -10%, rgba(246,201,69,.20), transparent 62%),
+        radial-gradient(ellipse 760px 560px at 105% 6%, rgba(217,154,28,.14), transparent 60%),
+        radial-gradient(ellipse 700px 520px at 92% 88%, rgba(246,201,69,.08), transparent 64%),
+        linear-gradient(180deg, #060503 0%, #0b0905 55%, #030201 100%);
+}
+body::after { opacity: 0.22; }
+::selection { background: rgba(246,201,69,.35); color: #fff; }
+::-webkit-scrollbar-thumb { background: rgba(246,201,69,.35); }
+::-webkit-scrollbar-thumb:hover { background: rgba(246,201,69,.6); }
+a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-visible { outline-color: var(--gold-2); }
+
+/* ---------- Títulos ---------- */
+.page-title, .home-greeting {
+    background: linear-gradient(180deg, var(--gold-1), var(--gold-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* ---------- Cartões (moldura dourada + brilho) ---------- */
+.balance-card, .stat-card, .yacht-card, .rules-box, .info-box, .form-box, .profile-card,
+.quick-action, .inv-card, .inv-total, .com-card, .com-total, .com-intro, .com-historico,
+.plan-row, .hist-row, .perfil-item, .perfil-atalho, .mis-row, .mis-intro, .mis-progress,
+.card {
+    background: linear-gradient(145deg, #15100a 0%, #0d0a06 100%);
+    border: 1px solid var(--gold-line);
+    box-shadow: var(--gold-glow), inset 0 1px 0 rgba(255, 240, 184, 0.06);
+}
+.balance-card {
+    background:
+        radial-gradient(ellipse 300px 160px at 85% 0%, rgba(246,201,69,.22), transparent 70%),
+        linear-gradient(145deg, #1d1507 0%, #0d0a06 100%);
+    border-color: var(--gold-line-strong);
+    box-shadow: 0 0 26px rgba(246,201,69,.2), inset 0 1px 0 rgba(255,240,184,.1);
+}
+.balance-card h2, #userBalance {
+    background: linear-gradient(180deg, #fff6cf, var(--gold-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 24px rgba(246,201,69,.25);
+}
+.balance-card.is-hidden #userBalance { filter: blur(9px); user-select: none; }
+.stat-card h2 { color: var(--gold-1); }
+@media (hover: hover) and (pointer: fine) {
+    .yacht-card:hover, .plan-row:hover, .inv-card:hover, .quick-action:hover, .perfil-item:hover {
+        border-color: var(--gold-line-strong);
+        box-shadow: 0 0 24px rgba(246,201,69,.28);
+        transform: translateY(-2px);
+    }
+}
+
+/* ---------- Botões ---------- */
+.btn {
+    background: linear-gradient(180deg, var(--gold-1) 0%, var(--gold-2) 55%, var(--gold-3) 100%);
+    color: #2a1b00;
+    border: 1px solid rgba(255, 240, 184, 0.55);
+    font-weight: 800;
+    box-shadow: 0 0 16px rgba(246,201,69,.3), inset 0 1px 0 rgba(255,255,255,.55);
+}
+.btn:hover:not(:disabled) { filter: brightness(1.07); box-shadow: 0 0 24px rgba(246,201,69,.5), inset 0 1px 0 rgba(255,255,255,.6); }
+.btn.btn-outline { background: transparent; color: var(--gold-2); border: 1px solid var(--gold-line-strong); box-shadow: none; }
+.btn.btn-outline:hover { background: rgba(246,201,69,.1); }
+.btn.btn-danger { background: linear-gradient(180deg, #ff7b80, #d6343a); color: #fff; border-color: rgba(255,120,125,.5); box-shadow: none; }
+.plan-buy, .com-historico-btn { color: #2a1b00; }
+
+/* ---------- Campos ---------- */
+input:not([type=checkbox]):not([type=radio]), select, textarea, .ref-input, .form-group input {
+    background: #070503;
+    color: var(--text-color);
+    border: 1px solid var(--gold-line);
+    border-radius: 12px;
+}
+input:not([type=checkbox]):not([type=radio]):focus, select:focus, textarea:focus, .ref-input:focus {
+    outline: none;
+    border-color: var(--gold-2);
+    box-shadow: 0 0 0 3px rgba(246,201,69,.18);
+}
+input::placeholder { color: #6f6650; }
+
+/* ---------- Abas (Rendimento/Ciclo, Todos/Depósitos…) ---------- */
+.inv-tabs, .hist-tabs {
+    background: #0a0805;
+    border: 1px solid var(--gold-line);
+    border-radius: 14px;
+    padding: 4px;
+}
+.inv-tabs .btn.btn-outline, .hist-tabs .btn.btn-outline { border-color: transparent; color: var(--text-muted); }
+
+/* ---------- Menu lateral e barra superior ---------- */
+.sidebar { background: linear-gradient(180deg, #0d0a05, #070503); border-right: 1px solid var(--gold-line); }
+.nav-item { color: var(--text-muted); }
+.nav-item:hover { color: var(--gold-1); background: rgba(246,201,69,.07); }
+.nav-item.active {
+    color: var(--gold-1);
+    background: linear-gradient(90deg, rgba(246,201,69,.22), rgba(246,201,69,.04));
+    border: 1px solid var(--gold-line);
+    box-shadow: var(--gold-glow);
+}
+.brand-name { background: linear-gradient(180deg, var(--gold-1), var(--gold-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.mobile-topbar { background: rgba(8, 6, 3, 0.95); border-bottom: 1px solid var(--gold-line); }
+.mobile-topbar-title { color: var(--gold-1); font-weight: 800; }
+.hamburger-btn span { background: var(--gold-2); }
+
+/* ---------- Tabelas, selos, toasts, modais ---------- */
+.extrato-table th { color: var(--gold-2); border-bottom: 1px solid var(--gold-line); }
+.extrato-table td { border-bottom: 1px solid var(--border-soft); }
+.modal-card { border: 1px solid var(--gold-line-strong); }
+.modal-overlay { background: rgba(0, 0, 0, 0.78); }
+.toast { border: 1px solid var(--gold-line); background: #0f0b05; }
+.vip-badge { background: linear-gradient(180deg, #3a2a08, #241a05); color: var(--gold-1); border: 1px solid var(--gold-line-strong); }
+.home-avatar { border-color: var(--gold-2); color: var(--gold-1); box-shadow: 0 0 18px rgba(246,201,69,.35); }
+.quick-action-icon, .inv-icon, .hist-icon, .com-intro-icon, .com-total-icon, .mis-icon, .mis-intro-icon, .perfil-item-icone {
+    color: var(--gold-2);
+    background: radial-gradient(circle at 35% 30%, #2d2108, #130e04);
+    border: 1px solid var(--gold-line);
+    box-shadow: 0 0 12px rgba(246,201,69,.2);
+}
+.plan-rate, .inv-value, .hist-value { color: var(--success); }
+
+/* ---------- Início: banner e "Meus Ativos" ---------- */
+.home-banner {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 4px 0 18px;
+    padding: 22px 20px;
+    border-radius: 18px;
+    border: 1px solid var(--gold-line-strong);
+    background:
+        radial-gradient(ellipse 260px 200px at 100% 50%, rgba(246,201,69,.35), transparent 70%),
+        linear-gradient(135deg, #1a1306, #0a0704);
+    box-shadow: 0 0 26px rgba(246,201,69,.18);
+}
+.home-banner strong {
+    font-size: clamp(18px, 5vw, 24px);
+    line-height: 1.15;
+    letter-spacing: .01em;
+    text-transform: uppercase;
+    background: linear-gradient(180deg, #fff6cf, var(--gold-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+.home-banner svg { flex: 0 0 auto; width: 74px; height: 74px; color: var(--gold-2); filter: drop-shadow(0 0 12px rgba(246,201,69,.6)); }
+
+.home-ativos-titulo { margin: 4px 0 10px; font-size: 18px; font-weight: 800; color: var(--gold-1); }
+.home-ativos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 18px; }
+.home-ativo {
+    padding: 12px 8px;
+    text-align: center;
+    border-radius: 14px;
+    border: 1px solid var(--gold-line);
+    background: linear-gradient(145deg, #15100a, #0d0a06);
+    box-shadow: var(--gold-glow);
+}
+.home-ativo span { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+.home-ativo strong { font-size: 17px; color: var(--success); }
+.home-ativo.is-gold strong { color: var(--gold-1); }
+
+.balance-eye {
+    margin-left: auto;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    color: var(--gold-2);
+    display: inline-flex;
+    padding: 2px;
+}
+.balance-eye svg { width: 22px; height: 22px; }
+.balance-card-header { display: flex; align-items: center; gap: 8px; }
+
+/* ---------- Menu inferior (celular/tablet) ---------- */
+.gold-bottom-nav { display: none; }
+@media (max-width: 1023px) {
+    .gold-bottom-nav {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 90;
+        display: flex;
+        justify-content: space-around;
+        padding: 8px 4px calc(8px + env(safe-area-inset-bottom, 0px));
+        background: linear-gradient(180deg, rgba(14, 10, 4, 0.96), rgba(5, 3, 1, 0.99));
+        border-top: 1px solid var(--gold-line-strong);
+        box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.65), 0 -1px 18px rgba(246, 201, 69, 0.12);
+        backdrop-filter: blur(14px);
+    }
+    .gold-bottom-nav button {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+        padding: 4px 0;
+        background: none;
+        border: 0;
+        cursor: pointer;
+        color: #8d8266;
+        font: inherit;
+        font-size: 11px;
+        font-weight: 600;
+        transition: color .2s ease;
+    }
+    .gold-bottom-nav svg { width: 24px; height: 24px; }
+    .gold-bottom-nav button.is-active { color: var(--gold-2); }
+    .gold-bottom-nav button.is-active svg { filter: drop-shadow(0 0 7px rgba(246, 201, 69, 0.85)); }
+    .gold-bottom-nav button.is-active span { text-shadow: 0 0 10px rgba(246, 201, 69, 0.6); }
+    .main-content { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)) !important; }
+}
+
+/* ---------- Ajustes finos ---------- */
+.quick-actions { grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.quick-action { padding: 14px 4px 12px; font-size: 12px; }
+.quick-action-icon { width: 42px; height: 42px; }
+.hamburger-btn { background: rgba(246, 201, 69, 0.1); border-color: var(--gold-line); }
+.stat-card span, .balance-card-header span { letter-spacing: .04em; }
+.quick-actions + .home-banner { margin-top: 16px; }
+.home-ativos-titulo { text-align: left; }
+.cp-campo input:not([type=checkbox]):not([type=radio]) { border: 0; background: transparent; box-shadow: none; border-radius: 0; }
+.cp-card-titulo h3, .cp-como h3, .cp-lista-topo h3 { text-align: left; }
+.ger-nome, .gp-titulo { text-align: left; }
