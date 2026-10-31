@@ -1,7 +1,7 @@
 /* ============================================================
    Aba "Cupom" — resgate de cupons (visual dourado)
    ============================================================ */
-#section-cupom { --cp-gold: #f0b429; --cp-gold-light: #ffe08a; --cp-gold-dark: #b8860b; }
+#section-cupom { --cp-gold: #d8b56a; --cp-gold-light: #f0dcac; --cp-gold-dark: #a67e42; }
 
 .cp-header {
     position: relative;
@@ -9,20 +9,17 @@
     padding: 22px 20px;
     margin-bottom: 14px;
     border-radius: 18px;
-    border: 1px solid rgba(240, 180, 41, 0.45);
+    border: 1px solid rgba(216, 181, 106, 0.45);
     background:
-        radial-gradient(circle at 92% 25%, rgba(240, 180, 41, 0.25), transparent 55%),
+        radial-gradient(circle at 92% 25%, rgba(216, 181, 106, 0.25), transparent 55%),
         linear-gradient(135deg, #0b0b0b, #14110a);
-    box-shadow: 0 0 22px rgba(240, 180, 41, 0.12);
+    box-shadow: 0 0 22px rgba(216, 181, 106, 0.12);
 }
 .cp-header h1 {
     margin: 0 0 6px;
     font-size: 36px;
     letter-spacing: 0.04em;
-    background: linear-gradient(180deg, #fff3c4, var(--cp-gold));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    color: #f0dcac;
 }
 .cp-header p { margin: 0; color: #cfc6ae; font-size: 14px; max-width: 70%; line-height: 1.45; }
 .cp-header-icon {
@@ -33,14 +30,14 @@
     width: 74px;
     height: 74px;
     color: var(--cp-gold);
-    filter: drop-shadow(0 0 10px rgba(240, 180, 41, 0.6));
+    
 }
 
 .cp-card {
     padding: 16px;
     margin-bottom: 14px;
     border-radius: 16px;
-    border: 1px solid rgba(240, 180, 41, 0.4);
+    border: 1px solid rgba(216, 181, 106, 0.4);
     background: linear-gradient(135deg, #0d0d0d, #17130b);
 }
 .cp-card-titulo { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
@@ -55,7 +52,7 @@
     padding: 0 14px;
     margin-bottom: 12px;
     border-radius: 12px;
-    border: 1px solid rgba(240, 180, 41, 0.35);
+    border: 1px solid rgba(216, 181, 106, 0.35);
     background: #070707;
 }
 .cp-campo svg { width: 24px; height: 24px; color: var(--cp-gold); flex: 0 0 auto; }
@@ -90,7 +87,7 @@
     letter-spacing: 0.04em;
     color: #2a1b00;
     background: linear-gradient(180deg, var(--cp-gold-light), var(--cp-gold) 60%, var(--cp-gold-dark));
-    box-shadow: 0 0 16px rgba(240, 180, 41, 0.35);
+    box-shadow: 0 0 16px rgba(216, 181, 106, 0.35);
     transition: transform 0.15s ease, filter 0.15s ease;
 }
 .cp-btn:hover:not(:disabled) { transform: translateY(-1px); filter: brightness(1.06); }
