@@ -695,3 +695,93 @@ input:not([type=checkbox]):not([type=radio]):focus, select:focus, textarea:focus
     .app-bottom-nav button.is-active::before { background: var(--gold); box-shadow: 0 2px 12px rgba(217, 184, 108, 0.7); }
     .app-bottom-nav button.is-active svg { color: var(--gold); filter: drop-shadow(0 0 7px rgba(217, 184, 108, 0.55)); }
 }
+
+
+/* ============================================================
+   v10 — REFINO DE COR E FUNDO (acrescentado ao final)
+   Mesma direção do v9; só aprofunda fundo, superfícies e dourado.
+   Para voltar ao v9, apague tudo daqui para baixo.
+   ============================================================ */
+:root {
+    --gold: #dcbc72; --gold-hi: #f8ebc9; --gold-lo: #a8843a;
+    --accent-gold: #dcbc72; --accent-gold-soft: #f8ebc9; --accent-gold-deep: #a8843a;
+    --bg-top: #0a1824; --bg-mid: #060b12; --bg-bot: #020406;
+    --glass-a: #0f1a27; --glass-b: #080e16;
+    --sidebar-a: #08111a; --sidebar-b: #04070b;
+    --glass-pb:
+        linear-gradient(180deg, rgba(248, 235, 201, 0.045) 0%, rgba(248, 235, 201, 0) 42%) padding-box,
+        linear-gradient(180deg, var(--glass-a) 0%, var(--glass-b) 100%) padding-box;
+    --edge: linear-gradient(160deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04) 42%, rgba(220, 188, 114, 0.20)) border-box;
+}
+
+/* ---- Fundo: foco de luz champanhe no topo, poço azul-petróleo embaixo, vinheta ---- */
+body::before {
+    background:
+        radial-gradient(ellipse 760px 340px at 50% -6%, rgba(248, 235, 201, 0.085), transparent 70%),
+        radial-gradient(ellipse 900px 460px at -4% -10%, rgba(220, 188, 114, 0.11), transparent 64%),
+        radial-gradient(ellipse 820px 560px at 108% 0%, rgba(34, 120, 170, 0.20), transparent 64%),
+        radial-gradient(ellipse 760px 480px at 96% 78%, rgba(54, 214, 203, 0.065), transparent 66%),
+        radial-gradient(ellipse 1000px 520px at 22% 124%, rgba(18, 96, 120, 0.22), transparent 68%),
+        radial-gradient(ellipse 125% 100% at 50% 45%, transparent 50%, rgba(0, 0, 0, 0.68) 100%),
+        linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 52%, var(--bg-bot) 100%);
+}
+body::after { opacity: 0.06; }
+
+/* ---- Menu lateral: mais escuro que o fundo, com filete dourado que some ---- */
+.sidebar {
+    background:
+        radial-gradient(ellipse 280px 240px at 0% 0%, rgba(220, 188, 114, 0.10), transparent 70%),
+        radial-gradient(ellipse 260px 260px at 0% 100%, rgba(18, 96, 120, 0.14), transparent 70%),
+        linear-gradient(180deg, var(--sidebar-a) 0%, var(--sidebar-b) 100%);
+    border-right: 0;
+    box-shadow: 1px 0 0 rgba(255, 255, 255, 0.05), 24px 0 60px -34px rgba(0, 0, 0, 0.9);
+}
+.sidebar::after {
+    content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 1px; pointer-events: none;
+    background: linear-gradient(180deg, rgba(220, 188, 114, 0.55), rgba(220, 188, 114, 0.08) 45%, rgba(54, 214, 203, 0.25));
+}
+
+/* ---- Cartões: superfície azul-petróleo escuro com borda em degradê ---- */
+.stat-card, .yacht-card, .rules-box, .info-box, .form-box, .profile-card,
+.quick-action, .inv-card, .inv-total, .com-card, .com-total, .com-intro, .com-historico,
+.plan-row, .hist-row, .perfil-item, .perfil-atalho, .mis-row, .mis-intro, .mis-progress, .home-ativo {
+    border: 1px solid transparent;
+    background: var(--glass-pb), var(--edge);
+    box-shadow: 0 16px 34px -18px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+@media (hover: hover) and (pointer: fine) {
+    .yacht-card:hover, .plan-row:hover, .inv-card:hover, .quick-action:hover, .perfil-item:hover {
+        background: var(--glass-pb), linear-gradient(160deg, rgba(248, 235, 201, 0.7), rgba(220, 188, 114, 0.25) 50%, rgba(220, 188, 114, 0.5)) border-box;
+    }
+}
+
+/* ---- Cartão de saldo: mais saturado e profundo, número em ouro degradê ---- */
+.balance-card {
+    background:
+        radial-gradient(ellipse 380px 210px at 100% -10%, rgba(45, 212, 200, 0.30), transparent 70%) padding-box,
+        radial-gradient(ellipse 320px 190px at -4% 125%, rgba(220, 188, 114, 0.20), transparent 70%) padding-box,
+        linear-gradient(135deg, #0d3b47 0%, #0a2834 46%, #07182a 100%) padding-box,
+        linear-gradient(135deg, rgba(248, 235, 201, 1), rgba(220, 188, 114, 0.30) 32%, rgba(255, 255, 255, 0.06) 60%, rgba(54, 214, 203, 0.55)) border-box;
+    box-shadow: 0 30px 60px -24px rgba(0, 0, 0, 0.9), 0 0 70px -26px rgba(54, 214, 203, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+.balance-card h2, #userBalance {
+    background: linear-gradient(180deg, #fffaf0 0%, #f4e2b4 55%, #dcbc72 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+    text-shadow: none;
+    filter: drop-shadow(0 4px 22px rgba(220, 188, 114, 0.22));
+}
+
+/* ---- Banner e botões ---- */
+.home-banner {
+    background:
+        radial-gradient(ellipse 320px 180px at 100% 50%, rgba(45, 212, 200, 0.20), transparent 70%),
+        radial-gradient(ellipse 260px 150px at 0% 115%, rgba(220, 188, 114, 0.16), transparent 70%),
+        linear-gradient(135deg, #0d2a34, #091a24 62%, #070f17);
+    border-color: rgba(220, 188, 114, 0.30);
+}
+.btn {
+    background: linear-gradient(180deg, #f8ebc9 0%, #e3c57d 45%, #c29a45 100%);
+    box-shadow: 0 12px 24px -10px rgba(220, 188, 114, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.65), inset 0 -1px 0 rgba(100, 66, 10, 0.35);
+}
+.nav-item.active { background: linear-gradient(90deg, rgba(220, 188, 114, 0.18), rgba(220, 188, 114, 0.02)); }
