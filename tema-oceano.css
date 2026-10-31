@@ -811,3 +811,11 @@ body::after { opacity: 0.06; }
     body:not(.admin-body) .sidebar-overlay { display: none !important; }
     body:not(.admin-body) .mobile-topbar { padding-left: 20px; }
 }
+
+/* ---- Login / cadastro: logo completa sem moldura quadrada ---- */
+.logo-container .logo-img {
+    width: 100%; max-width: 232px; height: auto;
+    border-radius: 0; border: 0; background: none; box-shadow: none; object-fit: contain;
+    margin: 0 auto 6px; display: block;
+    filter: drop-shadow(0 12px 26px rgba(0, 0, 0, 0.55));
+}
