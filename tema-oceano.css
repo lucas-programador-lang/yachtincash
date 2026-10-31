@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500..700&display=swap');
 /* ============================================================
    TEMA OCEANO v6 — "Mar profundo + turquesa da logo + dourado champanhe"
    Carregue DEPOIS do style.css (e dos CSS das telas).
@@ -489,79 +490,208 @@ input::placeholder, textarea::placeholder { color: var(--text-faint); }
 
 
 /* ============================================================
-   v8 — REFINO PREMIUM (acrescentado ao final)
-   NENHUMA cor, variável ou fundo foi alterado: só acabamento
-   (tipografia, espaçamento, bordas, sombras, ritmo visual).
-   Para voltar ao v6, apague tudo daqui para baixo.
+   v9 — PREMIUM NOIR (acrescentado ao final)
+   Superfícies foscas e escuras, dourado champanhe como marca,
+   turquesa só como apoio, números em fonte serifada.
+   Só visual: nenhum ID, texto ou script muda.
+   Para voltar ao v6, apague tudo daqui para baixo e a 1ª linha (@import).
    ============================================================ */
+:root {
+    --font-num: 'Fraunces', 'Playfair Display', Georgia, serif;
+    --font-body: 'Manrope', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
-/* ---- Cartões: cantos e bordas consistentes, sombra mais limpa ---- */
-.stat-card, .yacht-card, .inv-card, .plan-row, .hist-row, .quick-action,
-.home-ativo, .perfil-item, .com-card, .mis-row { border-radius: 18px; }
+    --gold: #d9b86c;
+    --gold-hi: #f3e3b8;
+    --gold-lo: #a98640;
+    --accent-gold: #d9b86c;
+    --accent-gold-soft: #f3e3b8;
+    --accent-gold-deep: #a98640;
+    --text-gold-muted: rgba(217, 184, 108, 0.85);
+
+    --bg-dark: #05080d; --bg-dark-2: #070b11;
+    --bg-card: #0b1119; --bg-card-2: #0f1722; --bg-card-3: #151f2c; --bg-elevated: #1b2838;
+    --border-soft: rgba(255, 255, 255, 0.06);
+    --border-soft-2: rgba(255, 255, 255, 0.10);
+    --border-primary: rgba(217, 184, 108, 0.40);
+    --text-color: #f5f1e8; --text-muted: #adb5bf; --text-faint: #7d8896;
+
+    --bg-top: #09131c; --bg-mid: #060a10; --bg-bot: #030507;
+    --aurora-a: rgba(217, 184, 108, 0.075);
+    --aurora-b: rgba(36, 110, 150, 0.15);
+    --aurora-c: rgba(63, 224, 213, 0.045);
+    --aurora-d: rgba(217, 184, 108, 0.05);
+    --glass-a: #111b27; --glass-b: #0a1018;
+    --input-bg: #060a10; --tabs-bg: #060a10;
+    --sidebar-a: #0a121b; --sidebar-b: #05080d;
+    --nav-bg: rgba(6, 10, 16, 0.92);
+    --ban-1: #12272f; --ban-2: #0c1b25; --ban-3: #08131b;
+
+    --shadow-glow: 0 0 0 1px rgba(217, 184, 108, 0.18), 0 16px 46px rgba(0, 0, 0, 0.5);
+    --glass:
+        linear-gradient(180deg, rgba(255,255,255,.04) 0%, rgba(255,255,255,0) 38%),
+        linear-gradient(180deg, var(--glass-a) 0%, var(--glass-b) 100%);
+    --glass-shadow: 0 14px 30px -16px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    --modal-bg-gradient:
+        radial-gradient(ellipse 420px 240px at 12% -14%, rgba(217,184,108,.14), transparent 62%),
+        linear-gradient(160deg, var(--bg-card-2) 0%, var(--bg-card) 100%);
+    --border-gradient-modal: linear-gradient(135deg, rgba(243,227,184,.6), rgba(217,184,108,.18) 45%, rgba(255,255,255,.05) 72%, rgba(63,224,213,.3));
+    --shadow-modal-glow: 0 28px 80px rgba(1, 3, 6, 0.85), 0 0 0 1px rgba(217, 184, 108, 0.22);
+}
+
+/* ---- Fundo: fosco, com um brilho quente no canto e turquesa mínimo ---- */
+body::before {
+    background:
+        radial-gradient(ellipse 900px 420px at 0% -8%, var(--aurora-a), transparent 64%),
+        radial-gradient(ellipse 800px 520px at 106% 2%, var(--aurora-b), transparent 64%),
+        radial-gradient(ellipse 700px 420px at 90% 70%, var(--aurora-c), transparent 66%),
+        radial-gradient(ellipse 900px 500px at 30% 122%, var(--aurora-d), transparent 68%),
+        radial-gradient(ellipse 130% 100% at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.6) 100%),
+        linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 55%, var(--bg-bot) 100%);
+}
+::selection { background: rgba(217, 184, 108, 0.35); color: #fff; }
+::-webkit-scrollbar-thumb { background: rgba(217, 184, 108, 0.28); }
+::-webkit-scrollbar-thumb:hover { background: rgba(217, 184, 108, 0.5); }
+:focus-visible { outline-color: var(--gold); }
+
+/* ---- Tipografia ---- */
+.page-title, .home-greeting, .section-title, .home-ativos-titulo { font-family: var(--font-body); }
+.home-greeting { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; color: var(--text-color); }
+.brand-name { color: var(--gold-hi); letter-spacing: 0.2em; font-size: 13px; font-weight: 700; }
+.balance-card h2, #userBalance, .stat-card h2, .stat-card-left h2 {
+    font-family: var(--font-num);
+    font-optical-sizing: auto;
+    font-variant-numeric: lining-nums tabular-nums;
+    font-feature-settings: 'lnum' 1, 'tnum' 1;
+}
+.stat-card h2, .stat-card-left h2 { font-size: 27px; font-weight: 600; letter-spacing: -0.01em; color: var(--text-color); margin-top: 8px; }
+.stat-card span, .stat-card-left span, .balance-card-header span {
+    font-size: 10.5px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-gold-muted);
+}
+.home-ativos-titulo, .section-title {
+    font-size: 12px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted);
+    display: flex; align-items: center; gap: 12px;
+}
+.home-ativos-titulo::after, .section-title::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, rgba(217,184,108,.35), transparent); }
+
+/* ---- Cartões: foscos, borda fina, ouro só no hover ---- */
 .stat-card, .yacht-card, .rules-box, .info-box, .form-box, .profile-card,
 .quick-action, .inv-card, .inv-total, .com-card, .com-total, .com-intro, .com-historico,
 .plan-row, .hist-row, .perfil-item, .perfil-atalho, .mis-row, .mis-intro, .mis-progress, .home-ativo {
+    background: var(--glass);
     border: 1px solid var(--border-soft-2);
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset, 0 -1px 0 rgba(0, 0, 0, 0.25) inset, 0 8px 22px -10px rgba(0, 0, 0, 0.55);
+    box-shadow: var(--glass-shadow);
+    border-radius: 16px;
 }
-
-/* ---- Rótulos e valores: hierarquia mais nítida ---- */
-.stat-card span, .stat-card-left span, .balance-card-header span {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-}
-.stat-card h2, .stat-card-left h2 {
-    font-size: 26px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    line-height: 1.15;
-    margin-top: 6px;
-}
-
-/* ---- Cartão de saldo: número maior, acabamento de vidro polido ---- */
-.balance-card { padding: 26px 28px; border-radius: 24px; }
-.balance-card-header span { color: rgba(255, 255, 255, 0.82); letter-spacing: 0.14em; }
-.balance-card h2, #userBalance { font-size: clamp(34px, 5vw, 46px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; margin-top: 10px; }
-.balance-card {
-    box-shadow:
-        0 24px 48px -18px rgba(0, 0, 0, 0.6),
-        0 0 48px -18px rgba(63, 224, 213, 0.45),
-        inset 0 1px 0 rgba(255, 255, 255, 0.34),
-        inset 0 -1px 0 rgba(0, 20, 40, 0.35);
-}
-
-/* ---- Ações rápidas e ativos ---- */
-.quick-action { gap: 8px; font-weight: 600; letter-spacing: 0.01em; color: var(--text-color); }
-.quick-action-icon { border-radius: 14px; }
-.home-ativo span { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600; }
-.home-ativo strong { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; }
-
-/* ---- Banner ---- */
-.home-banner { border-radius: 20px; }
-.home-banner strong { font-family: var(--font-display); letter-spacing: 0.01em; line-height: 1.25; }
-
-/* ---- Títulos ---- */
-.home-ativos-titulo, .section-title { font-size: 15px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-muted); }
-.home-greeting { font-size: 22px; letter-spacing: -0.02em; }
-.vip-badge { letter-spacing: 0.1em; font-size: 10.5px; }
-
-/* ---- Menu lateral ---- */
-.sidebar-brand { padding-bottom: 18px; }
-.brand-name { letter-spacing: 0.16em; font-size: 14px; }
-.nav-item { padding: 12px 14px; font-size: 14px; letter-spacing: 0.005em; }
-.nav-item.active { box-shadow: inset 3px 0 0 var(--accent-gold), 0 6px 18px -10px rgba(63, 224, 213, 0.5); }
-
-/* ---- Botões e campos: mesmo visual, toque mais fino ---- */
-.btn { letter-spacing: 0.02em; box-shadow: 0 8px 18px -8px rgba(63, 224, 213, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.5); }
-input:not([type=checkbox]):not([type=radio]), select, textarea { border-radius: 12px; }
-
-/* ---- Hover mais discreto ---- */
 @media (hover: hover) and (pointer: fine) {
     .yacht-card:hover, .plan-row:hover, .inv-card:hover, .quick-action:hover, .perfil-item:hover {
+        border-color: var(--border-primary);
+        box-shadow: 0 18px 36px -16px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(217,184,108,.12), inset 0 1px 0 rgba(255,255,255,.06);
         transform: translateY(-2px);
-        box-shadow: 0 14px 28px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px var(--border-primary), inset 0 1px 0 rgba(255,255,255,.08);
     }
+}
+
+/* ---- Cartão de saldo: "cartão black" com borda de ouro ---- */
+.balance-card {
+    border: 1px solid transparent;
+    border-radius: 22px;
+    padding: 28px 30px;
+    background:
+        radial-gradient(ellipse 340px 190px at 100% 0%, rgba(63, 224, 213, 0.20), transparent 70%) padding-box,
+        radial-gradient(ellipse 300px 170px at 0% 120%, rgba(217, 184, 108, 0.16), transparent 70%) padding-box,
+        linear-gradient(135deg, #0f2f39 0%, #0a202b 52%, #07131c 100%) padding-box,
+        linear-gradient(135deg, rgba(243,227,184,.95), rgba(217,184,108,.28) 34%, rgba(255,255,255,.06) 62%, rgba(63,224,213,.5)) border-box;
+    box-shadow: 0 28px 56px -22px rgba(0, 0, 0, 0.85), 0 0 60px -24px rgba(63, 224, 213, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.10);
+}
+.balance-card::after { background: linear-gradient(115deg, transparent 32%, rgba(255,255,255,.045) 47%, transparent 62%); }
+.balance-card .balance-card-header, .balance-card .balance-card-header span, .balance-card .balance-card-header svg { color: var(--gold); }
+.balance-card h2, #userBalance {
+    -webkit-text-fill-color: var(--gold-hi); color: var(--gold-hi);
+    font-size: clamp(36px, 5.4vw, 50px); font-weight: 600; letter-spacing: -0.02em; line-height: 1.05; margin-top: 12px;
+    text-shadow: 0 2px 24px rgba(217, 184, 108, 0.18);
+}
+.balance-eye { color: var(--gold); }
+
+/* ---- Valores e ícones ---- */
+.plan-rate, .inv-value, .hist-value, .home-ativo strong { font-family: var(--font-num); font-variant-numeric: lining-nums tabular-nums; font-weight: 600; letter-spacing: 0; }
+.home-ativo strong { font-size: 19px; }
+.home-ativo span { font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; }
+.home-ativo.is-accent strong { color: var(--gold-hi); }
+.quick-action { font-weight: 600; font-size: 12.5px; color: var(--text-color); gap: 10px; }
+.quick-action-icon, .inv-icon, .hist-icon, .com-intro-icon, .com-total-icon, .mis-icon, .mis-intro-icon, .perfil-item-icone {
+    color: var(--gold);
+    background: linear-gradient(145deg, rgba(217,184,108,.16), rgba(217,184,108,.04));
+    border: 1px solid rgba(217, 184, 108, 0.30);
+    box-shadow: none;
+    border-radius: 14px;
+}
+
+/* ---- Banner ---- */
+.home-banner {
+    border: 1px solid rgba(217, 184, 108, 0.28);
+    border-radius: 18px;
+    background:
+        radial-gradient(ellipse 300px 170px at 100% 50%, rgba(63, 224, 213, 0.16), transparent 70%),
+        radial-gradient(ellipse 240px 140px at 0% 110%, rgba(217, 184, 108, 0.12), transparent 70%),
+        linear-gradient(135deg, var(--ban-1), var(--ban-2) 60%, var(--ban-3));
+    box-shadow: 0 16px 36px -18px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255,255,255,.05);
+}
+.home-banner strong { font-family: var(--font-body); font-weight: 800; letter-spacing: 0.04em; font-size: 17px; color: var(--gold-hi); }
+.home-banner svg { color: var(--gold); filter: none; opacity: .95; }
+
+/* ---- Botões: ouro ---- */
+.btn {
+    background: linear-gradient(180deg, #f3e3b8 0%, #d9b86c 52%, #b8913f 100%);
+    color: #1d1405;
+    border-radius: 12px;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    box-shadow: 0 10px 22px -10px rgba(217, 184, 108, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.55), inset 0 -1px 0 rgba(90, 60, 10, 0.3);
+}
+.btn:hover:not(:disabled) { box-shadow: 0 14px 26px -10px rgba(217, 184, 108, 0.75), inset 0 1px 0 rgba(255,255,255,.6); }
+.btn.btn-outline { background: rgba(217, 184, 108, 0.05); color: var(--gold-hi); border: 1px solid rgba(217, 184, 108, 0.35); box-shadow: none; }
+.btn.btn-outline:hover { background: rgba(217, 184, 108, 0.12); }
+.btn.btn-danger { background: linear-gradient(180deg, #ff97a2, #e24a5d); color: #fff; }
+.ger-btn, .cp-btn { color: #1d1405; }
+
+/* ---- Campos e abas ---- */
+input:not([type=checkbox]):not([type=radio]), select, textarea, .ref-input, .form-group input { border-radius: 12px; border-color: var(--border-soft-2); }
+input:not([type=checkbox]):not([type=radio]):focus, select:focus, textarea:focus, .ref-input:focus {
+    border-color: var(--gold); box-shadow: 0 0 0 3px rgba(217, 184, 108, 0.18), inset 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+.inv-tabs, .hist-tabs { border-radius: 14px; }
+
+/* ---- Menu lateral ---- */
+.sidebar {
+    background:
+        radial-gradient(ellipse 260px 220px at 0% 0%, rgba(217, 184, 108, 0.08), transparent 70%),
+        linear-gradient(180deg, var(--sidebar-a) 0%, var(--sidebar-b) 100%);
+    border-right: 1px solid var(--border-soft-2);
+}
+.brand-logo-ring { box-shadow: 0 0 0 1px rgba(217,184,108,.5), 0 0 24px -6px rgba(63, 224, 213, 0.4); }
+.nav-item { font-size: 14px; font-weight: 600; padding: 12px 14px; border-radius: 12px; }
+.nav-item:hover { background: rgba(217, 184, 108, 0.07); color: #fff; }
+.nav-item.active {
+    color: var(--gold-hi);
+    background: linear-gradient(90deg, rgba(217, 184, 108, 0.16), rgba(217, 184, 108, 0.02));
+    border-color: rgba(217, 184, 108, 0.28);
+    box-shadow: inset 3px 0 0 var(--gold);
+}
+.nav-item.active .nav-icon { color: var(--gold); }
+.mobile-topbar { border-bottom: 1px solid var(--border-soft-2); }
+.hamburger-btn { background: rgba(217, 184, 108, 0.08); border-color: rgba(217, 184, 108, 0.35); }
+.hamburger-btn span { background: var(--gold); }
+
+/* ---- Avatar, selo VIP, tabelas, modais ---- */
+.home-avatar { border-color: var(--gold); color: var(--gold-hi); box-shadow: 0 0 0 4px rgba(217, 184, 108, 0.10); }
+.vip-badge { letter-spacing: 0.14em; font-size: 10px; }
+.extrato-table th { color: var(--gold); letter-spacing: 0.12em; font-size: 11px; text-transform: uppercase; }
+.extrato-table tbody tr:hover { background: rgba(217, 184, 108, 0.05); }
+.modal-card { border: 1px solid var(--border-primary); border-radius: 20px; }
+
+/* ---- Menu inferior (celular) ---- */
+@media (max-width: 1023px) {
+    .app-bottom-nav { border: 1px solid rgba(217, 184, 108, 0.30); box-shadow: 0 18px 40px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255,255,255,.05); }
+    .app-bottom-nav button.is-active { color: var(--gold-hi); }
+    .app-bottom-nav button.is-active::before { background: var(--gold); box-shadow: 0 2px 12px rgba(217, 184, 108, 0.7); }
+    .app-bottom-nav button.is-active svg { color: var(--gold); filter: drop-shadow(0 0 7px rgba(217, 184, 108, 0.55)); }
 }
