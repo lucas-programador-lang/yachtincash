@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function desenharRoda() {
         const cx = 100, cy = 100, r = 98;
         const passo = 360 / SEGMENTOS;
-        const cores = { dinheiro: '#1d6b3a', desconto: '#7a3fb0' };
+        const cores = { dinheiro: '#1d4a33', desconto: '#3d2f5c' };
         let svg = '<svg viewBox="0 0 200 200" class="rol-wheel" id="roletaRoda" aria-hidden="true">';
 
         for (let i = 0; i < SEGMENTOS; i++) {
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const a1 = (i * passo + passo / 2 - 90) * Math.PI / 180;
             const x0 = cx + r * Math.cos(a0), y0 = cy + r * Math.sin(a0);
             const x1 = cx + r * Math.cos(a1), y1 = cy + r * Math.sin(a1);
-            svg += `<path d="M${cx},${cy} L${x0.toFixed(2)},${y0.toFixed(2)} A${r},${r} 0 0 1 ${x1.toFixed(2)},${y1.toFixed(2)} Z" fill="${cores[tipo]}" stroke="#f0b429" stroke-width="1.5"/>`;
+            svg += `<path d="M${cx},${cy} L${x0.toFixed(2)},${y0.toFixed(2)} A${r},${r} 0 0 1 ${x1.toFixed(2)},${y1.toFixed(2)} Z" fill="${cores[tipo]}" stroke="#d8b56a" stroke-width="1.5"/>`;
 
             const rotulo = tipo === 'dinheiro' ? 'R$ 2,00' : 'DESCONTO';
             const sub = tipo === 'dinheiro' ? '' : 'na taxa';
