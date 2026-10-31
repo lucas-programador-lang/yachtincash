@@ -115,21 +115,23 @@ html[data-fundo="petroleo"] {
 /* ============ FUNDO: auroras + ondas ============ */
 body::before {
     background:
-        radial-gradient(ellipse 820px 520px at 4% -6%, var(--aurora-a), transparent 62%),
-        radial-gradient(ellipse 760px 520px at 102% 4%, var(--aurora-b), transparent 62%),
-        radial-gradient(ellipse 620px 420px at 78% 62%, var(--aurora-c), transparent 64%),
-        radial-gradient(ellipse 900px 520px at 46% 120%, var(--aurora-d), transparent 66%),
+        radial-gradient(ellipse 760px 520px at 50% 28%, rgba(255, 255, 255, 0.028), transparent 70%),
+        radial-gradient(ellipse 820px 540px at 4% -8%, var(--aurora-a), transparent 62%),
+        radial-gradient(ellipse 780px 540px at 102% 2%, var(--aurora-b), transparent 62%),
+        radial-gradient(ellipse 640px 440px at 86% 58%, var(--aurora-c), transparent 66%),
+        radial-gradient(ellipse 900px 520px at 40% 118%, var(--aurora-d), transparent 68%),
+        radial-gradient(ellipse 130% 100% at 50% 50%, transparent 58%, rgba(0, 0, 0, 0.38) 100%),
         linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 52%, var(--bg-bot) 100%);
 }
+/* granulado fino: dá acabamento premium e evita faixas no degradê */
 body::after {
-    background-image:
-        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='720' height='170' viewBox='0 0 720 170'><path d='M0 66 Q90 22 180 66 T360 66 T540 66 T720 66' fill='none' stroke='%2340d2d2' stroke-opacity='.22' stroke-width='1.5'/><path d='M0 90 Q90 46 180 90 T360 90 T540 90 T720 90' fill='none' stroke='%2340d2d2' stroke-opacity='.15' stroke-width='1.5'/><path d='M0 114 Q90 70 180 114 T360 114 T540 114 T720 114' fill='none' stroke='%232a8fd8' stroke-opacity='.13' stroke-width='1.5'/><path d='M0 138 Q90 94 180 138 T360 138 T540 138 T720 138' fill='none' stroke='%232a8fd8' stroke-opacity='.08' stroke-width='1.5'/></svg>");
-    background-size: 720px 170px;
-    background-repeat: repeat-x;
-    background-position: bottom center;
-    mask-image: linear-gradient(to top, #000 0%, transparent 62%);
-    -webkit-mask-image: linear-gradient(to top, #000 0%, transparent 62%);
-    opacity: 1;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    background-size: 220px 220px;
+    background-repeat: repeat;
+    background-position: 0 0;
+    mask-image: none;
+    -webkit-mask-image: none;
+    opacity: 0.055;
 }
 ::selection { background: rgba(64, 210, 210, 0.3); color: #fff; }
 ::-webkit-scrollbar-thumb { background: rgba(64, 210, 210, 0.3); border-radius: 8px; }
@@ -152,7 +154,7 @@ body::after {
 
 .balance-card {
     background:
-        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='420' height='220' viewBox='0 0 420 220'><path d='M0 150 Q70 110 140 150 T280 150 T420 150' fill='none' stroke='white' stroke-opacity='.10' stroke-width='1.5'/><path d='M0 174 Q70 134 140 174 T280 174 T420 174' fill='none' stroke='white' stroke-opacity='.07' stroke-width='1.5'/><path d='M0 198 Q70 158 140 198 T280 198 T420 198' fill='none' stroke='white' stroke-opacity='.05' stroke-width='1.5'/></svg>") right bottom / 420px 220px no-repeat,
+        radial-gradient(ellipse 280px 150px at 88% 112%, rgba(255, 255, 255, 0.12), transparent 70%),
         radial-gradient(ellipse 380px 220px at 100% 0%, rgba(111, 230, 225, 0.30), transparent 68%),
         radial-gradient(ellipse 320px 200px at 0% 115%, rgba(76, 124, 255, 0.30), transparent 70%),
         linear-gradient(135deg, var(--bal-1) 0%, var(--bal-2) 38%, var(--bal-3) 72%, var(--bal-4) 100%);
