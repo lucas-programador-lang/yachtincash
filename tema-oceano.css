@@ -1076,3 +1076,39 @@ body::after { opacity: 0.045; }
 .stat-card, .home-ativo, .yacht-card, .plan-row, .inv-total, .com-total { outline-color: rgba(255, 244, 214, 0.03); }
 ::-webkit-scrollbar-thumb { background: rgba(230, 196, 124, 0.30); }
 ::-webkit-scrollbar-thumb:hover { background: rgba(230, 196, 124, 0.55); }
+
+
+/* ============================================================
+   v14 — FUNDO "AURORA SUAVE" (acrescentado ao final)
+   Azul-noite profundo com brilho suave e limpo (sem dourado
+   misturado no azul, que deixava o fundo acinzentado). O dourado
+   fica só nos detalhes: logo, botões, ícones e bordas.
+   Para voltar ao v13, apague daqui para baixo.
+   ============================================================ */
+:root {
+    --bg-top: #0a1c30; --bg-mid: #071322; --bg-bot: #040a14;
+}
+body::before {
+    background:
+        /* brilho principal: azul-céu suave vindo de cima */
+        radial-gradient(ellipse 1300px 560px at 56% -12%, rgba(74, 158, 226, 0.26), transparent 70%),
+        /* brilho turquesa, canto inferior esquerdo */
+        radial-gradient(ellipse 1000px 560px at 8% 118%, rgba(34, 196, 186, 0.17), transparent 68%),
+        /* brilho azul-cobalto, canto superior direito */
+        radial-gradient(ellipse 760px 520px at 106% 4%, rgba(60, 110, 230, 0.20), transparent 66%),
+        /* halo âmbar muito leve só no canto inferior direito (fora do azul) */
+        radial-gradient(ellipse 620px 380px at 104% 118%, rgba(230, 180, 100, 0.08), transparent 70%),
+        /* respiro no centro para dar leitura aos cartões */
+        radial-gradient(ellipse 900px 520px at 54% 46%, rgba(46, 96, 150, 0.10), transparent 72%),
+        /* vinheta bem leve */
+        radial-gradient(ellipse 140% 110% at 50% 46%, transparent 62%, rgba(0, 0, 0, 0.34) 100%),
+        linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 55%, var(--bg-bot) 100%);
+}
+/* menu lateral: azul-noite também, sem manchas amareladas */
+.sidebar {
+    background:
+        linear-gradient(180deg, rgba(230, 196, 124, 0.55), rgba(230, 196, 124, 0.08) 45%, rgba(61, 230, 218, 0.28)) right top / 1px 100% no-repeat,
+        radial-gradient(ellipse 300px 260px at 0% 0%, rgba(74, 158, 226, 0.16), transparent 70%),
+        radial-gradient(ellipse 280px 280px at 0% 100%, rgba(34, 196, 186, 0.16), transparent 70%),
+        linear-gradient(180deg, #091526 0%, #040a14 100%);
+}
