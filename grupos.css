@@ -1,7 +1,7 @@
 /* ============================================================
    Aba "Grupos" — WhatsApp e Telegram (visual dourado)
    ============================================================ */
-#section-grupos { --gp-gold: #f0b429; }
+#section-grupos { --gp-gold: #d8b56a; }
 
 .gp-header {
     position: relative;
@@ -12,25 +12,22 @@
     padding: 20px;
     margin-bottom: 16px;
     border-radius: 18px;
-    border: 1px solid rgba(240, 180, 41, 0.45);
+    border: 1px solid rgba(216, 181, 106, 0.45);
     background:
-        radial-gradient(circle at 92% 20%, rgba(240, 180, 41, 0.22), transparent 55%),
+        radial-gradient(circle at 92% 20%, rgba(216, 181, 106, 0.22), transparent 55%),
         linear-gradient(135deg, #0b0b0b, #14110a);
-    box-shadow: 0 0 22px rgba(240, 180, 41, 0.12);
+    box-shadow: 0 0 22px rgba(216, 181, 106, 0.12);
 }
 .gp-header-icon {
     flex: 0 0 auto;
     width: 54px;
     height: 54px;
     color: var(--gp-gold);
-    filter: drop-shadow(0 0 8px rgba(240, 180, 41, 0.55));
+    
 }
 .gp-header h1 {
     margin: 0 0 4px;
-    background: linear-gradient(180deg, #fff3c4, var(--gp-gold));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    color: #f0dcac;
 }
 .gp-header p { margin: 0; color: #cfc6ae; font-size: 14px; line-height: 1.45; }
 
