@@ -19,10 +19,21 @@ document.addEventListener('DOMContentLoaded', () => {
             const alvo = document.querySelector('.sidebar .nav-item[data-section="' + btn.dataset.go + '"]');
             if (alvo) alvo.click();
         });
+        const trilho = barra.querySelector('.abn-track') || barra;
         const sincronizar = () => {
             const ativo = document.querySelector('.sidebar .nav-item.active');
             const secao = ativo ? ativo.dataset.section : 'inicio';
-            barra.querySelectorAll('button[data-go]').forEach((b) => b.classList.toggle('is-active', b.dataset.go === secao));
+            let atual = null;
+            barra.querySelectorAll('button[data-go]').forEach((b) => {
+                const on = b.dataset.go === secao;
+                b.classList.toggle('is-active', on);
+                if (on) atual = b;
+            });
+            // centraliza o item ativo no menu rolável (12 itens não cabem de uma vez no celular)
+            if (atual && trilho.scrollWidth > trilho.clientWidth) {
+                const alvo = atual.offsetLeft - (trilho.clientWidth - atual.offsetWidth) / 2;
+                trilho.scrollTo({ left: Math.max(0, alvo), behavior: 'smooth' });
+            }
         };
         const obs = new MutationObserver(sincronizar);
         itensMenu().forEach((el) => obs.observe(el, { attributes: true, attributeFilter: ['class'] }));
