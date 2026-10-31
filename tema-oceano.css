@@ -274,3 +274,80 @@ input::placeholder { color: #58768a; }
 /* Cantos arredondados consistentes */
 .com-intro, .com-total, .com-card, .com-historico, .inv-total, .mis-intro, .mis-progress, .info-box, .form-box, .rules-box, .profile-card, .home-ativo, .home-banner { border-radius: 18px; }
 .balance-card .balance-card-header, .balance-card .balance-card-header span, .balance-card .balance-card-header svg { color: rgba(255, 255, 255, 0.86); }
+
+/* ============================================================
+   GERENTE · GRUPOS · CUPOM · ROLETA — visual oceano garantido
+   (valem mesmo que o CSS antigo, dourado/preto, ainda esteja no ar)
+   ============================================================ */
+#section-gerente { --ger-gold: #40d2d2; --ger-gold-light: #9cf0ee; --ger-gold-dark: #1fa3a8; }
+#section-grupos  { --gp-gold: #40d2d2; }
+#section-cupom   { --cp-gold: #40d2d2; --cp-gold-light: #9cf0ee; --cp-gold-dark: #1fa3a8; }
+
+/* Cabeçalhos das abas: mesmo degradê do banner da tela inicial */
+#section-gerente .ger-header, #section-grupos .gp-header, #section-cupom .cp-header {
+    background:
+        radial-gradient(ellipse 300px 190px at 100% 40%, rgba(95, 227, 240, 0.26), transparent 70%),
+        linear-gradient(135deg, #0e4256, #092a4a 60%, #081f3d);
+    border: 1px solid var(--border-primary);
+    border-radius: 18px;
+    box-shadow: 0 14px 34px -14px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+#section-gerente .ger-header h1, #section-grupos .gp-header h1, #section-cupom .cp-header h1 {
+    background: none;
+    -webkit-background-clip: initial;
+    background-clip: initial;
+    -webkit-text-fill-color: #fff;
+    color: #fff;
+}
+#section-gerente .ger-header p, #section-grupos .gp-header p, #section-cupom .cp-header p { color: rgba(255, 255, 255, 0.82); }
+#section-gerente .ger-header-icon, #section-grupos .gp-header-icon, #section-cupom .cp-header-icon {
+    color: var(--primary-lighter);
+    filter: drop-shadow(0 6px 14px rgba(64, 210, 210, 0.45));
+}
+
+/* Cartões: vidro azul-marinho (nada de preto/marrom) */
+#section-gerente .ger-card, #section-grupos .gp-card, #section-cupom .cp-card {
+    background: var(--glass);
+    border: var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: 18px;
+}
+#section-grupos .gp-card.is-whatsapp { border-color: rgba(52, 211, 153, 0.5); }
+#section-grupos .gp-card.is-telegram { border-color: rgba(90, 169, 255, 0.55); }
+#section-gerente .ger-nome, #section-grupos .gp-titulo { color: #fff; }
+#section-gerente .ger-desc, #section-grupos .gp-desc, #section-cupom .cp-card-titulo p, #section-cupom .cp-como p { color: var(--text-muted); border-color: var(--border-soft-2); }
+#section-grupos .gp-beneficios li { color: var(--text-color); }
+#section-cupom .cp-card-titulo h3, #section-cupom .cp-como h3, #section-cupom .cp-lista-topo h3 { color: #fff; }
+#section-cupom .cp-card-titulo svg, #section-cupom .cp-como > svg, #section-cupom .cp-lista-topo h3 svg, #section-cupom .cp-campo svg { color: var(--primary-color); }
+#section-cupom .cp-ver-todos { color: var(--primary-light); }
+#section-cupom .cp-vazio { color: var(--text-faint); }
+
+/* Avatar do gerente */
+#section-gerente .ger-avatar { border-color: var(--primary-color); background: #07131f; box-shadow: 0 0 0 4px rgba(64, 210, 210, 0.1), 0 8px 20px -6px rgba(64, 210, 210, 0.5); }
+#section-gerente .ger-avatar svg *[fill]:not([fill="none"]):not([fill="#1a1a1a"]) { fill: #40d2d2; }
+#section-gerente .ger-avatar svg *[stroke]:not([stroke="none"]):not([stroke="#1a1a1a"]) { stroke: #40d2d2; }
+
+/* Grupos: selo redondo com aro claro */
+#section-grupos .gp-badge { border-color: rgba(255, 255, 255, 0.55); }
+
+/* Campo do cupom */
+#section-cupom .cp-campo { background: #07131f; border: 1px solid var(--border-soft-2); box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.35); }
+#section-cupom .cp-campo:focus-within { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(64, 210, 210, 0.18); }
+#section-cupom .cp-item { background: rgba(7, 19, 31, 0.7); border: 1px solid var(--border-soft); }
+#section-cupom .cp-item-codigo { color: #fff; }
+#section-cupom .cp-item-data { color: var(--text-faint); }
+
+/* Botões das abas: turquesa, igual ao resto do site */
+#section-gerente .ger-btn, #section-cupom .cp-btn {
+    background: linear-gradient(180deg, #6ae8e2 0%, #34c3c8 55%, #1fa3b4 100%);
+    color: #022a31;
+    box-shadow: 0 10px 22px -8px rgba(64, 210, 210, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* Roleta */
+#section-roleta .rol-intro, #section-roleta .rol-card, #section-roleta .rol-premios li { background: var(--glass); border: var(--glass-border); box-shadow: var(--glass-shadow); }
+#section-roleta .rol-intro p, #section-roleta .rol-card span { color: var(--text-muted); }
+#section-roleta .rol-wheel { border-color: var(--primary-color); box-shadow: 0 0 30px rgba(64, 210, 210, 0.35), inset 0 0 18px rgba(0, 0, 0, 0.5); }
+#section-roleta .rol-pointer { border-top-color: var(--primary-light); }
+#section-roleta .rol-btn-girar { background: radial-gradient(circle at 35% 30%, #b8f6f3, #40d2d2 70%); border-color: #c9f7f5; color: #022a31; }
+#section-roleta .rol-resultado-box { background: var(--bg-card-2); border-color: var(--primary-color); }
