@@ -45,9 +45,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const rotulo = tipo === 'dinheiro' ? 'R$ 2,00' : 'DESCONTO';
             const sub = tipo === 'dinheiro' ? '' : 'na taxa';
+            const estilo = tipo === 'desconto' ? ' style="font-size:8px;letter-spacing:-0.2px"' : '';
             svg += `<g transform="rotate(${i * passo} ${cx} ${cy})">` +
-                `<text x="${cx}" y="34" text-anchor="middle">${rotulo}</text>` +
-                (sub ? `<text x="${cx}" y="46" text-anchor="middle" style="font-size:8px;font-weight:600">${sub}</text>` : '') +
+                `<text x="${cx}" y="${tipo === 'desconto' ? 38 : 34}" text-anchor="middle"${estilo}>${rotulo}</text>` +
+                (sub ? `<text x="${cx}" y="49" text-anchor="middle" style="font-size:7px;font-weight:600">${sub}</text>` : '') +
                 '</g>';
         }
         svg += '</svg>';
