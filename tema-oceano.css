@@ -785,3 +785,10 @@ body::after { opacity: 0.06; }
     box-shadow: 0 12px 24px -10px rgba(220, 188, 114, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.65), inset 0 -1px 0 rgba(100, 66, 10, 0.35);
 }
 .nav-item.active { background: linear-gradient(90deg, rgba(220, 188, 114, 0.18), rgba(220, 188, 114, 0.02)); }
+
+/* ---- Logo nova: anel dourado no menu lateral ---- */
+.brand-logo-ring {
+    background: conic-gradient(from 180deg, #a8843a, #f8ebc9, #dcbc72, #fff6dc, #a8843a);
+    box-shadow: 0 0 0 1px rgba(220, 188, 114, 0.35), 0 0 26px -8px rgba(220, 188, 114, 0.45);
+}
+.brand-logo { border-color: #05080d; }
