@@ -934,3 +934,97 @@ body::before {
     box-shadow: 0 14px 28px -10px rgba(230, 196, 124, 0.75), 0 0 0 1px rgba(255, 240, 200, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.75), inset 0 -1px 0 rgba(110, 72, 10, 0.35);
 }
 .btn:hover:not(:disabled) { filter: brightness(1.05); }
+
+
+/* ============================================================
+   v12 — ACABAMENTO PREMIUM (acrescentado ao final)
+   Textura fina no fundo, títulos em serifada, molduras internas,
+   anel dourado no avatar, vidro no menu do celular.
+   Para voltar ao v11, apague daqui até o próximo bloco.
+   ============================================================ */
+
+/* ---- Fundo: textura "gravada" bem fina, só nas bordas da tela ---- */
+html::after {
+    content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    background:
+        repeating-linear-gradient(115deg, rgba(255, 244, 214, 0.045) 0 1px, transparent 1px 9px),
+        repeating-linear-gradient(25deg, rgba(61, 230, 218, 0.028) 0 1px, transparent 1px 12px);
+    -webkit-mask-image: radial-gradient(ellipse 75% 70% at 50% 38%, transparent 30%, #000 100%);
+            mask-image: radial-gradient(ellipse 75% 70% at 50% 38%, transparent 30%, #000 100%);
+}
+
+/* ---- Tipografia editorial nos títulos ---- */
+.home-greeting, .page-title, .mobile-topbar h1, .mobile-topbar .topbar-title {
+    font-family: var(--font-num);
+    font-optical-sizing: auto;
+    letter-spacing: -0.01em;
+}
+.home-greeting { font-size: 26px; font-weight: 600; }
+
+/* ---- Avatar com anel dourado metálico e selo VIP refinado ---- */
+.home-avatar {
+    border: 2px solid transparent;
+    background:
+        linear-gradient(#0a1722, #0a1722) padding-box,
+        conic-gradient(from 210deg, #fff2d2, #b38d3f, #e6c47c, #fff2d2, #b38d3f, #fff2d2) border-box;
+    color: var(--gold-hi);
+    font-family: var(--font-num);
+    box-shadow: 0 0 0 4px rgba(230, 196, 124, 0.10), 0 10px 24px -10px rgba(0, 0, 0, 0.8), 0 0 26px -8px rgba(230, 196, 124, 0.4);
+}
+.vip-badge {
+    color: var(--gold-hi);
+    background: linear-gradient(180deg, rgba(230, 196, 124, 0.16), rgba(230, 196, 124, 0.04));
+    border: 1px solid rgba(230, 196, 124, 0.38);
+}
+
+/* ---- Cartão de saldo: moldura interna dourada + anéis de relógio ao fundo ---- */
+.balance-card {
+    outline: 1px solid rgba(230, 196, 124, 0.26);
+    outline-offset: -8px;
+    background:
+        repeating-radial-gradient(circle at 96% 108%, rgba(255, 240, 200, 0.075) 0 1px, transparent 1px 15px) padding-box,
+        radial-gradient(ellipse 420px 230px at 100% -12%, rgba(61, 230, 218, 0.40), transparent 70%) padding-box,
+        radial-gradient(ellipse 340px 200px at -4% 128%, rgba(230, 196, 124, 0.28), transparent 70%) padding-box,
+        linear-gradient(115deg, transparent 38%, rgba(255, 255, 255, 0.05) 50%, transparent 62%) padding-box,
+        linear-gradient(135deg, #0f4552 0%, #0b2f3d 46%, #082033 100%) padding-box,
+        linear-gradient(135deg, #fff6dc, rgba(230, 196, 124, 0.40) 32%, rgba(255, 255, 255, 0.10) 60%, rgba(61, 230, 218, 0.70)) border-box;
+}
+
+/* ---- Cartões comuns: filete interno quase invisível (efeito de cartão gravado) ---- */
+.stat-card, .home-ativo, .yacht-card, .plan-row, .inv-total, .com-total {
+    outline: 1px solid rgba(255, 244, 214, 0.035);
+    outline-offset: -5px;
+}
+
+/* ---- Divisórias douradas que somem nas pontas ---- */
+.sidebar-brand { border-bottom: 0; position: relative; }
+.sidebar-brand::after {
+    content: ''; position: absolute; left: 6%; right: 6%; bottom: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(230, 196, 124, 0.55), transparent);
+}
+.sidebar-footer { border-top: 0; position: relative; }
+.sidebar-footer::before {
+    content: ''; position: absolute; left: 6%; right: 6%; top: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(230, 196, 124, 0.35), transparent);
+}
+
+/* ---- Menu: ícone ativo com brilho, transições suaves ---- */
+.nav-item { transition: background .25s ease, color .25s ease, box-shadow .25s ease; }
+.nav-item.active .nav-icon { filter: drop-shadow(0 0 6px rgba(230, 196, 124, 0.6)); }
+.quick-action, .yacht-card, .plan-row, .inv-card, .perfil-item { transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease, background .25s ease; }
+
+/* ---- Menu flutuante do celular: vidro fosco com filete dourado ---- */
+@media (max-width: 1023px) {
+    .app-bottom-nav {
+        background: linear-gradient(180deg, rgba(14, 26, 38, 0.82), rgba(5, 10, 16, 0.90));
+        -webkit-backdrop-filter: blur(16px) saturate(1.2); backdrop-filter: blur(16px) saturate(1.2);
+        border: 1px solid transparent;
+        background-clip: padding-box;
+        box-shadow: 0 0 0 1px rgba(230, 196, 124, 0.34), 0 20px 44px rgba(0, 0, 0, 0.75), 0 0 40px -16px rgba(230, 196, 124, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+    }
+}
+
+/* ---- Botão: leve elevação no hover; campos com brilho dourado no foco ---- */
+@media (hover: hover) and (pointer: fine) {
+    .btn:hover:not(:disabled) { transform: translateY(-1px); }
+}
