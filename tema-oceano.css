@@ -802,3 +802,12 @@ body::after { opacity: 0.06; }
 .sidebar::-webkit-scrollbar-thumb { background: rgba(220, 188, 114, 0.35); border-radius: 6px; }
 .sidebar-nav { flex-grow: 0; flex-shrink: 0; }
 .sidebar-footer { margin-top: auto; padding-top: 16px; flex-shrink: 0; }
+
+/* ---- Celular/tablet: o menu flutuante já tem todas as seções, então some o hambúrguer e a sidebar ----
+   (só no app; o painel admin continua com hambúrguer porque não tem menu flutuante) */
+@media (max-width: 1023px) {
+    body:not(.admin-body) .hamburger-btn,
+    body:not(.admin-body) .sidebar,
+    body:not(.admin-body) .sidebar-overlay { display: none !important; }
+    body:not(.admin-body) .mobile-topbar { padding-left: 20px; }
+}
