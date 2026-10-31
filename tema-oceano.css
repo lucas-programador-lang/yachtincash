@@ -486,3 +486,102 @@ input::placeholder, textarea::placeholder { color: var(--text-faint); }
 #section-roleta .rol-pointer { border-top-color: var(--accent-gold-soft); }
 #section-roleta .rol-btn-girar { background: radial-gradient(circle at 35% 30%, #fff1c9, #f1c96f 70%); border-color: #fff1c9; color: #3a2606; font-weight: 800; }
 #section-roleta .rol-resultado-box { background: var(--bg-card-2); border-color: var(--accent-gold); }
+
+
+/* ============================================================
+   v7 — PROFUNDIDADE E HIERARQUIA (acrescentado ao final)
+   Só visual: nenhum ID, texto ou script muda. Para voltar ao v6,
+   apague tudo daqui para baixo.
+
+   O QUE MUDOU
+   - Cartões mais claros que o fundo (antes quase se fundiam com ele)
+   - Fio de luz no topo dos cartões + cantos com mais definição
+   - Fundo com linhas de onda discretas na base e horizonte de luz
+   - Dourado com função clara: dinheiro/destaque. Turquesa: ação.
+   - Títulos de seção com marcador turquesa→dourado
+   - Texto secundário um pouco mais legível
+   ============================================================ */
+:root {
+    --glass-a: #17405a;
+    --glass-b: #0a2536;
+    --text-muted: #b7d0db;
+    --text-faint: #86a6b4;
+    --border-soft-2: rgba(150, 215, 255, 0.22);
+    --wave-line: rgba(143, 240, 232, 0.07);
+    --wave-line-2: rgba(241, 201, 111, 0.05);
+    --glass-top-light: linear-gradient(90deg, transparent, rgba(190, 248, 244, 0.55), transparent);
+}
+html[data-fundo="grafite"]  { --glass-a: #243649; --glass-b: #131d28; }
+html[data-fundo="petroleo"] { --glass-a: #135058; --glass-b: #082e37; }
+
+/* ---- Fundo: luz + ondas na base ---- */
+body::before {
+    background:
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='220' viewBox='0 0 1200 220' fill='none'><g stroke-width='1.2'><path stroke='rgba(143,240,232,0.07)' d='M0 70 Q150 20 300 70 T600 70 T900 70 T1200 70'/><path stroke='rgba(143,240,232,0.06)' d='M0 100 Q150 50 300 100 T600 100 T900 100 T1200 100'/><path stroke='rgba(241,201,111,0.05)' d='M0 130 Q150 80 300 130 T600 130 T900 130 T1200 130'/><path stroke='rgba(143,240,232,0.045)' d='M0 160 Q150 110 300 160 T600 160 T900 160 T1200 160'/><path stroke='rgba(143,240,232,0.03)' d='M0 190 Q150 140 300 190 T600 190 T900 190 T1200 190'/></g></svg>") center bottom / 1200px 220px repeat-x,
+        radial-gradient(ellipse 1100px 300px at 50% 0%, rgba(143, 240, 232, 0.16), transparent 72%),
+        radial-gradient(ellipse 820px 540px at 2% -6%, var(--aurora-a), transparent 62%),
+        radial-gradient(ellipse 780px 560px at 104% 4%, var(--aurora-b), transparent 62%),
+        radial-gradient(ellipse 620px 420px at 92% 62%, var(--aurora-c), transparent 66%),
+        radial-gradient(ellipse 960px 540px at 36% 120%, var(--aurora-d), transparent 68%),
+        radial-gradient(ellipse 130% 100% at 50% 50%, transparent 52%, rgba(0, 0, 0, 0.55) 100%),
+        linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 52%, var(--bg-bot) 100%);
+}
+
+/* ---- Cartões: fio de luz no topo + sombra mais definida ---- */
+.stat-card, .yacht-card, .rules-box, .info-box, .form-box, .profile-card,
+.quick-action, .inv-card, .inv-total, .com-card, .com-total, .com-intro, .com-historico,
+.plan-row, .hist-row, .perfil-item, .perfil-atalho, .mis-row, .mis-intro, .mis-progress, .home-ativo {
+    background:
+        var(--glass-top-light) top center / calc(100% - 44px) 1px no-repeat,
+        var(--glass);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Rótulos dos cartões de número: pequenos, em caixa-alta, com cor de apoio */
+.stat-card p, .stat-card-left p, .stat-card span.stat-label {
+    color: var(--text-gold-muted);
+}
+
+/* Valores de destaque: dourado só quando é dinheiro "premium" */
+.home-ativo.is-accent strong { color: var(--accent-gold); text-shadow: 0 0 18px rgba(241, 201, 111, 0.28); }
+.home-ativo strong { text-shadow: 0 0 18px rgba(62, 224, 164, 0.18); }
+
+/* ---- Cartão de saldo: mais profundidade, brilho dourado no canto ---- */
+.balance-card {
+    border: 1px solid rgba(200, 250, 246, 0.55);
+    box-shadow:
+        0 26px 60px -12px rgba(0, 0, 0, 0.65),
+        0 0 70px -14px rgba(63, 224, 213, 0.55),
+        0 0 0 1px rgba(241, 201, 111, 0.10),
+        inset 0 1px 0 rgba(255, 255, 255, 0.34),
+        inset 0 -26px 40px -28px rgba(0, 30, 60, 0.6);
+}
+
+/* ---- Títulos de seção com marcador ---- */
+.home-ativos-titulo::before, .section-title::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 15px;
+    margin-right: 9px;
+    border-radius: 3px;
+    vertical-align: -2px;
+    background: linear-gradient(180deg, var(--primary-color), var(--accent-gold));
+    box-shadow: 0 0 12px rgba(63, 224, 213, 0.6);
+}
+
+/* ---- Botão principal: mais volume ---- */
+.btn {
+    background: linear-gradient(180deg, #8ff5ee 0%, #3fdcd8 48%, #1b9fb8 100%);
+    box-shadow: 0 12px 26px -8px rgba(63, 224, 213, 0.65), 0 0 0 1px rgba(190, 250, 246, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.6), inset 0 -2px 0 rgba(0, 70, 90, 0.25);
+}
+
+/* ---- Menu: item ativo com marcador dourado e ícones mais claros ---- */
+.sidebar { box-shadow: 18px 0 50px -30px rgba(0, 0, 0, 0.8); }
+.nav-item.active { background: linear-gradient(90deg, rgba(63, 224, 213, 0.34), rgba(63, 224, 213, 0.04)); }
+.nav-item .nav-icon { opacity: .9; }
+
+/* ---- Login / cadastro: cartão com mais presença ---- */
+.login-card, .auth-card, .login-box, .register-box {
+    box-shadow: 0 30px 90px rgba(0, 0, 0, 0.7), 0 0 90px -30px rgba(63, 224, 213, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
