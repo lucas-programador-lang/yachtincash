@@ -1,0 +1,223 @@
+/* ============================================================
+   TEMA OCEANO — paleta tirada da logo (turquesa #40d2d2) sobre azul
+   marinho profundo. Carregue DEPOIS do style.css (e dos CSS das telas).
+   Só mexe em cores/acabamento: nenhum ID, texto ou script muda.
+   Para ajustar a cor da marca, mude --primary-color e derivadas aqui.
+   ============================================================ */
+:root {
+    /* Marca (logo) */
+    --primary-color: #40d2d2;
+    --primary-dark: #0b4a52;
+    --primary-darker: #06262b;
+    --primary-mid: #2bb8bd;
+    --primary-light: #7ee8e6;
+    --primary-lighter: #c4f6f4;
+    --accent-color: #5fe3f0;
+    --accent-soft: #aef4f6;
+    --accent-deep: #1a8fb0;
+
+    /* Tons "premium" (antes dourado) agora em água-marinha */
+    --accent-gold: #5fe0dc;
+    --accent-gold-soft: #c4f6f4;
+    --accent-gold-deep: #1fa3a8;
+    --text-gold-muted: rgba(150, 232, 230, 0.75);
+    --border-gradient-gold: linear-gradient(135deg, rgba(190,244,242,.55), rgba(64,210,210,.18) 40%, rgba(255,255,255,.05) 70%, rgba(31,163,168,.4));
+
+    --sheen: linear-gradient(115deg, rgba(255,255,255,0) 28%, rgba(255,255,255,.05) 46%, rgba(255,255,255,0) 64%);
+    --border-gradient: linear-gradient(135deg, rgba(150,240,240,.5), rgba(64,210,210,.14) 45%, rgba(255,255,255,.05) 72%, rgba(64,210,210,.32));
+
+    /* Fundos: azul marinho profundo */
+    --bg-dark: #040b14;
+    --bg-dark-2: #07121e;
+    --bg-card: #0a1724;
+    --bg-card-2: #0f2031;
+    --bg-card-3: #142a3f;
+    --bg-elevated: #183249;
+    --border-soft: rgba(120, 220, 225, 0.08);
+    --border-soft-2: rgba(120, 220, 225, 0.16);
+    --border-primary: rgba(64, 210, 210, 0.34);
+
+    --text-color: #f1fafb;
+    --text-muted: #9fbac6;
+    --text-faint: #64828f;
+
+    --success: #3ddc97;
+    --success-bg: rgba(61, 220, 151, 0.12);
+    --danger: #ff6b7a;
+    --danger-bg: rgba(255, 107, 122, 0.12);
+    --warning: #ffc15e;
+    --warning-bg: rgba(255, 193, 94, 0.12);
+    --info: #5aa9ff;
+    --info-bg: rgba(90, 169, 255, 0.12);
+
+    --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.35);
+    --shadow-md: 0 14px 38px rgba(0, 0, 0, 0.5);
+    --shadow-glow: 0 0 0 1px rgba(64, 210, 210, 0.16), 0 14px 44px rgba(0, 0, 0, 0.45);
+    --logo-teal: #40d2d2;
+    --logo-teal-deep: #1fa3a8;
+
+    --modal-bg-gradient:
+        radial-gradient(ellipse 460px 280px at 18% -12%, rgba(64,210,210,.16), transparent 62%),
+        radial-gradient(ellipse 380px 260px at 100% 108%, rgba(58,120,255,.10), transparent 60%),
+        linear-gradient(160deg, #0a1724 0%, #0f2031 55%, #142a3f 100%);
+    --border-gradient-modal: linear-gradient(135deg, rgba(150,240,240,.5), rgba(64,210,210,.2) 45%, rgba(58,120,255,.18) 72%, rgba(64,210,210,.4));
+    --shadow-modal-glow: 0 26px 80px rgba(1, 4, 8, 0.72), 0 0 0 1px rgba(64, 210, 210, 0.16), 0 0 90px -28px rgba(64, 210, 210, 0.35);
+}
+
+/* ---------- Fundo: oceano profundo com ondas suaves ---------- */
+body::before {
+    background:
+        radial-gradient(ellipse 900px 600px at 6% -8%, rgba(64, 210, 210, 0.16), transparent 62%),
+        radial-gradient(ellipse 800px 560px at 104% 8%, rgba(58, 120, 255, 0.10), transparent 62%),
+        radial-gradient(ellipse 800px 520px at 50% 118%, rgba(31, 163, 168, 0.14), transparent 64%),
+        linear-gradient(180deg, #040b14 0%, #07121e 55%, #030811 100%);
+}
+body::after {
+    background-image:
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='140' viewBox='0 0 640 140'><path d='M0 70 Q80 30 160 70 T320 70 T480 70 T640 70' fill='none' stroke='%2340d2d2' stroke-opacity='.16' stroke-width='1.4'/><path d='M0 92 Q80 52 160 92 T320 92 T480 92 T640 92' fill='none' stroke='%2340d2d2' stroke-opacity='.10' stroke-width='1.4'/><path d='M0 114 Q80 74 160 114 T320 114 T480 114 T640 114' fill='none' stroke='%2340d2d2' stroke-opacity='.06' stroke-width='1.4'/></svg>");
+    background-size: 640px 140px;
+    background-repeat: repeat-x;
+    background-position: bottom center;
+    mask-image: linear-gradient(to top, #000 0%, transparent 60%);
+    -webkit-mask-image: linear-gradient(to top, #000 0%, transparent 60%);
+    opacity: 1;
+}
+::selection { background: rgba(64, 210, 210, 0.3); color: #fff; }
+::-webkit-scrollbar-thumb { background: rgba(64, 210, 210, 0.3); }
+::-webkit-scrollbar-thumb:hover { background: rgba(64, 210, 210, 0.55); }
+
+/* ---------- Títulos ---------- */
+.page-title, .home-greeting { color: #fff; }
+.brand-name { color: var(--primary-lighter); }
+
+/* ---------- Cartões: vidro azul-marinho com borda turquesa fina ---------- */
+.stat-card, .yacht-card, .rules-box, .info-box, .form-box, .profile-card,
+.quick-action, .inv-card, .inv-total, .com-card, .com-total, .com-intro, .com-historico,
+.plan-row, .hist-row, .perfil-item, .perfil-atalho, .mis-row, .mis-intro, .mis-progress, .home-ativo {
+    background: linear-gradient(160deg, rgba(20, 42, 63, 0.78) 0%, rgba(10, 23, 36, 0.92) 100%);
+    border: 1px solid var(--border-soft-2);
+    box-shadow: 0 8px 26px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+/* Cartão de saldo: o destaque da tela (turquesa → azul profundo) */
+.balance-card {
+    background:
+        radial-gradient(ellipse 360px 200px at 100% 0%, rgba(95, 227, 240, 0.28), transparent 68%),
+        radial-gradient(ellipse 300px 180px at 0% 110%, rgba(31, 163, 168, 0.32), transparent 70%),
+        linear-gradient(135deg, #0e4a58 0%, #0b3250 55%, #081e36 100%);
+    border: 1px solid rgba(120, 232, 230, 0.4);
+    box-shadow: 0 16px 44px rgba(0, 0, 0, 0.5), 0 0 40px -10px rgba(64, 210, 210, 0.35);
+}
+.balance-card::after { background: radial-gradient(ellipse 440px 220px at 50% -20%, rgba(255, 255, 255, 0.08), transparent 70%); }
+.balance-card h2, #userBalance {
+    background: none;
+    -webkit-background-clip: initial;
+    background-clip: initial;
+    -webkit-text-fill-color: #fff;
+    color: #fff;
+    filter: none;
+    text-shadow: 0 2px 18px rgba(64, 210, 210, 0.35);
+}
+.balance-card-header { color: var(--primary-lighter); }
+.stat-card h2, .stat-card-left h2 { color: var(--primary-lighter); }
+
+@media (hover: hover) and (pointer: fine) {
+    .yacht-card:hover, .plan-row:hover, .inv-card:hover, .quick-action:hover, .perfil-item:hover {
+        border-color: var(--border-primary);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.42), 0 0 24px -8px rgba(64, 210, 210, 0.35);
+        transform: translateY(-2px);
+    }
+}
+
+/* ---------- Botões ---------- */
+.btn {
+    background: linear-gradient(180deg, #5fe3df 0%, #2ebdc2 100%);
+    color: #032a30;
+    border: 0;
+    font-weight: 700;
+    box-shadow: 0 8px 20px -6px rgba(64, 210, 210, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+.btn:hover:not(:disabled) { filter: brightness(1.06); box-shadow: 0 10px 24px -6px rgba(64, 210, 210, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.45); }
+.btn.btn-outline { background: transparent; color: var(--primary-light); border: 1px solid var(--border-primary); box-shadow: none; }
+.btn.btn-outline:hover { background: rgba(64, 210, 210, 0.1); }
+.btn.btn-danger { background: linear-gradient(180deg, #ff8794, #e0475a); color: #fff; box-shadow: none; }
+
+/* ---------- Campos ---------- */
+input:not([type=checkbox]):not([type=radio]), select, textarea, .ref-input, .form-group input {
+    background: #06101a;
+    color: var(--text-color);
+    border: 1px solid var(--border-soft-2);
+    border-radius: 12px;
+}
+input:not([type=checkbox]):not([type=radio]):focus, select:focus, textarea:focus, .ref-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(64, 210, 210, 0.16);
+}
+input::placeholder { color: #55717e; }
+
+/* ---------- Abas (Rendimento/Ciclo, Todos/Depósitos…) ---------- */
+.inv-tabs, .hist-tabs { background: #06101a; border: 1px solid var(--border-soft-2); border-radius: 14px; padding: 4px; }
+.inv-tabs .btn.btn-outline, .hist-tabs .btn.btn-outline { border-color: transparent; color: var(--text-muted); }
+
+/* ---------- Menu lateral e barra superior ---------- */
+.sidebar { background: linear-gradient(180deg, #08131f, #050d16); border-right: 1px solid var(--border-soft-2); }
+.nav-item { color: var(--text-muted); }
+.nav-item:hover { color: #fff; background: rgba(64, 210, 210, 0.07); }
+.nav-item.active {
+    color: #fff;
+    background: linear-gradient(90deg, rgba(64, 210, 210, 0.22), rgba(64, 210, 210, 0.04));
+    border: 1px solid var(--border-primary);
+    box-shadow: none;
+}
+.nav-item.active .nav-icon { color: var(--primary-color); }
+.mobile-topbar { background: rgba(5, 13, 22, 0.94); border-bottom: 1px solid var(--border-soft-2); }
+.mobile-topbar-title { color: #fff; font-weight: 700; }
+.hamburger-btn { background: rgba(64, 210, 210, 0.1); border-color: var(--border-primary); }
+.hamburger-btn span { background: var(--primary-color); }
+
+/* ---------- Tabelas, selos, toasts, modais ---------- */
+.extrato-table th { color: var(--primary-light); border-bottom: 1px solid var(--border-soft-2); }
+.extrato-table td { border-bottom: 1px solid var(--border-soft); }
+.modal-card { border: 1px solid var(--border-primary); }
+.modal-overlay { background: rgba(2, 6, 12, 0.78); backdrop-filter: blur(4px); }
+.toast { border: 1px solid var(--border-soft-2); background: #0a1724; }
+.vip-badge { background: rgba(64, 210, 210, 0.14); color: var(--primary-lighter); border: 1px solid var(--border-primary); }
+.home-avatar { border-color: var(--primary-color); color: var(--primary-lighter); box-shadow: 0 0 0 4px rgba(64, 210, 210, 0.12); }
+.quick-action-icon, .inv-icon, .hist-icon, .com-intro-icon, .com-total-icon, .mis-icon, .mis-intro-icon, .perfil-item-icone {
+    color: var(--primary-color);
+    background: linear-gradient(145deg, rgba(64, 210, 210, 0.18), rgba(64, 210, 210, 0.04));
+    border: 1px solid var(--border-primary);
+    box-shadow: none;
+}
+.plan-rate, .inv-value, .hist-value { color: var(--success); }
+
+/* ---------- Início: banner e "Meus Ativos" ---------- */
+.home-banner {
+    border: 1px solid var(--border-primary);
+    background:
+        radial-gradient(ellipse 260px 180px at 100% 50%, rgba(95, 227, 240, 0.22), transparent 70%),
+        linear-gradient(135deg, #0d3a4a, #08203a);
+}
+.home-banner strong { color: #fff; }
+.home-banner svg { color: var(--primary-lighter); opacity: 1; }
+.home-ativo.is-accent strong { color: var(--primary-lighter); }
+.balance-eye { color: var(--primary-lighter); }
+
+/* ---------- Menu inferior ---------- */
+@media (max-width: 1023px) {
+    .app-bottom-nav {
+        background: rgba(5, 13, 22, 0.96);
+        border-top: 1px solid var(--border-soft-2);
+        box-shadow: 0 -8px 26px rgba(0, 0, 0, 0.5);
+    }
+    .app-bottom-nav button { color: var(--text-faint); }
+    .app-bottom-nav button.is-active { color: var(--primary-color); }
+    .app-bottom-nav button.is-active svg { filter: drop-shadow(0 0 6px rgba(64, 210, 210, 0.6)); }
+}
+
+/* ---------- Abas novas (Roleta, Gerente, Grupos, Cupom) ---------- */
+.cp-campo input:not([type=checkbox]):not([type=radio]) { border: 0; background: transparent; box-shadow: none; border-radius: 0; }
+.cp-card-titulo h3, .cp-como h3, .cp-lista-topo h3, .ger-nome, .gp-titulo { text-align: left; }
+.rol-btn-girar:disabled { filter: none; opacity: .8; }
+.ger-btn, .cp-btn { color: #032a30; }
