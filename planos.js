@@ -26,11 +26,21 @@
     // carregar) mostra a ilustração de moedas.
     // Exemplo:  'vip1-50': 'plano-iniciante.png',
     const IMAGENS = {
-        // 'vip1-50': 'plano-iniciante.png',
-        // 'vip2-70': 'plano-bronze.png',
-        // 'vip3-150': 'plano-prata.png',
-        // 'vip4-300': 'plano-ouro.png',
-        // 'vip5-450': 'plano-master.png'
+        'vip1-50': 'plano-iniciante.png',
+        'vip2-70': 'plano-bronze.png',
+        'vip3-150': 'plano-prata.png',
+        'vip4-300': 'plano-ouro.png',
+        'vip5-450': 'plano-master.png'
+    };
+
+    // Ícone (coroa) de cada plano, na cor do nível. Plano sem ícone (ou ícone
+    // que não carregar) mostra a coroa padrão.
+    const ICONES = {
+        'vip1-50': 'icone-iniciante.png',
+        'vip2-70': 'icone-bronze.png',
+        'vip3-150': 'icone-prata.png',
+        'vip4-300': 'icone-ouro.png',
+        'vip5-450': 'icone-master.png'
     };
 
     // [chave, nome, valor investido, nível VIP]
@@ -78,6 +88,7 @@
             taxaDiaria: TAXA_DIARIA_PERCENTUAL,
             limitePercentual: LIMITE_PERCENTUAL,
             imagem: IMAGENS[chave] || null,
+            icone: ICONES[chave] || null,
             retornoDiario: Math.round(valor * TAXA_DIARIA_PERCENTUAL * 100) / 10000,
             duracaoDias: DURACAO_DIAS,
             totalRendimento: Math.round(valor * LIMITE_PERCENTUAL) / 100
@@ -181,8 +192,8 @@
                 + '<div class="plan-meta muted">Rendimento fixo • limitado a ' + p.limiteCompras + ' por usuário</div>'
             : '';
         return `
-            <div class="plan-row">
-                <span class="plan-icon">${ICONE_COROA}</span>
+            <div class="plan-row"${p.icone ? ' data-tier="' + p.ordem + '"' : ''}>
+                <span class="plan-icon${p.icone ? ' has-img' : ''}">${p.icone ? '<img src="' + p.icone + '" alt="" loading="lazy">' : ICONE_COROA}</span>
                 <div class="plan-info">
                     <div class="plan-name">
                         <span>${p.nome}</span>
@@ -208,6 +219,15 @@
             .filter(([, p]) => p.grupo === grupo)
             .map(([chave, p]) => cartaoPlano(chave, p))
             .join('');
+
+        // Ícone que não carregar volta para a coroa padrão
+        lista.querySelectorAll('.plan-icon.has-img img').forEach((img) => {
+            img.addEventListener('error', () => {
+                const caixa = img.parentElement;
+                caixa.classList.remove('has-img');
+                caixa.innerHTML = ICONE_COROA;
+            });
+        });
 
         // Foto que não carregar volta para a ilustração de moedas
         lista.querySelectorAll('img.plan-photo').forEach((img) => {
