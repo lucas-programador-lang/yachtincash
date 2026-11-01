@@ -1209,7 +1209,7 @@ body::before {
    Planos de Ciclo com baú (ver planos.js)
    ============================================================ */
 .plan-row--ciclo { gap: 14px; padding: 14px 16px; }
-.plan-chest { flex: 0 0 92px; width: 92px; height: 92px; background: none; border: 0; box-shadow: none; overflow: visible; }
+.plan-chest { flex: 0 0 116px; width: 116px; height: 116px; margin: -8px 0 -8px -6px; background: none; border: 0; box-shadow: none; overflow: visible; }
 .plan-chest img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.55)); }
 .plan-cycle { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; margin-top: 2px; }
 .plan-days { font-size: 12.5px; color: var(--text-muted); }
@@ -1227,7 +1227,7 @@ body::before {
 }
 @media (hover: hover) and (pointer: fine) { .plan-row[data-ciclo]:hover { border-color: rgba(var(--tier), 0.75); } }
 @media (max-width: 420px) {
-    .plan-chest { flex-basis: 80px; width: 80px; height: 80px; margin-left: -4px; }
+    .plan-chest { flex-basis: 96px; width: 96px; height: 96px; margin: -6px 0 -6px -8px; }
     .plan-row--ciclo { gap: 10px; padding: 12px; }
     .plan-total { font-size: 15.5px; }
 }
