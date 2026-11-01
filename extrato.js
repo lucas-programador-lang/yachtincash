@@ -26,7 +26,7 @@
     const SVG = (conteudo) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + conteudo + '</svg>';
     const TIPOS = {
         deposito: { titulo: 'Depósito', classe: 'is-in', icone: SVG('<path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 20h16"/>') },
-        saque: { titulo: 'Saque', classe: 'is-out', icone: SVG('<path d="M12 15V3"/><path d="M7 8l5-5 5 5"/><path d="M4 20h16"/>') },
+        saque: { titulo: 'Saque', classe: 'is-out', icone: SVG('<path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H17v3.5"/><path d="M3 7.5V17a2 2 0 0 0 2 2h14V8.5H5.5A2.5 2.5 0 0 1 3 7.5Z"/><circle cx="16" cy="13.8" r="1.2"/>') },
         investimento: { titulo: 'Investimento', classe: 'is-invest', icone: SVG('<path d="M4 19V9"/><path d="M10 19V5"/><path d="M16 19v-7"/><path d="M22 19H2"/>') },
         rendimento: { titulo: 'Rendimento', classe: 'is-in', icone: SVG('<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>') },
         comissao: { titulo: 'Comissão', classe: 'is-gold', icone: SVG('<circle cx="9" cy="8" r="3.2"/><path d="M2.8 19.2c.7-3.1 3.1-5 6.2-5s5.5 1.9 6.2 5"/><circle cx="17" cy="9" r="2.6"/><path d="M16.5 14.2c2.6.1 4.3 1.8 4.9 4.6"/>') }
