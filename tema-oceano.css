@@ -1203,3 +1203,31 @@ body::before {
     .plan-icon.has-img { flex-basis: 56px; width: 56px; height: 56px; }
     .plan-art { width: 108px; height: 72px; }
 }
+
+
+/* ============================================================
+   Planos de Ciclo com baú (ver planos.js)
+   ============================================================ */
+.plan-row--ciclo { gap: 14px; padding: 14px 16px; }
+.plan-chest { flex: 0 0 92px; width: 92px; height: 92px; background: none; border: 0; box-shadow: none; overflow: visible; }
+.plan-chest img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.55)); }
+.plan-cycle { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; margin-top: 2px; }
+.plan-days { font-size: 12.5px; color: var(--text-muted); }
+.plan-total { font-family: var(--font-num); font-variant-numeric: lining-nums tabular-nums; font-size: 17px; font-weight: 600; color: var(--success); text-shadow: 0 0 18px rgba(74, 240, 180, 0.30); }
+.plan-row--ciclo .plan-buy { margin-top: 0; }
+
+/* cor de cada ciclo: dourado (1–3) e roxo (4–5), como os baús */
+.plan-row[data-ciclo="1"], .plan-row[data-ciclo="2"], .plan-row[data-ciclo="3"] { --tier: 240, 190, 80; }
+.plan-row[data-ciclo="4"] { --tier: 169, 107, 255; }
+.plan-row[data-ciclo="5"] { --tier: 192, 123, 255; }
+.plan-row[data-ciclo] {
+    border-color: rgba(var(--tier), 0.36);
+    background: radial-gradient(ellipse 240px 130px at 0% 50%, rgba(var(--tier), 0.18), transparent 70%), var(--glass-t);
+    box-shadow: 0 18px 34px -18px rgba(0, 0, 0, 0.88), 0 0 34px -20px rgba(var(--tier), 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+@media (hover: hover) and (pointer: fine) { .plan-row[data-ciclo]:hover { border-color: rgba(var(--tier), 0.75); } }
+@media (max-width: 420px) {
+    .plan-chest { flex-basis: 80px; width: 80px; height: 80px; margin-left: -4px; }
+    .plan-row--ciclo { gap: 10px; padding: 12px; }
+    .plan-total { font-size: 15.5px; }
+}
