@@ -59,12 +59,14 @@
     const CICLO_LIMITE_COMPRAS = 10; // máximo de ciclos ativos do mesmo tipo por usuário
 
     // Fotos dos ciclos (mesma ideia das fotos dos planos)
+    // Cada ciclo mostra um baú (ciclone-1.png ... ciclone-5.png). Sem imagem
+    // (ou imagem que não carregar), volta para a coroa padrão.
     const IMAGENS_CICLOS = {
-        // 'ciclone1-50': 'ciclone-1.png',
-        // 'ciclone2-100': 'ciclone-2.png',
-        // 'ciclone3-250': 'ciclone-3.png',
-        // 'ciclone4-500': 'ciclone-4.png',
-        // 'ciclone5-1000': 'ciclone-5.png'
+        'ciclone1-50': 'ciclone-1.png',
+        'ciclone2-100': 'ciclone-2.png',
+        'ciclone3-250': 'ciclone-3.png',
+        'ciclone4-500': 'ciclone-4.png',
+        'ciclone5-1000': 'ciclone-5.png'
     };
 
     // [chave, nome, valor investido, nível VIP (0 = sem VIP), cashback em R$]
@@ -181,7 +183,8 @@
     function cartaoPlano(chave, p) {
         const ciclo = p.grupo === 'ciclos';
         const prefixo = ciclo ? 'cy' : '';
-        const arte = p.imagem
+        const bau = ciclo && p.imagem;   // ciclo com baú: layout "baú + dados + botão"
+        const arte = (!ciclo && p.imagem)
             ? '<img class="plan-photo" src="' + p.imagem + '" alt="' + p.nome + '" data-nivel="' + p.ordem + '" data-prefixo="' + prefixo + '" loading="lazy">'
             : pilhaMoedas(p.ordem, prefixo);
         const selo = p.vip > 0
@@ -191,21 +194,30 @@
             ? (p.cashback > 0 ? '<div class="plan-meta muted">Cashback de ' + brl(p.cashback) + ' na ativação</div>' : '')
                 + '<div class="plan-meta muted">Rendimento fixo • limitado a ' + p.limiteCompras + ' por usuário</div>'
             : '';
+        const icone = bau
+            ? '<span class="plan-icon plan-chest"><img src="' + p.imagem + '" alt="' + p.nome + '" loading="lazy"></span>'
+            : '<span class="plan-icon' + (p.icone ? ' has-img' : '') + '">'
+                + (p.icone ? '<img src="' + p.icone + '" alt="" loading="lazy">' : ICONE_COROA) + '</span>';
+        const linhaDados = bau
+            ? '<div class="plan-cycle"><span class="plan-days">' + p.duracaoDias + ' dias • ' + pct(p.taxaDiaria) + '% ao dia</span>'
+                + '<strong class="plan-total" title="Rendimento total do ciclo">+ ' + brl(p.totalRendimento) + '</strong></div>'
+            : '<div class="plan-rate">' + pct(p.taxaDiaria) + '% ao dia</div>'
+                + '<div class="plan-meta muted">' + p.duracaoDias + ' dias • rendimento total ' + brl(p.totalRendimento) + ' (' + p.limitePercentual + '%)</div>';
+        const atributo = bau ? ' data-ciclo="' + p.ordem + '"' : (p.icone ? ' data-tier="' + p.ordem + '"' : '');
         return `
-            <div class="plan-row"${p.icone ? ' data-tier="' + p.ordem + '"' : ''}>
-                <span class="plan-icon${p.icone ? ' has-img' : ''}">${p.icone ? '<img src="' + p.icone + '" alt="" loading="lazy">' : ICONE_COROA}</span>
+            <div class="plan-row${bau ? ' plan-row--ciclo' : ''}"${atributo}>
+                ${icone}
                 <div class="plan-info">
                     <div class="plan-name">
                         <span>${p.nome}</span>
                         ${selo}
                     </div>
                     <div class="plan-price">${brl(p.valor)}</div>
-                    <div class="plan-rate">${pct(p.taxaDiaria)}% ao dia</div>
-                    <div class="plan-meta muted">${p.duracaoDias} dias • rendimento total ${brl(p.totalRendimento)} (${p.limitePercentual}%)</div>
+                    ${linhaDados}
                     ${extras}
                 </div>
                 <div class="plan-side">
-                    <div class="plan-art">${arte}</div>
+                    ${bau ? '' : '<div class="plan-art">' + arte + '</div>'}
                     <button type="button" class="btn btn-compact plan-buy" onclick="abrirDepositoComPlano('${chave}')">Investir</button>
                 </div>
             </div>`;
@@ -219,6 +231,15 @@
             .filter(([, p]) => p.grupo === grupo)
             .map(([chave, p]) => cartaoPlano(chave, p))
             .join('');
+
+        // Baú que não carregar volta para a coroa padrão
+        lista.querySelectorAll('.plan-chest img').forEach((img) => {
+            img.addEventListener('error', () => {
+                const caixa = img.parentElement;
+                caixa.classList.remove('plan-chest');
+                caixa.innerHTML = ICONE_COROA;
+            });
+        });
 
         // Ícone que não carregar volta para a coroa padrão
         lista.querySelectorAll('.plan-icon.has-img img').forEach((img) => {
