@@ -1358,3 +1358,27 @@ body::before {
 /* ---- Ícones preenchidos (Extrato e Missões), como nas referências ---- */
 .hist-icon svg, .mis-icon svg { width: 29px; height: 29px; fill: currentColor; stroke: none; filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.35)); }
 .mis-icon svg { width: 28px; height: 28px; }
+
+
+/* ============================================================
+   Modal de depósito aberto por um plano (modo "plano fixo"):
+   mostra só o valor escolhido (ver deposito.js)
+   ============================================================ */
+#depositModal .dep-chip-nome { display: none; }
+#depositModal .dep-card.dep-fixo .dep-chips-title,
+#depositModal .dep-card.dep-fixo .dep-chip:not(.selected),
+#depositModal .dep-card.dep-fixo .dep-other,
+#depositModal .dep-card.dep-fixo [data-dep-panel="pix"] p.dep-hint:first-of-type { display: none; }
+
+#depositModal .dep-card.dep-fixo .dep-chips { display: block; }
+#depositModal .dep-card.dep-fixo .dep-chip.selected {
+    display: flex; flex-direction: column; align-items: center; gap: 4px; width: 100%;
+    padding: 20px 16px; pointer-events: none; cursor: default;
+    border: 1px solid rgba(230, 196, 124, 0.55);
+    background: radial-gradient(ellipse 260px 120px at 50% 0%, rgba(230, 196, 124, 0.22), transparent 70%), var(--glass-t);
+    box-shadow: 0 0 34px -14px rgba(230, 196, 124, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.10);
+    color: var(--text-color);
+}
+#depositModal .dep-card.dep-fixo .dep-chip.selected strong { font-family: var(--font-num); font-size: 34px; font-weight: 600; letter-spacing: -0.01em; color: var(--gold-hi); }
+#depositModal .dep-card.dep-fixo .dep-chip.selected small { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-gold-muted); }
+#depositModal .dep-card.dep-fixo .dep-chip.selected .dep-chip-nome { display: block; font-size: 14px; font-weight: 600; color: var(--text-color); }
