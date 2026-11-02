@@ -49,7 +49,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 info.textContent = grupo === 'ciclos'
                     ? plano.nome
                     : 'VIP ' + plano.vip;
-                botao.append(valor, info);
+                const nome = document.createElement('span');
+                nome.className = 'dep-chip-nome';
+                nome.textContent = plano.nome;
+                botao.append(valor, info, nome);
                 caixa.appendChild(botao);
             });
         });
@@ -152,8 +155,24 @@ document.addEventListener('DOMContentLoaded', () => {
         return valores.slice(0, -1).join(', ') + ' e ' + valores[valores.length - 1];
     }
 
+    // Modo "plano fixo": aberto pelo botão Investir de um plano, mostra só o
+    // valor desse plano (sem os outros valores nem o campo "Outro valor").
+    function definirModoFixo(ativo) {
+        const cartao = document.querySelector('#depositModal .dep-card');
+        if (cartao) cartao.classList.toggle('dep-fixo', !!ativo);
+        // Campo "Outro valor" some no modo fixo
+        const campoOutro = $('depOutroValor') && $('depOutroValor').closest('.form-group');
+        if (campoOutro) campoOutro.style.display = ativo ? 'none' : '';
+        const rotulo = document.querySelector('#depositModal [data-dep-panel="pix"] .dep-label');
+        if (rotulo) {
+            if (!rotulo.dataset.original) rotulo.dataset.original = rotulo.textContent;
+            rotulo.textContent = ativo ? 'Plano selecionado' : rotulo.dataset.original;
+        }
+    }
+
     // ---------- Estado da tela ----------
     function resetarTela() {
+        definirModoFixo(false);
         trocarAba('pix');
         selecionarPlano(null);
         $('depOutroValor').value = '';
@@ -197,7 +216,10 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         window.openModal('depositModal');
-        if (info) selecionarPlano(chave);
+        if (info) {
+            selecionarPlano(chave);
+            definirModoFixo(true);
+        }
     };
 
     // ---------- Confirmação do pagamento em tempo real ----------
