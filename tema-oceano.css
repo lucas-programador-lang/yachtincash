@@ -1353,3 +1353,8 @@ body::before {
 .mis-go { padding: 6px 14px; min-height: 0; line-height: 1.25; }
 .mis-done { padding: 6px 12px; }
 .mis-gift { flex-direction: row; }
+
+
+/* ---- Ícones preenchidos (Extrato e Missões), como nas referências ---- */
+.hist-icon svg, .mis-icon svg { width: 29px; height: 29px; fill: currentColor; stroke: none; filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.35)); }
+.mis-icon svg { width: 28px; height: 28px; }
