@@ -24,12 +24,13 @@
 
     // Ícones desenhados (SVG), sem emojis
     const SVG = (conteudo) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + conteudo + '</svg>';
+    const FILL = (c) => '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' + c + '</svg>';
     const TIPOS = {
-        deposito: { titulo: 'Depósito', classe: 'is-in', icone: SVG('<path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 20h16"/>') },
-        saque: { titulo: 'Saque', classe: 'is-out', icone: SVG('<path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H17v3.5"/><path d="M3 7.5V17a2 2 0 0 0 2 2h14V8.5H5.5A2.5 2.5 0 0 1 3 7.5Z"/><circle cx="16" cy="13.8" r="1.2"/>') },
-        investimento: { titulo: 'Investimento', classe: 'is-invest', icone: SVG('<path d="M4 19V9"/><path d="M10 19V5"/><path d="M16 19v-7"/><path d="M22 19H2"/>') },
-        rendimento: { titulo: 'Rendimento', classe: 'is-in', icone: SVG('<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>') },
-        comissao: { titulo: 'Comissão', classe: 'is-gold', icone: SVG('<circle cx="9" cy="8" r="3.2"/><path d="M2.8 19.2c.7-3.1 3.1-5 6.2-5s5.5 1.9 6.2 5"/><circle cx="17" cy="9" r="2.6"/><path d="M16.5 14.2c2.6.1 4.3 1.8 4.9 4.6"/>') }
+        deposito: { titulo: 'Depósito', classe: 'is-in', icone: FILL('<path d="M5.5 10.5 12 17l6.5-6.5-1.9-1.9-3.2 3.2V3h-2.8v8.8L7.4 8.6l-1.9 1.9Z"/><path d="M4 18.6h16v.9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 19.5v-.9Z" opacity=".75"/>') },
+        saque: { titulo: 'Saque', classe: 'is-out', icone: FILL('<path fill-rule="evenodd" clip-rule="evenodd" d="M5 5.5A2.5 2.5 0 0 0 2.5 8v9A3.5 3.5 0 0 0 6 20.5h12a3 3 0 0 0 3-3v-7a3 3 0 0 0-3-3H17V6a1.5 1.5 0 0 0-1.5-1.5H5Zm12.2 8a1.3 1.3 0 1 0 0 2.6 1.3 1.3 0 0 0 0-2.6Z"/>') },
+        investimento: { titulo: 'Investimento', classe: 'is-invest', icone: FILL('<rect x="3.5" y="13" width="4.2" height="7.5" rx="1.2"/><rect x="9.9" y="9" width="4.2" height="11.5" rx="1.2" opacity=".85"/><rect x="16.3" y="4.5" width="4.2" height="16" rx="1.2"/>') },
+        rendimento: { titulo: 'Rendimento', classe: 'is-in', icone: FILL('<g fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.8 13.2l4.2 4.2L14 8.8"/><path d="M10.4 15.4l1.9 1.9L21 7.6"/></g>') },
+        comissao: { titulo: 'Comissão', classe: 'is-gold', icone: FILL('<circle cx="9" cy="8" r="3.5"/><path d="M2.4 19.6c0-3.7 2.8-6.1 6.6-6.1s6.6 2.4 6.6 6.1v.9H2.4v-.9Z"/><circle cx="17.2" cy="9" r="2.7" opacity=".8"/><path d="M16.2 13.8c3 .1 5.4 1.9 5.4 5.2v1.5h-4.4v-.9c0-2.1-.4-4-1-5.8Z" opacity=".8"/>') }
     };
 
     // Filtros: quais tipos aparecem em cada aba
