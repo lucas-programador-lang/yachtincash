@@ -24,6 +24,16 @@
     const ICONE_CICLO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-13.6 5.7"/><path d="M4 12a8 8 0 0 1 13.6-5.7"/><path d="M17.6 3v3.3h-3.3"/><path d="M6.4 21v-3.3h3.3"/></svg>';
     const ICONE_SETA = '<svg class="inv-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
 
+    // Imagens de cada plano (coroa) e de cada ciclo (baú). Sem imagem, vale o ícone desenhado.
+    const IMAGENS_PLANOS = {
+        'vip1-50': 'icone-iniciante.png', 'vip2-70': 'icone-bronze.png', 'vip3-150': 'icone-prata.png',
+        'vip4-300': 'icone-ouro.png', 'vip5-450': 'icone-master.png'
+    };
+    const IMAGENS_CICLOS = {
+        'ciclone1-50': 'ciclone-1.png', 'ciclone2-100': 'ciclone-2.png', 'ciclone3-250': 'ciclone-3.png',
+        'ciclone4-500': 'ciclone-4.png', 'ciclone5-1000': 'ciclone-5.png'
+    };
+
     let planosUsuario = [];
     let abaAtual = 'rendimento';
     const abertos = new Set(); // cartões com os detalhes abertos (por índice de ativação)
@@ -50,10 +60,15 @@
             ? '<span class="inv-status is-end">Concluído</span>'
             : '<span class="inv-status is-on">Ativo</span>';
 
+        const imagem = (aba === 'ciclo' ? IMAGENS_CICLOS : IMAGENS_PLANOS)[plano.planoKey];
+        const icone = imagem
+            ? '<img src="' + imagem + '" alt="" loading="lazy">'
+            : (aba === 'ciclo' ? ICONE_CICLO : ICONE_COROA);
+
         return `
             <div class="inv-card${aberto ? ' is-open' : ''}">
                 <button type="button" class="inv-head" data-inv-id="${escapeHtml(id)}" aria-expanded="${aberto ? 'true' : 'false'}">
-                    <span class="inv-icon">${aba === 'ciclo' ? ICONE_CICLO : ICONE_COROA}</span>
+                    <span class="inv-icon${imagem ? ' has-img' : ''}${imagem && aba === 'ciclo' ? ' is-bau' : ''}">${icone}</span>
                     <span class="inv-info">
                         <span class="inv-name">${escapeHtml(plano.nome)}</span>
                         <span class="inv-value">${brl(plano.valorInvestido)}</span>
@@ -87,6 +102,15 @@
         } else {
             lista.innerHTML = doGrupo.map((p) => cartao(p, abaAtual)).join('');
         }
+
+        // Imagem que não carregar volta para o ícone desenhado
+        lista.querySelectorAll('.inv-icon.has-img img').forEach((img) => {
+            img.addEventListener('error', () => {
+                const caixa = img.parentElement;
+                caixa.classList.remove('has-img', 'is-bau');
+                caixa.innerHTML = abaAtual === 'ciclo' ? ICONE_CICLO : ICONE_COROA;
+            });
+        });
 
         let investido = 0;
         let rendimento = 0;
