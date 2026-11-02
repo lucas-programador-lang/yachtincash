@@ -17,11 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const brl = (v) => 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
     // Ícones desenhados (SVG), sem emojis
+    const FILL = (c) => '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' + c + '</svg>';
     const ICONES = {
-        deposito: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="6.5" width="19" height="11" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 12h.01M18 12h.01"/></svg>',
-        convidar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M2.8 19.2c.7-3.1 3.1-5 6.2-5s5.5 1.9 6.2 5"/><circle cx="17" cy="9" r="2.6"/><path d="M16.5 14.2c2.6.1 4.3 1.8 4.9 4.6"/></svg>',
-        investir: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V9"/><path d="M10 19V5"/><path d="M16 19v-7"/><path d="M22 19H2"/></svg>',
-        acessar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>'
+        deposito: FILL('<path fill-rule="evenodd" clip-rule="evenodd" d="M4.5 6A2.5 2.5 0 0 0 2 8.5v7A2.5 2.5 0 0 0 4.5 18h15a2.5 2.5 0 0 0 2.5-2.5v-7A2.5 2.5 0 0 0 19.5 6h-15ZM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/><rect x="5" y="19.2" width="14" height="1.8" rx=".9" opacity=".6"/>'),
+        convidar: FILL('<circle cx="9.5" cy="8" r="3.6"/><path d="M2.5 20c0-3.9 3.1-6.5 7-6.5s7 2.6 7 6.5v1h-14v-1Z"/><path d="M19 5.4v6M16 8.4h6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>'),
+        investir: FILL('<path fill-rule="evenodd" clip-rule="evenodd" d="M11.2 2.8a1.2 1.2 0 0 1 1.6 0l8.2 7.1c.5.4.2 1.3-.5 1.3H20V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1v-8.8h-.5c-.7 0-1-.9-.5-1.3l8.2-7.1Z"/>'),
+        acessar: FILL('<g fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.8 13.2l4.2 4.2L14 8.8"/><path d="M10.4 15.4l1.9 1.9L21 7.6"/></g>')
     };
 
     let estado = null;
