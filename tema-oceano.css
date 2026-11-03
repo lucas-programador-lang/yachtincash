@@ -1382,3 +1382,48 @@ body::before {
 #depositModal .dep-card.dep-fixo .dep-chip.selected strong { font-family: var(--font-num); font-size: 34px; font-weight: 600; letter-spacing: -0.01em; color: var(--gold-hi); }
 #depositModal .dep-card.dep-fixo .dep-chip.selected small { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-gold-muted); }
 #depositModal .dep-card.dep-fixo .dep-chip.selected .dep-chip-nome { display: block; font-size: 14px; font-weight: 600; color: var(--text-color); }
+
+
+/* ============================================================
+   Menu inferior do celular: 4 atalhos + "Mais" (ver app-extras.js)
+   — sem rolagem lateral; o resto abre numa folha
+   ============================================================ */
+@media (max-width: 1023px) {
+    .app-bottom-nav .abn-track {
+        display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 2px;
+        overflow: visible; padding: 10px 8px 6px;
+        -webkit-mask-image: none; mask-image: none;
+    }
+    .app-bottom-nav button { flex: none; min-width: 0; font-size: 11px; }
+    .app-bottom-nav button.abn-extra { display: none; }
+}
+body.abn-sheet-aberta { overflow: hidden; }
+.abn-sheet {
+    position: fixed; inset: 0; z-index: 1400; display: flex; align-items: flex-end; justify-content: center;
+    background: rgba(2, 6, 12, 0.62); -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px);
+    opacity: 0; transition: opacity .2s ease;
+}
+.abn-sheet[hidden] { display: none; }
+.abn-sheet.is-open { opacity: 1; }
+.abn-sheet-panel {
+    width: 100%; max-width: 560px; padding: 10px 16px calc(22px + env(safe-area-inset-bottom, 0px));
+    border-radius: 24px 24px 0 0; border: 1px solid rgba(230, 196, 124, 0.30); border-bottom: 0;
+    background: linear-gradient(180deg, rgba(24, 44, 66, 0.97), rgba(7, 14, 24, 0.99));
+    box-shadow: 0 -24px 60px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    transform: translateY(26px); transition: transform .22s ease;
+}
+.abn-sheet.is-open .abn-sheet-panel { transform: none; }
+.abn-sheet-handle { width: 42px; height: 4px; border-radius: 4px; background: rgba(255, 255, 255, 0.22); margin: 2px auto 12px; }
+.abn-sheet-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.abn-sheet-head strong { font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-gold-muted); }
+.abn-sheet-close { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); color: var(--text-muted); cursor: pointer; }
+.abn-sheet-close svg { width: 16px; height: 16px; }
+.abn-sheet-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.abn-sheet-item {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+    min-height: 92px; padding: 12px 6px; border-radius: 16px; cursor: pointer; text-align: center; text-decoration: none;
+    background: var(--glass-t); border: 1px solid rgba(255, 255, 255, 0.12); color: var(--text-color);
+    font: inherit; font-size: 12px; font-weight: 600; line-height: 1.25;
+}
+.abn-sheet-item svg { width: 27px; height: 27px; color: var(--gold); }
+.abn-sheet-item.is-active { border-color: rgba(230, 196, 124, 0.6); background: rgba(230, 196, 124, 0.12); color: var(--gold-hi); }
