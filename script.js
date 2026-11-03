@@ -749,7 +749,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Se estiver na index (dashboard), protege a rota e escuta os dados do usuário
-    if (window.location.pathname.includes('index.html') || window.location.pathname.endsWith('/')) {
+    // Painel do usuário = página com body.app-body (sem admin-body). Não dá para olhar
+    // o endereço: com rotas (/extrato, /perfil...) ele não contém "index.html".
+    if (document.body.classList.contains('app-body') && !document.body.classList.contains('admin-body')) {
         if (typeof Auth !== 'undefined') {
             Auth.protectRoute((user, userRef) => {
                 // Escuta em tempo real o perfil (nome, saldo) no Realtime Database
