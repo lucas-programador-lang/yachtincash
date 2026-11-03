@@ -1,0 +1,120 @@
+// ============================================================
+// ROUTER — rotas de navegador (History API) para o painel.
+//
+// Cada seção do painel ganha um endereço próprio:
+//   /                     Início
+//   /investir             Planos de rendimento
+//   /ciclos               Ciclos
+//   /meus-investimentos   Meus Investimentos
+//   /equipe               Equipe
+//   /missoes              Missões
+//   /roleta               Roleta
+//   /gerente              Gerente
+//   /grupos               Grupos
+//   /cupom                Cupom
+//   /extrato              Extrato
+//   /perfil               Perfil
+//
+// Funciona assim:
+//  - Toda troca de tela (menu lateral, menu inferior, "Mais", atalhos do
+//    Início etc.) já passa por um clique em .nav-item[data-section]; este
+//    arquivo só escuta esse clique e atualiza o endereço (pushState).
+//  - Botão "voltar/avançar" do navegador (popstate) volta para a seção certa.
+//  - Abrir ou recarregar um endereço (ex.: /extrato) abre direto na seção.
+//  - Endereço desconhecido cai no Início.
+//
+// Precisa ser o ÚLTIMO script do index.html (depois de script.js e app-extras.js).
+// No Cloudflare Pages, o arquivo _redirects faz cada rota abrir o index.html.
+// ============================================================
+(function () {
+    'use strict';
+
+    // Só o painel do usuário (o admin e as telas de login ficam de fora)
+    const corpo = document.body;
+    if (!corpo || !corpo.classList.contains('app-body') || corpo.classList.contains('admin-body')) return;
+
+    const ROTAS = {
+        inicio: '/',
+        investir: '/investir',
+        ciclos: '/ciclos',
+        carteira: '/meus-investimentos',
+        equipe: '/equipe',
+        missoes: '/missoes',
+        roleta: '/roleta',
+        gerente: '/gerente',
+        grupos: '/grupos',
+        cupom: '/cupom',
+        extrato: '/extrato',
+        perfil: '/perfil'
+    };
+    const SECOES = {};
+    Object.keys(ROTAS).forEach((k) => { SECOES[ROTAS[k]] = k; });
+
+    const TITULO_BASE = document.title || 'YACHTINCASH';
+    let aplicando = false; // true enquanto a troca de tela vem do próprio router
+
+    // "/extrato/", "/extrato.html", "/index.html", "/inicio" -> forma padrão
+    function normalizar(caminho) {
+        let c = String(caminho || '/')
+            .replace(/\/index\.html$/i, '/')
+            .replace(/\.html$/i, '')
+            .replace(/\/+$/, '');
+        if (c === '' || c.toLowerCase() === '/inicio') return '/';
+        return c.toLowerCase();
+    }
+    function secaoDoCaminho(caminho) { return SECOES[normalizar(caminho)] || null; }
+    function itemDoMenu(secao) { return document.querySelector('.sidebar .nav-item[data-section="' + secao + '"]'); }
+
+    function atualizarTitulo(secao) {
+        const item = itemDoMenu(secao);
+        const rotulo = item && item.querySelector('span:not(.nav-icon)');
+        const nome = rotulo && rotulo.textContent.trim();
+        document.title = (secao === 'inicio' || !nome) ? TITULO_BASE : nome + ' • ' + TITULO_BASE.split(' - ')[0].split(' | ')[0];
+    }
+
+    // Abre a seção usando o mesmo clique do menu (toda a lógica das telas continua igual)
+    function mostrar(secao) {
+        const item = itemDoMenu(secao);
+        if (!item) return false;
+        aplicando = true;
+        try { item.click(); } finally { aplicando = false; }
+        atualizarTitulo(secao);
+        return true;
+    }
+
+    function empurrar(secao) {
+        const destino = ROTAS[secao];
+        if (!destino) return;
+        if (normalizar(location.pathname) !== destino) {
+            history.pushState({ secao: secao }, '', destino);
+        }
+        atualizarTitulo(secao);
+        window.scrollTo(0, 0);
+    }
+
+    function iniciar() {
+        // 1) Toda troca de tela feita pelo usuário vira uma entrada no histórico
+        document.querySelectorAll('.sidebar .nav-item[data-section]').forEach((item) => {
+            item.addEventListener('click', () => {
+                if (aplicando) return;
+                empurrar(item.dataset.section);
+            });
+        });
+
+        // 2) Botão voltar/avançar do navegador
+        window.addEventListener('popstate', () => {
+            mostrar(secaoDoCaminho(location.pathname) || 'inicio');
+        });
+
+        // 3) Abertura / recarregamento: o endereço manda
+        const inicial = secaoDoCaminho(location.pathname) || 'inicio';
+        mostrar(inicial);
+        history.replaceState({ secao: inicial }, '', ROTAS[inicial]);
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', iniciar);
+    } else {
+        iniciar();
+    }
+})();
