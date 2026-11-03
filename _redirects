@@ -1,0 +1,14 @@
+# Rotas do painel (router.js): cada endereço abre o index.html.
+# Cloudflare Pages — não inclua um 404.html se quiser manter este comportamento.
+/inicio              /                301
+/investir            /index.html      200
+/ciclos              /index.html      200
+/meus-investimentos  /index.html      200
+/equipe              /index.html      200
+/missoes             /index.html      200
+/roleta              /index.html      200
+/gerente             /index.html      200
+/grupos              /index.html      200
+/cupom               /index.html      200
+/extrato             /index.html      200
+/perfil              /index.html      200
