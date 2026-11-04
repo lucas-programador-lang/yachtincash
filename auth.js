@@ -290,43 +290,12 @@ document.addEventListener('DOMContentLoaded', () => {
         return mapa[codigo] || (contexto === 'login' ? 'Erro ao realizar login.' : 'Erro ao realizar cadastro.');
     }
 
-    // Tratamento do formulário de Login
-    const loginForm = document.getElementById('loginForm');
-    if (loginForm) {
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            const emailInput = document.getElementById('email');
-            const passwordInput = document.getElementById('password');
-
-            if (!emailInput || !passwordInput) {
-                console.error('Campos de e-mail/senha não encontrados no formulário de login.');
-                Toast.error('Erro no formulário. Tente recarregar a página.');
-                return;
-            }
-
-            const email = emailInput.value;
-            const pass = passwordInput.value;
-            const submitBtn = loginForm.querySelector('button[type="submit"], .btn');
-            if (submitBtn) submitBtn.disabled = true;
-
-            Auth.login(email, pass)
-                .then(() => {
-                    Toast.success('Login realizado! Redirecionando...');
-                    setTimeout(() => { window.location.href = 'index.html'; }, 1200);
-                })
-                .catch((err) => {
-                    console.error('Erro ao tentar login:', err);
-                    Toast.error(mensagemErroFirebase(err, 'login'));
-                    if (submitBtn) submitBtn.disabled = false;
-                });
-        });
-    }
-
-    // ---------- reCAPTCHA (cadastro) ----------
-    // Cole aqui a "chave do site" do reCAPTCHA v2 (caixa "Não sou um robô"),
-    // criada em https://www.google.com/recaptcha/admin (tipo: v2 Checkbox, e
-    // inclua o domínio do site, ex.: yachtincash.pages.dev). Vazia = desligado.
+    // ---------- reCAPTCHA (login e cadastro) ----------
+    // "Chave do site" do reCAPTCHA v2 (caixa "Não sou um robô"), criada em
+    // https://www.google.com/recaptcha/admin (tipo: v2 Checkbox, e inclua o
+    // domínio do site, ex.: yachtincash.pages.dev). Vazia = desligado.
+    // O captcha aparece em qualquer página que tenha <div id="recaptchaBox">
+    // (login.html e register.html).
     // ATENÇÃO: sozinho, o captcha do navegador não impede quem chama a API do
     // Firebase direto. Para proteção de verdade ative também o Firebase App
     // Check (veja LEIA-ME-CONFIRMACAO-EMAIL.md).
@@ -347,6 +316,58 @@ document.addEventListener('DOMContentLoaded', () => {
             tag.defer = true;
             document.head.appendChild(tag);
         }
+    }
+
+    // Retorna true se o captcha foi marcado (ou se está desligado/sem caixa na página)
+    function captchaMarcado() {
+        if (!RECAPTCHA_SITE_KEY || !caixaCaptcha) return true;
+        const token = (window.grecaptcha && recaptchaId !== null) ? window.grecaptcha.getResponse(recaptchaId) : '';
+        return !!token;
+    }
+
+    function resetarCaptcha() {
+        if (window.grecaptcha && recaptchaId !== null) window.grecaptcha.reset(recaptchaId);
+    }
+
+    // Tratamento do formulário de Login
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+
+            if (!emailInput || !passwordInput) {
+                console.error('Campos de e-mail/senha não encontrados no formulário de login.');
+                Toast.error('Erro no formulário. Tente recarregar a página.');
+                return;
+            }
+
+            const email = emailInput.value;
+            const pass = passwordInput.value;
+
+            // reCAPTCHA
+            if (!captchaMarcado()) {
+                Toast.warning('Marque a caixa "Não sou um robô" para continuar.');
+                return;
+            }
+
+            const submitBtn = loginForm.querySelector('button[type="submit"], .btn');
+            if (submitBtn) submitBtn.disabled = true;
+
+            Auth.login(email, pass)
+                .then(() => {
+                    Toast.success('Login realizado! Redirecionando...');
+                    setTimeout(() => { window.location.href = 'index.html'; }, 1200);
+                })
+                .catch((err) => {
+                    console.error('Erro ao tentar login:', err);
+                    Toast.error(mensagemErroFirebase(err, 'login'));
+                    if (submitBtn) submitBtn.disabled = false;
+                    resetarCaptcha();
+                });
+        });
     }
 
     // Tratamento do formulário de Registro
@@ -378,12 +399,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // reCAPTCHA
-            if (RECAPTCHA_SITE_KEY) {
-                const token = (window.grecaptcha && recaptchaId !== null) ? window.grecaptcha.getResponse(recaptchaId) : '';
-                if (!token) {
-                    Toast.warning('Marque a caixa "Não sou um robô" para continuar.');
-                    return;
-                }
+            if (!captchaMarcado()) {
+                Toast.warning('Marque a caixa "Não sou um robô" para continuar.');
+                return;
             }
 
             const submitBtn = registerForm.querySelector('button[type="submit"], .btn');
@@ -398,7 +416,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.error('Erro ao tentar cadastro:', err);
                     Toast.error(mensagemErroFirebase(err, 'register'));
                     if (submitBtn) submitBtn.disabled = false;
-                    if (window.grecaptcha && recaptchaId !== null) window.grecaptcha.reset(recaptchaId);
+                    resetarCaptcha();
                 });
         });
     }
