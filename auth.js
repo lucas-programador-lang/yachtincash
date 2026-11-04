@@ -330,7 +330,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ATENÇÃO: sozinho, o captcha do navegador não impede quem chama a API do
     // Firebase direto. Para proteção de verdade ative também o Firebase App
     // Check (veja LEIA-ME-CONFIRMACAO-EMAIL.md).
-    const RECAPTCHA_SITE_KEY = '';
+    const RECAPTCHA_SITE_KEY = '6Lf4Pw8uAAAAALOc9OX0pJBSDu2XL2xcUHW1ys1H';
     let recaptchaId = null;
     const caixaCaptcha = document.getElementById('recaptchaBox');
     if (caixaCaptcha) {
