@@ -1439,3 +1439,50 @@ body.abn-sheet-aberta { overflow: hidden; }
         letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-gold-muted); text-align: right; white-space: nowrap;
     }
 }
+
+
+/* ============================================================
+   Confirmação de e-mail (ver email-gate.js e register.html)
+   ============================================================ */
+.recaptcha-box { display: flex; justify-content: center; margin: 4px 0 14px; min-height: 0; }
+.email-aviso-cadastro { font-size: 12px; line-height: 1.45; color: var(--text-muted); text-align: center; margin: 0 0 14px; }
+
+body.email-gate-aberto { overflow: hidden; }
+.email-gate {
+    position: fixed; inset: 0; z-index: 3000; display: flex; align-items: center; justify-content: center; padding: 18px;
+    background: radial-gradient(ellipse 900px 500px at 50% 0%, rgba(78, 164, 232, 0.22), transparent 70%), rgba(3, 8, 16, 0.94);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); overflow-y: auto;
+}
+.email-gate-card {
+    width: 100%; max-width: 440px; margin: auto; padding: 26px 22px 20px; text-align: center; border-radius: 22px;
+    background: var(--glass-t); border: 1px solid rgba(230, 196, 124, 0.35);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7), 0 0 60px -26px rgba(230, 196, 124, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.10);
+}
+.email-gate-icone {
+    display: grid; place-items: center; width: 64px; height: 64px; margin: 0 auto 14px; border-radius: 50%; color: #f2c75c;
+    border: 1.5px solid rgba(242, 199, 92, 0.70); background: radial-gradient(circle at 30% 22%, rgba(242, 199, 92, 0.36), rgba(130, 92, 14, 0.22) 72%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 0 26px -8px #f2c75c;
+}
+.email-gate-icone svg { width: 30px; height: 30px; }
+.email-gate-card h2 { font-family: var(--font-num); font-size: 26px; font-weight: 600; margin: 0 0 8px; color: var(--text-color); }
+.email-gate-texto { font-size: 14px; line-height: 1.5; color: var(--text-muted); margin: 0 0 14px; }
+.email-gate-texto strong { color: var(--gold-hi); overflow-wrap: anywhere; }
+.email-gate-aviso {
+    display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; margin-bottom: 14px; text-align: left; border-radius: 14px; font-size: 13px; line-height: 1.45;
+    color: #ffd9a8; background: rgba(255, 140, 60, 0.10); border: 1px solid rgba(255, 150, 70, 0.45);
+}
+.email-gate-aviso strong { color: #ffb36b; font-size: 13.5px; letter-spacing: 0.02em; }
+.email-gate-contagem b { font-family: var(--font-num); font-size: 15px; color: #fff; }
+.email-gate.is-expirado .email-gate-contagem b { color: #ff8d8d; }
+.email-gate-lista { list-style: none; margin: 0 0 18px; padding: 0; text-align: left; display: grid; gap: 8px; }
+.email-gate-lista li {
+    position: relative; padding: 9px 12px 9px 36px; font-size: 13.5px; color: var(--text-color); border-radius: 12px;
+    background: rgba(255, 125, 125, 0.07); border: 1px solid rgba(255, 125, 125, 0.25);
+}
+.email-gate-lista li::before { content: '✕'; position: absolute; left: 13px; top: 9px; font-size: 12px; font-weight: 800; color: #ff7d7d; }
+.email-gate-acoes { display: grid; gap: 10px; margin-bottom: 12px; }
+.email-gate-acoes .btn { width: 100%; }
+.email-gate-acoes .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.email-gate-dica { font-size: 12px; color: var(--text-faint); margin: 0 0 8px; }
+.email-gate-sair { background: none; border: 0; color: var(--text-muted); font: inherit; font-size: 13px; text-decoration: underline; cursor: pointer; padding: 6px; }
+.email-gate-sair:hover { color: var(--text-color); }
