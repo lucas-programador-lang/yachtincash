@@ -1489,105 +1489,120 @@ body.email-gate-aberto { overflow: hidden; }
 
 
 /* ============================================================
-   v16 — REFINO DE CORES (acrescentado ao final)
-   Mexe só em cores: sidebar, fundo e superfícies/textos.
+   v17 — CORES, FUNDO E SIDEBAR (acrescentado ao final)
+   Mexe só em cores: fundo do site, sidebar, superfícies e textos.
    Não muda tamanhos, espaçamentos, cantos nem textos.
    Para voltar ao v15, apague daqui até o fim do arquivo.
    ============================================================ */
 :root {
-    /* Fundo: azul-noite mais limpo (mesmo matiz em toda a escala) */
-    --bg-top: #0b2036;
-    --bg-mid: #08162a;
-    --bg-bot: #040b17;
+    /* Fundo: azul-noite com mais profundidade e cor */
+    --bg-top: #0c2440;
+    --bg-mid: #081a30;
+    --bg-bot: #040c18;
 
-    /* Textos: branco levemente quente e cinzas azulados mais legíveis */
-    --text-color: #f4f2eb;
-    --text-muted: #b6c2ce;
-    --text-faint: #8896a6;
+    /* Dourado um pouco mais rico e limpo */
+    --gold: #e9c77f;
+    --gold-hi: #fff3d6;
+    --gold-lo: #b8923f;
+    --accent-gold: #e9c77f;
+    --accent-gold-soft: #fff3d6;
+    --accent-gold-deep: #b8923f;
 
-    /* Superfícies de vidro: azul-marinho com um pouco mais de corpo */
-    --glass-a: #14263a;
-    --glass-b: #0a1423;
+    /* Textos: branco levemente quente, cinzas azulados bem legíveis */
+    --text-color: #f6f3ec;
+    --text-muted: #bac6d2;
+    --text-faint: #8c9aaa;
+
+    /* Superfícies de vidro: azul-marinho com mais corpo e brilho no topo */
+    --glass-a: #16293f;
+    --glass-b: #0a1525;
     --glass-t:
-        linear-gradient(180deg, rgba(255, 244, 214, 0.08) 0%, rgba(255, 244, 214, 0.012) 42%, rgba(255, 244, 214, 0) 70%),
-        linear-gradient(180deg, rgba(28, 52, 80, 0.62) 0%, rgba(9, 19, 33, 0.54) 100%);
+        linear-gradient(180deg, rgba(255, 244, 214, 0.09) 0%, rgba(255, 244, 214, 0.014) 42%, rgba(255, 244, 214, 0) 70%),
+        linear-gradient(180deg, rgba(32, 58, 90, 0.64) 0%, rgba(10, 21, 36, 0.56) 100%);
 
-    --input-bg: #061120;
-    --tabs-bg: #061120;
-    --nav-bg: rgba(6, 14, 26, 0.92);
+    --input-bg: #07132a;
+    --tabs-bg: #07132a;
+    --nav-bg: rgba(7, 16, 30, 0.93);
     --border-soft: rgba(255, 255, 255, 0.07);
-    --border-soft-2: rgba(255, 255, 255, 0.12);
+    --border-soft-2: rgba(255, 255, 255, 0.13);
+
+    /* Sidebar (usada pelas variáveis do tema) */
+    --sidebar-a: #0f2a47;
+    --sidebar-b: #040b16;
 }
 
-/* ---- Fundo do site: luz azul no topo, turquesa embaixo, toque champanhe no canto ---- */
+/* ---- FUNDO DO SITE: aurora azul no topo, turquesa embaixo, toque champanhe ---- */
 body::before {
     background:
-        radial-gradient(ellipse 1200px 520px at 54% -14%, rgba(80, 168, 236, 0.30), transparent 70%),
-        radial-gradient(ellipse 760px 480px at 106% 2%, rgba(58, 112, 232, 0.24), transparent 66%),
-        radial-gradient(ellipse 980px 560px at 4% 116%, rgba(30, 190, 184, 0.20), transparent 68%),
-        radial-gradient(ellipse 700px 420px at 102% 112%, rgba(84, 92, 210, 0.14), transparent 68%),
-        radial-gradient(ellipse 620px 360px at -4% -6%, rgba(230, 196, 124, 0.07), transparent 66%),
-        radial-gradient(ellipse 900px 520px at 52% 48%, rgba(40, 92, 150, 0.10), transparent 72%),
-        radial-gradient(ellipse 140% 110% at 50% 46%, transparent 62%, rgba(0, 0, 0, 0.34) 100%),
+        radial-gradient(ellipse 1300px 600px at 55% -15%, rgba(84, 172, 240, 0.38), transparent 70%),
+        radial-gradient(ellipse 800px 560px at 108% 6%, rgba(64, 120, 240, 0.30), transparent 66%),
+        radial-gradient(ellipse 1050px 600px at 2% 118%, rgba(32, 200, 190, 0.26), transparent 68%),
+        radial-gradient(ellipse 760px 520px at 102% 110%, rgba(100, 92, 222, 0.20), transparent 68%),
+        radial-gradient(ellipse 640px 380px at -5% -8%, rgba(240, 200, 130, 0.10), transparent 66%),
+        radial-gradient(ellipse 900px 520px at 52% 46%, rgba(50, 104, 164, 0.12), transparent 72%),
+        radial-gradient(ellipse 140% 110% at 50% 46%, transparent 64%, rgba(0, 0, 0, 0.30) 100%),
         linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 55%, var(--bg-bot) 100%);
 }
 
-/* ---- Sidebar: azul-noite em degradê, brilho turquesa no pé, filete dourado ---- */
+/* ---- SIDEBAR: painel azul-marinho mais claro que o fundo, com luz e filete dourado ---- */
 .sidebar {
     background:
-        linear-gradient(180deg, rgba(230, 196, 124, 0.60), rgba(230, 196, 124, 0.10) 45%, rgba(61, 230, 218, 0.30)) right top / 1px 100% no-repeat,
-        radial-gradient(ellipse 300px 240px at 0% 0%, rgba(80, 168, 236, 0.18), transparent 70%),
-        radial-gradient(ellipse 280px 300px at 0% 100%, rgba(30, 190, 184, 0.18), transparent 70%),
-        linear-gradient(180deg, rgba(13, 30, 52, 0.95) 0%, rgba(6, 14, 27, 0.97) 55%, rgba(3, 8, 16, 0.98) 100%);
+        linear-gradient(180deg, rgba(233, 199, 127, 0.70), rgba(233, 199, 127, 0.12) 45%, rgba(61, 230, 218, 0.38)) right top / 1px 100% no-repeat,
+        radial-gradient(ellipse 320px 260px at 0% 0%, rgba(90, 170, 240, 0.30), transparent 70%),
+        radial-gradient(ellipse 300px 320px at 0% 100%, rgba(40, 200, 190, 0.22), transparent 70%),
+        radial-gradient(ellipse 240px 200px at 100% 45%, rgba(233, 199, 127, 0.07), transparent 70%),
+        linear-gradient(180deg, rgba(15, 42, 71, 0.97) 0%, rgba(8, 20, 38, 0.98) 52%, rgba(4, 11, 22, 0.99) 100%);
+    box-shadow: 1px 0 0 rgba(255, 255, 255, 0.06), 28px 0 70px -32px rgba(0, 0, 0, 0.9);
 }
-.nav-item { color: #aebdcc; }
-.nav-item .nav-icon { color: #8aa4bd; }
-.nav-item:hover { color: #fff; background: rgba(230, 196, 124, 0.09); }
-.nav-item:hover .nav-icon { color: #d7e6f5; }
+.nav-item { color: #bccadb; }
+.nav-item .nav-icon { color: #8fb0d0; }
+.nav-item:hover { color: #fff; background: rgba(130, 190, 245, 0.11); }
+.nav-item:hover .nav-icon { color: #e0eefc; }
 .nav-item.active {
     color: var(--gold-hi);
-    background: linear-gradient(90deg, rgba(230, 196, 124, 0.22), rgba(230, 196, 124, 0.03));
-    border-color: rgba(230, 196, 124, 0.30);
+    background: linear-gradient(90deg, rgba(233, 199, 127, 0.28), rgba(233, 199, 127, 0.04));
+    border-color: rgba(233, 199, 127, 0.36);
+    box-shadow: inset 3px 0 0 var(--gold), 0 8px 22px -12px rgba(233, 199, 127, 0.60);
 }
 .nav-item.active .nav-icon { color: var(--gold); }
+.sidebar-brand::after { background: linear-gradient(90deg, transparent, rgba(233, 199, 127, 0.65), transparent); }
+.sidebar-footer::before { background: linear-gradient(90deg, transparent, rgba(233, 199, 127, 0.42), transparent); }
 
-/* ---- Topo e menu inferior do celular: mesmo azul-noite do sidebar ---- */
+/* ---- Topo e menu inferior do celular: mesmo azul-marinho do sidebar ---- */
 .mobile-topbar { background: var(--nav-bg); }
 @media (max-width: 1023px) {
-    .app-bottom-nav {
-        background: linear-gradient(180deg, rgba(16, 32, 52, 0.85), rgba(5, 11, 20, 0.92));
-    }
-    .app-bottom-nav button { color: #8fa1b3; }
+    .app-bottom-nav { background: linear-gradient(180deg, rgba(18, 38, 64, 0.88), rgba(6, 13, 24, 0.94)); }
+    .app-bottom-nav button { color: #92a6bb; }
     .app-bottom-nav button.is-active { color: var(--gold-hi); }
-    .abn-sheet-panel { background: linear-gradient(180deg, rgba(22, 42, 66, 0.97), rgba(6, 13, 24, 0.99)); }
+    .abn-sheet-panel { background: linear-gradient(180deg, rgba(24, 46, 74, 0.97), rgba(6, 13, 24, 0.99)); }
 }
 
 /* ---- Cartões e bordas ---- */
 .stat-card, .quick-action, .home-ativo, .yacht-card, .inv-card, .inv-total, .com-total, .com-card,
 .plan-row, .hist-row, .perfil-item, .perfil-atalho, .mis-row, .mis-intro, .mis-progress,
 .rules-box, .info-box, .form-box, .profile-card, .com-intro, .com-historico {
-    border-color: rgba(255, 255, 255, 0.13);
+    border-color: rgba(255, 255, 255, 0.14);
 }
 .hist-lista .hist-row, .mis-list .mis-row { border-bottom-color: rgba(255, 255, 255, 0.07); }
 
-/* ---- Cartão de saldo e banner: azul-petróleo um pouco mais limpo ---- */
+/* ---- Saldo e banner: azul-petróleo mais vivo ---- */
 .balance-card {
     background:
         repeating-radial-gradient(circle at 96% 108%, rgba(255, 240, 200, 0.045) 0 1px, transparent 1px 16px) padding-box,
-        radial-gradient(ellipse 420px 230px at 100% -12%, rgba(61, 230, 218, 0.34), transparent 70%) padding-box,
-        radial-gradient(ellipse 340px 200px at -4% 128%, rgba(230, 196, 124, 0.24), transparent 70%) padding-box,
-        linear-gradient(115deg, transparent 38%, rgba(255, 255, 255, 0.045) 50%, transparent 62%) padding-box,
-        linear-gradient(135deg, #104656 0%, #0b3040 46%, #08213a 100%) padding-box,
-        linear-gradient(135deg, #fff6dc, rgba(230, 196, 124, 0.40) 32%, rgba(255, 255, 255, 0.10) 60%, rgba(61, 230, 218, 0.62)) border-box;
+        radial-gradient(ellipse 420px 230px at 100% -12%, rgba(61, 230, 218, 0.38), transparent 70%) padding-box,
+        radial-gradient(ellipse 340px 200px at -4% 128%, rgba(233, 199, 127, 0.26), transparent 70%) padding-box,
+        linear-gradient(115deg, transparent 38%, rgba(255, 255, 255, 0.05) 50%, transparent 62%) padding-box,
+        linear-gradient(135deg, #12505f 0%, #0c3647 46%, #09254a 100%) padding-box,
+        linear-gradient(135deg, #fff6dc, rgba(233, 199, 127, 0.42) 32%, rgba(255, 255, 255, 0.10) 60%, rgba(61, 230, 218, 0.66)) border-box;
 }
 .home-banner {
     background:
-        radial-gradient(ellipse 340px 190px at 100% 50%, rgba(61, 230, 218, 0.28), transparent 70%),
-        radial-gradient(ellipse 280px 160px at 0% 118%, rgba(230, 196, 124, 0.20), transparent 70%),
-        linear-gradient(135deg, #10323f, #0a2332 62%, #08182c);
+        radial-gradient(ellipse 340px 190px at 100% 50%, rgba(61, 230, 218, 0.32), transparent 70%),
+        radial-gradient(ellipse 280px 160px at 0% 118%, rgba(233, 199, 127, 0.22), transparent 70%),
+        linear-gradient(135deg, #123845, #0b2738 62%, #091c34);
 }
 
-/* ---- Menu lateral no desktop: mantém o vidro, sem trocar a cor base ---- */
+/* ---- Menu lateral no desktop: mantém o vidro ---- */
 @media (min-width: 1024px) {
     .sidebar { background-color: transparent; }
 }
