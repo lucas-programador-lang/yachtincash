@@ -87,6 +87,11 @@ const Auth = {
                         refCode: refCode
                     }))
                     .then(() => this._registrarIndicacaoSeHouver(uid, fullName))
+                    // E-mail de confirmação: se falhar, o cadastro continua e a pessoa
+                    // pode pedir o reenvio na tela de confirmação do painel.
+                    .then(() => this.enviarVerificacao(user).catch((e) => {
+                        console.warn('Não foi possível enviar o e-mail de confirmação agora:', e && e.code);
+                    }))
                     .then(() => credential);
             });
     },
@@ -116,6 +121,21 @@ const Auth = {
             })
             .catch((err) => {
                 console.error('Erro ao registrar indicação:', err);
+            });
+    },
+
+    // Envia (ou reenvia) o e-mail de confirmação. O link leva de volta ao site.
+    // Se o domínio não estiver na lista de autorizados do Firebase (ex.: teste
+    // local), tenta de novo sem o endereço de retorno.
+    enviarVerificacao(user) {
+        const u = user || firebaseAuth.currentUser;
+        if (!u) return Promise.reject(new Error('Sem usuário logado.'));
+        return u.sendEmailVerification({ url: window.location.origin + '/', handleCodeInApp: false })
+            .catch((e) => {
+                if (e && (e.code === 'auth/unauthorized-continue-uri' || e.code === 'auth/invalid-continue-uri' || e.code === 'auth/missing-continue-uri')) {
+                    return u.sendEmailVerification();
+                }
+                throw e;
             });
     },
 
@@ -264,6 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
             'auth/invalid-credential': 'E-mail ou senha incorretos!',
             'auth/email-already-in-use': 'Esse e-mail já está cadastrado.',
             'auth/weak-password': 'A senha deve ter pelo menos 6 caracteres.',
+            'auth/too-many-requests': 'Muitas tentativas. Aguarde alguns minutos e tente de novo.',
             'auth/network-request-failed': 'Falha de conexão. Verifique sua internet.'
         };
         return mapa[codigo] || (contexto === 'login' ? 'Erro ao realizar login.' : 'Erro ao realizar cadastro.');
@@ -302,6 +323,32 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // ---------- reCAPTCHA (cadastro) ----------
+    // Cole aqui a "chave do site" do reCAPTCHA v2 (caixa "Não sou um robô"),
+    // criada em https://www.google.com/recaptcha/admin (tipo: v2 Checkbox, e
+    // inclua o domínio do site, ex.: yachtincash.pages.dev). Vazia = desligado.
+    // ATENÇÃO: sozinho, o captcha do navegador não impede quem chama a API do
+    // Firebase direto. Para proteção de verdade ative também o Firebase App
+    // Check (veja LEIA-ME-CONFIRMACAO-EMAIL.md).
+    const RECAPTCHA_SITE_KEY = '';
+    let recaptchaId = null;
+    const caixaCaptcha = document.getElementById('recaptchaBox');
+    if (caixaCaptcha) {
+        if (!RECAPTCHA_SITE_KEY) {
+            caixaCaptcha.style.display = 'none';
+            console.warn('reCAPTCHA desligado: preencha RECAPTCHA_SITE_KEY em auth.js.');
+        } else {
+            window.__aoCarregarRecaptcha = () => {
+                recaptchaId = window.grecaptcha.render(caixaCaptcha, { sitekey: RECAPTCHA_SITE_KEY, theme: 'dark', hl: 'pt-BR' });
+            };
+            const tag = document.createElement('script');
+            tag.src = 'https://www.google.com/recaptcha/api.js?onload=__aoCarregarRecaptcha&render=explicit&hl=pt-BR';
+            tag.async = true;
+            tag.defer = true;
+            document.head.appendChild(tag);
+        }
+    }
+
     // Tratamento do formulário de Registro
     const registerForm = document.getElementById('registerForm');
     if (registerForm) {
@@ -311,6 +358,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const regNameInput = document.getElementById('regName');
             const regEmailInput = document.getElementById('regEmail');
             const regPassInput = document.getElementById('regPass');
+            const regPass2Input = document.getElementById('regPass2');
 
             if (!regNameInput || !regEmailInput || !regPassInput) {
                 console.error('Campos de nome/e-mail/senha não encontrados no formulário de registro.');
@@ -321,18 +369,36 @@ document.addEventListener('DOMContentLoaded', () => {
             const fullName = regNameInput.value;
             const email = regEmailInput.value;
             const pass = regPassInput.value;
+
+            // Confirmar senha
+            if (regPass2Input && regPass2Input.value !== pass) {
+                Toast.error('As senhas não coincidem. Digite a mesma senha nos dois campos.');
+                regPass2Input.focus();
+                return;
+            }
+
+            // reCAPTCHA
+            if (RECAPTCHA_SITE_KEY) {
+                const token = (window.grecaptcha && recaptchaId !== null) ? window.grecaptcha.getResponse(recaptchaId) : '';
+                if (!token) {
+                    Toast.warning('Marque a caixa "Não sou um robô" para continuar.');
+                    return;
+                }
+            }
+
             const submitBtn = registerForm.querySelector('button[type="submit"], .btn');
             if (submitBtn) submitBtn.disabled = true;
 
             Auth.register(fullName, email, pass)
                 .then(() => {
-                    Toast.success('Cadastro realizado com sucesso! Você ganhou R$ 5,00.');
-                    setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+                    Toast.success('Cadastro realizado! Enviamos um e-mail para você confirmar sua conta.');
+                    setTimeout(() => { window.location.href = 'index.html'; }, 1800);
                 })
                 .catch((err) => {
                     console.error('Erro ao tentar cadastro:', err);
                     Toast.error(mensagemErroFirebase(err, 'register'));
                     if (submitBtn) submitBtn.disabled = false;
+                    if (window.grecaptcha && recaptchaId !== null) window.grecaptcha.reset(recaptchaId);
                 });
         });
     }
