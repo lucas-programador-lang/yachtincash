@@ -189,9 +189,10 @@
     const ICONE_USUARIO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6"/></svg>';
 
     function seloLimite(limite) {
-        const texto = 'Limite: ' + limite + ' por usuário';
         return '<div class="plan-limit" title="Cada usuário pode ter até ' + limite + ' ativos deste plano ao mesmo tempo">'
-            + ICONE_USUARIO + '<span>' + texto + '</span></div>';
+            + '<span class="plan-limit-tag">' + ICONE_USUARIO + '<span>Limite</span></span>'
+            + '<span class="plan-limit-value"><strong>' + limite + '</strong> por usuário</span>'
+            + '</div>';
     }
 
     function cartaoPlano(chave, p) {
@@ -273,9 +274,16 @@
         });
     }
 
+    // Textos das telas que citam o limite (vêm daqui, para nunca ficarem desatualizados)
+    function preencherLimitesNosTextos() {
+        document.querySelectorAll('[data-limite-ciclos]').forEach((el) => { el.textContent = CICLO_LIMITE_COMPRAS; });
+        document.querySelectorAll('[data-limite-planos]').forEach((el) => { el.textContent = LIMITE_COMPRAS; });
+    }
+
     function renderizarPlanos() {
         renderizarLista('planList', 'planos');
         renderizarLista('cicloList', 'ciclos');
+        preencherLimitesNosTextos();
     }
 
     document.addEventListener('DOMContentLoaded', renderizarPlanos);
