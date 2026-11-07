@@ -249,17 +249,20 @@ document.addEventListener('DOMContentLoaded', () => {
         pararEscutaStatus = () => ref.off('value', callback);
     }
 
-    // Conta os ciclos ainda válidos do usuário com a mesma chave
-    async function contarCiclosAtivos(uid, chave) {
+    // Conta os planos/ciclos ainda válidos do usuário com a mesma chave
+    // (planos antigos, sem chave, entram pelo valor investido)
+    async function contarCiclosAtivos(uid, chave, valor) {
         try {
             const snap = await firebaseDb.ref('users/' + uid + '/planos').once('value');
             const lista = snap.val() ? Object.values(snap.val()) : [];
             return lista.filter((p) => {
                 const dias = Math.floor((Date.now() - p.dataAtivacao) / 86400000);
-                return p.planoKey === chave && dias < p.duracaoDias;
+                if (dias >= p.duracaoDias) return false;
+                if (p.planoKey) return p.planoKey === chave;
+                return typeof valor === 'number' && Math.abs((p.valorInvestido || 0) - valor) < 0.01;
             }).length;
         } catch (err) {
-            console.error('Não foi possível conferir o limite de ciclos:', err);
+            console.error('Não foi possível conferir o limite de compras:', err);
             return 0; // não bloqueia a tela; a conferência final é feita na aprovação
         }
     }
@@ -354,13 +357,13 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const info = PLANOS[chave];
 
-            // Ciclos: no máximo 10 ativos do mesmo tipo por usuário (o admin
-            // confere de novo na aprovação; o Worker também deve conferir).
-            if (info.grupo === 'ciclos') {
-                const limite = info.limiteCompras || window.CICLOS_LIMITE_COMPRAS || 10;
-                const ativos = await contarCiclosAtivos(user.uid, chave);
+            // Planos e ciclos: no máximo 2 ativos do mesmo tipo por usuário
+            // (o admin confere de novo na aprovação; o Worker também deve conferir).
+            {
+                const limite = info.limiteCompras || (info.grupo === 'ciclos' ? window.CICLOS_LIMITE_COMPRAS : window.PLANOS_LIMITE_COMPRAS) || 2;
+                const ativos = await contarCiclosAtivos(user.uid, chave, info.valor);
                 if (ativos >= limite) {
-                    toast('warning', 'Limite atingido', `Você já tem ${limite} ciclos ${info.nome} ativos.`);
+                    toast('warning', 'Limite atingido', `Você já tem ${ativos} ativo(s) de ${info.nome}. O limite é ${limite} por usuário.`);
                     return;
                 }
             }
