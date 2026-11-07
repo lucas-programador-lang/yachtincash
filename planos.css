@@ -80,27 +80,55 @@
     line-height: 1.4;
 }
 
-/* Selo "Limite: 2 por usuário": fica em destaque, em vez de texto apagado */
+/* Selo de limite por usuário: etiqueta dourada "LIMITE" + valor em destaque */
 .plan-limit {
     display: inline-flex;
-    align-items: center;
-    gap: 6px;
+    align-items: stretch;
     margin-top: 8px;
-    padding: 4px 10px 4px 8px;
     font-size: 12.5px;
-    font-weight: 700;
     line-height: 1.2;
-    color: var(--text-color);
-    background: rgba(255, 255, 255, 0.07);
-    border: 1px solid var(--border-primary);
+    border: 1px solid rgba(217, 182, 116, 0.5);
+    border: 1px solid color-mix(in srgb, var(--accent-gold) 55%, transparent);
     border-radius: 999px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.05);
 }
 
-.plan-limit svg {
-    flex: 0 0 15px;
-    width: 15px;
-    height: 15px;
+.plan-limit-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 9px 5px 8px;
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent-gold-soft);
+    background: rgba(217, 182, 116, 0.18);
+    background: color-mix(in srgb, var(--accent-gold) 20%, transparent);
+}
+
+.plan-limit-tag svg {
+    flex: 0 0 13px;
+    width: 13px;
+    height: 13px;
     color: var(--accent-gold);
+}
+
+.plan-limit-value {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 11px 5px 9px;
+    font-weight: 600;
+    color: var(--text-color);
+    white-space: nowrap;
+}
+
+.plan-limit-value strong {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--accent-gold-soft);
 }
 
 /* Coluna da direita: arte (moedas ou foto) + botão Investir */
