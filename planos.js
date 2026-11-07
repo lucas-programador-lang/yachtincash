@@ -185,6 +185,15 @@
         return '<svg class="plan-coins" viewBox="0 0 120 80" aria-hidden="true">' + desenho + '</svg>';
     }
 
+    // Selo de limite por usuário (ícone desenhado, sem emoji), bem visível no cartão
+    const ICONE_USUARIO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6"/></svg>';
+
+    function seloLimite(limite) {
+        const texto = 'Limite: ' + limite + ' por usuário';
+        return '<div class="plan-limit" title="Cada usuário pode ter até ' + limite + ' ativos deste plano ao mesmo tempo">'
+            + ICONE_USUARIO + '<span>' + texto + '</span></div>';
+    }
+
     function cartaoPlano(chave, p) {
         const ciclo = p.grupo === 'ciclos';
         const prefixo = ciclo ? 'cy' : '';
@@ -195,10 +204,11 @@
         const selo = p.vip > 0
             ? '<span class="vip-badge">' + ICONE_COROA_CHEIA + '<span>VIP ' + p.vip + '</span></span>'
             : '<span class="vip-badge is-none"><span>Sem VIP</span></span>';
-        const extras = ciclo
+        const extras = (ciclo
             ? (p.cashback > 0 ? '<div class="plan-meta muted">Cashback de ' + brl(p.cashback) + ' na ativação</div>' : '')
-                + '<div class="plan-meta muted">Rendimento fixo • limite de ' + p.limiteCompras + ' por usuário</div>'
-            : '<div class="plan-meta muted">Limite de ' + p.limiteCompras + ' por usuário</div>';
+                + '<div class="plan-meta muted">Rendimento fixo</div>'
+            : '')
+            + seloLimite(p.limiteCompras);
         const icone = bau
             ? '<span class="plan-icon plan-chest"><img src="' + p.imagem + '" alt="' + p.nome + '" loading="lazy"></span>'
             : '<span class="plan-icon' + (p.icone ? ' has-img' : '') + '">'
