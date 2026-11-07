@@ -8,15 +8,18 @@
 // confere o preço de verdade). Se mudar um plano aqui, mude nos três.
 //
 // Existem DOIS grupos de planos, cada um com a sua tela e as suas regras:
-//   - PLANOS (tela Investir): 2,5% ao dia até 60% do valor, 24 dias.
+//   - PLANOS (tela Investir): 2,5% ao dia até 60% do valor, 24 dias,
+//     limite de 2 ativos de cada plano por usuário.
 //   - CICLOS (tela Ciclos): 1% ao dia até 50% do valor, 50 dias, rendimento
-//     fixo, limite de 10 ativos por usuário e cashback nos que têm VIP.
+//     fixo, limite de 2 ativos de cada ciclo por usuário e cashback nos
+//     que têm VIP.
 // Os dois ficam juntos em window.PLANOS_CATALOGO (campo "grupo").
 //
 // Carregue ESTE arquivo ANTES do deposito.js e do inicio.js.
 // ============================================================
 (function () {
     const TAXA_DIARIA_PERCENTUAL = 2.5;
+    const LIMITE_COMPRAS = 2; // máximo de planos ativos do mesmo tipo por usuário
     const LIMITE_PERCENTUAL = 60;
     const DURACAO_DIAS = LIMITE_PERCENTUAL / TAXA_DIARIA_PERCENTUAL; // 24
 
@@ -56,7 +59,7 @@
     const CICLO_TAXA_DIARIA = 1;
     const CICLO_LIMITE_PERCENTUAL = 50;
     const CICLO_DURACAO_DIAS = CICLO_LIMITE_PERCENTUAL / CICLO_TAXA_DIARIA; // 50
-    const CICLO_LIMITE_COMPRAS = 10; // máximo de ciclos ativos do mesmo tipo por usuário
+    const CICLO_LIMITE_COMPRAS = 2; // máximo de ciclos ativos do mesmo tipo por usuário
 
     // Fotos dos ciclos (mesma ideia das fotos dos planos)
     // Cada ciclo mostra um baú (ciclone-1.png ... ciclone-5.png). Sem imagem
@@ -87,6 +90,7 @@
             vip: vip,
             cashback: 0,
             ordem: indice + 1,
+            limiteCompras: LIMITE_COMPRAS,
             taxaDiaria: TAXA_DIARIA_PERCENTUAL,
             limitePercentual: LIMITE_PERCENTUAL,
             imagem: IMAGENS[chave] || null,
@@ -117,6 +121,7 @@
     window.PLANOS_CATALOGO = catalogo;
     window.PLANOS_TAXA_DIARIA = TAXA_DIARIA_PERCENTUAL;
     window.PLANOS_LIMITE = LIMITE_PERCENTUAL;
+    window.PLANOS_LIMITE_COMPRAS = LIMITE_COMPRAS;
     window.CICLOS_LIMITE_COMPRAS = CICLO_LIMITE_COMPRAS;
 
     const brl = (v) => 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -192,8 +197,8 @@
             : '<span class="vip-badge is-none"><span>Sem VIP</span></span>';
         const extras = ciclo
             ? (p.cashback > 0 ? '<div class="plan-meta muted">Cashback de ' + brl(p.cashback) + ' na ativação</div>' : '')
-                + '<div class="plan-meta muted">Rendimento fixo • limitado a ' + p.limiteCompras + ' por usuário</div>'
-            : '';
+                + '<div class="plan-meta muted">Rendimento fixo • limite de ' + p.limiteCompras + ' por usuário</div>'
+            : '<div class="plan-meta muted">Limite de ' + p.limiteCompras + ' por usuário</div>';
         const icone = bau
             ? '<span class="plan-icon plan-chest"><img src="' + p.imagem + '" alt="' + p.nome + '" loading="lazy"></span>'
             : '<span class="plan-icon' + (p.icone ? ' has-img' : '') + '">'
