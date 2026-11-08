@@ -20,9 +20,8 @@
 (function () {
     const TAXA_DIARIA_PERCENTUAL = 2.5;
     const LIMITE_COMPRAS = 2; // máximo de planos ativos do mesmo tipo por usuário
-    const LIMITE_PERCENTUAL = 60;
-    const DURACAO_DIAS = LIMITE_PERCENTUAL / TAXA_DIARIA_PERCENTUAL; // 24
-
+    const LIMITE_PERCENTUAL = 100;
+    const DURACAO_DIAS = LIMITE_PERCENTUAL / TAXA_DIARIA_PERCENTUAL; // 40
     // ---------- FOTOS DOS PLANOS ----------
     // Para usar uma foto sua em um plano, coloque o arquivo na mesma pasta
     // do index.html e escreva o nome aqui. Plano sem foto (ou foto que não
