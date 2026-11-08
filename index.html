@@ -248,63 +248,85 @@
             <section class="page-section" id="section-equipe">
                 <h1 class="page-title">Equipe</h1>
 
-                <div class="com-intro">
-                    <span class="com-intro-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M2.8 19.2c.7-3.1 3.1-5 6.2-5s5.5 1.9 6.2 5"/><circle cx="17" cy="9" r="2.6"/><path d="M16.5 14.2c2.6.1 4.3 1.8 4.9 4.6"/></svg>
-                    </span>
-                    <p>Convide amigos e ganhe <strong>comissões sobre os investimentos deles</strong>, em até 3 níveis.</p>
+                <!-- Banner -->
+                <div class="eq-hero">
+                    <span class="eq-hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M2.8 19.2c.7-3.1 3.1-5 6.2-5s5.5 1.9 6.2 5"/><circle cx="17" cy="9" r="2.6"/><path d="M16.5 14.2c2.6.1 4.3 1.8 4.9 4.6"/></svg></span>
+                    <div class="eq-hero-txt">
+                        <h2>Cresça com a sua rede</h2>
+                        <p>Convide amigos e ganhe <strong>comissões sobre os investimentos deles</strong>, em até 3 níveis.</p>
+                    </div>
+                    <div class="eq-hero-chips">
+                        <span class="eq-chip"><b>10%</b> nível 1</span>
+                        <span class="eq-chip"><b>1%</b> nível 2</span>
+                        <span class="eq-chip"><b>1%</b> nível 3</span>
+                    </div>
                 </div>
 
-                <div class="com-ref">
-                    <span class="com-eyebrow">Seu link de indicação</span>
-                    <div class="com-ref-row">
-                        <input type="text" id="refLink" class="com-ref-input" readonly value="https://yachtincash.com/register?ref=SEUUSUARIO">
-                        <button type="button" class="btn btn-compact com-copy" id="btnCopiarRef">
+                <!-- Link de indicação -->
+                <div class="eq-ref">
+                    <div class="eq-ref-head">
+                        <span class="eq-eyebrow">Seu link de indicação</span>
+                        <span class="eq-live"><i></i> Ativo</span>
+                    </div>
+                    <div class="eq-ref-row">
+                        <input type="text" id="refLink" class="eq-ref-input" readonly value="https://yachtincash.com/register?ref=SEUUSUARIO">
+                        <button type="button" class="btn btn-compact eq-copy" id="btnCopiarRef">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2.5"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/></svg>
                             <span>Copiar</span>
                         </button>
                     </div>
-                </div>
-
-                <div class="com-total">
-                    <span class="com-total-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V9"/><path d="M10 19V5"/><path d="M16 19v-7"/><path d="M22 19H2"/></svg>
-                    </span>
-                    <div>
-                        <span class="com-label">Total de Comissões</span>
-                        <h2 id="comissaoTotal">R$ 0,00</h2>
+                    <div class="eq-share">
+                        <button type="button" class="eq-share-btn" id="btnShareWhats">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 20.5l1.7-5.4A8.4 8.4 0 1 1 21 11.5z"/><path d="M9 9.5c.3 2 2.5 4.2 4.5 4.5l1.3-1.2-1.8-1-.8.6a3 3 0 0 1-1.3-1.3l.6-.8-1-1.8z"/></svg>
+                            <span>WhatsApp</span>
+                        </button>
+                        <button type="button" class="eq-share-btn" id="btnShareTelegram">
+                            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.5 3.5 2.8 10.7c-.9.4-.9 1.1-.2 1.3l4.8 1.5 1.8 5.6c.2.6.4.8.8.8s.6-.2.9-.5l2.3-2.2 4.7 3.5c.9.5 1.5.2 1.7-.8l3.1-14.6c.3-1.2-.4-1.8-1.2-1.4zM9 13.8l8.8-5.5c.4-.3.8-.1.5.2l-7.3 6.6-.3 3z"/></svg>
+                            <span>Telegram</span>
+                        </button>
+                        <button type="button" class="eq-share-btn" id="btnShareMais">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>
+                            <span>Mais</span>
+                        </button>
                     </div>
                 </div>
 
+                <!-- Total -->
+                <div class="eq-total">
+                    <div class="eq-total-top">
+                        <span class="eq-total-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V9"/><path d="M10 19V5"/><path d="M16 19v-7"/><path d="M22 19H2"/></svg>
+                        </span>
+                        <span class="eq-label">Total de Comissões</span>
+                    </div>
+                    <h2 id="comissaoTotal">R$ 0,00</h2>
+                    <div class="eq-periodos">
+                        <div><span class="eq-label">Hoje</span><strong id="comissaoHoje">R$ 0,00</strong></div>
+                        <div><span class="eq-label">Esta semana</span><strong id="comissaoSemana">R$ 0,00</strong></div>
+                        <div><span class="eq-label">Este mês</span><strong id="comissaoMes">R$ 0,00</strong></div>
+                    </div>
+                </div>
+
+                <!-- Níveis -->
                 <h3 class="section-subtitle">Níveis</h3>
-                <div class="com-grid">
-                    <div class="com-card com-n1">
-                        <span class="com-badge">Nível 1 <b>10%</b></span>
+                <div class="eq-niveis">
+                    <div class="eq-nivel eq-n1">
+                        <span class="eq-pct">10<small>%</small></span>
+                        <span class="eq-nivel-nome">Nível 1</span>
+                        <span class="eq-nivel-sub">Indicados diretos</span>
                         <strong id="comissaoNivel1">R$ 0,00</strong>
                     </div>
-                    <div class="com-card com-n2">
-                        <span class="com-badge">Nível 2 <b>1%</b></span>
+                    <div class="eq-nivel eq-n2">
+                        <span class="eq-pct">1<small>%</small></span>
+                        <span class="eq-nivel-nome">Nível 2</span>
+                        <span class="eq-nivel-sub">Indicados deles</span>
                         <strong id="comissaoNivel2">R$ 0,00</strong>
                     </div>
-                    <div class="com-card com-n3">
-                        <span class="com-badge">Nível 3 <b>1%</b></span>
+                    <div class="eq-nivel eq-n3">
+                        <span class="eq-pct">1<small>%</small></span>
+                        <span class="eq-nivel-nome">Nível 3</span>
+                        <span class="eq-nivel-sub">Terceira geração</span>
                         <strong id="comissaoNivel3">R$ 0,00</strong>
-                    </div>
-                </div>
-
-                <h3 class="section-subtitle">Detalhes</h3>
-                <div class="com-grid">
-                    <div class="com-card">
-                        <span class="com-label">Hoje</span>
-                        <strong id="comissaoHoje">R$ 0,00</strong>
-                    </div>
-                    <div class="com-card">
-                        <span class="com-label">Esta Semana</span>
-                        <strong id="comissaoSemana">R$ 0,00</strong>
-                    </div>
-                    <div class="com-card">
-                        <span class="com-label">Este Mês</span>
-                        <strong id="comissaoMes">R$ 0,00</strong>
                     </div>
                 </div>
 
@@ -332,19 +354,16 @@
                     </div>
                 </div>
 
-                <div class="com-indicados">
-                    <div>
-                        <span class="com-eyebrow">Total de Indicados (Nível 1)</span>
+                <!-- Rede -->
+                <div class="eq-rede-head">
+                    <h3 class="section-subtitle">Membros da Rede</h3>
+                    <div class="eq-count">
+                        <span>Indicados N1</span>
                         <h2 id="totalIndicados">0</h2>
                     </div>
-                    <span class="com-indicados-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M2.8 19.2c.7-3.1 3.1-5 6.2-5s5.5 1.9 6.2 5"/><path d="M19 8v6M16 11h6"/></svg>
-                    </span>
                 </div>
-
-                <h3 class="section-subtitle">Membros da Rede</h3>
-                <div class="com-membros">
-                    <table class="com-membros-table">
+                <div class="eq-membros">
+                    <table class="eq-membros-table">
                         <thead>
                             <tr>
                                 <th>Nome</th>
@@ -353,7 +372,7 @@
                         </thead>
                         <tbody id="membrosRedeBody">
                             <tr>
-                                <td colspan="2" class="com-vazio">Nenhum membro na sua rede ainda. Compartilhe seu link de indicação para começar.</td>
+                                <td colspan="2" class="eq-vazio">Nenhum membro na sua rede ainda. Compartilhe seu link de indicação para começar.</td>
                             </tr>
                         </tbody>
                     </table>
