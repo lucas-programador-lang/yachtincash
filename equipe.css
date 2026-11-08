@@ -162,7 +162,7 @@
 #section-equipe .eq-membro { display: flex; align-items: center; gap: 12px; min-width: 0; }
 #section-equipe .eq-avatar {   /* mesmo anel dourado do avatar do Início */
     flex: 0 0 42px; width: 42px; height: 42px; display: grid; place-items: center; border-radius: 50%;
-    font-family: var(--num); font-size: 17px; font-weight: 600; color: var(--g-hi); border: 2px solid transparent;
+    font-family: var(--font-body, 'Manrope', 'Inter', system-ui, sans-serif); font-size: 16px; font-weight: 800; line-height: 1; color: var(--g-hi); border: 2px solid transparent;
     background:
         linear-gradient(#0a1722, #0a1722) padding-box,
         conic-gradient(from 210deg, #fff2d2, #b38d3f, #e6c47c, #fff2d2, #b38d3f, #fff2d2) border-box;
