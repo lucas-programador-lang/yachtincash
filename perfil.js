@@ -34,6 +34,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Copiar o ID do usuário
+    document.addEventListener('click', async (e) => {
+        const btn = e.target.closest('#btnCopiarId');
+        if (!btn) return;
+        const el = document.getElementById('perfilId');
+        const id = el ? el.textContent.trim() : '';
+        if (!id || id === '—') return;
+        try { await navigator.clipboard.writeText(id); }
+        catch (erro) {
+            const t = document.createElement('textarea');
+            t.value = id; document.body.appendChild(t); t.select();
+            document.execCommand('copy'); t.remove();
+        }
+        if (typeof showToast === 'function') showToast('success', 'ID copiado!');
+    });
+
     // Ao sair da aba Perfil e voltar, sempre começa pelo menu
     const navPerfil = document.querySelector('.nav-item[data-section="perfil"]');
     if (navPerfil) navPerfil.addEventListener('click', () => mostrarDados(false));
