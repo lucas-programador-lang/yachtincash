@@ -65,15 +65,26 @@
             ? '<img src="' + imagem + '" alt="" loading="lazy">'
             : (aba === 'ciclo' ? ICONE_CICLO : ICONE_COROA);
 
+        const progresso = plano.duracaoDias ? Math.min(100, Math.round((c.diasContados / plano.duracaoDias) * 100)) : 0;
+
         return `
-            <div class="inv-card${aberto ? ' is-open' : ''}">
+            <div class="inv-card ${c.finalizado ? 'is-end' : 'is-on'}${aba === 'ciclo' ? ' is-ciclo' : ''}${aberto ? ' is-open' : ''}">
                 <button type="button" class="inv-head" data-inv-id="${escapeHtml(id)}" aria-expanded="${aberto ? 'true' : 'false'}">
                     <span class="inv-icon${imagem ? ' has-img' : ''}${imagem && aba === 'ciclo' ? ' is-bau' : ''}">${icone}</span>
                     <span class="inv-info">
-                        <span class="inv-name">${escapeHtml(plano.nome)}</span>
+                        <span class="inv-top">
+                            <span class="inv-name">${escapeHtml(plano.nome)}</span>
+                            ${status}
+                        </span>
                         <span class="inv-value">${brl(plano.valorInvestido)}</span>
-                        <span class="inv-line">Rendimento: ${pct(c.taxa)}% ao dia</span>
-                        <span class="inv-line">Status: ${status}</span>
+                        <span class="inv-meta">
+                            <span class="inv-chip">${pct(c.taxa)}% ao dia</span>
+                            <span class="inv-chip is-gain">+ ${brl(c.acumulado)} rendidos</span>
+                        </span>
+                        <span class="inv-prog" role="progressbar" aria-valuemin="0" aria-valuemax="${plano.duracaoDias}" aria-valuenow="${c.diasContados}" aria-label="Dias rendidos">
+                            <span class="inv-prog-bar"><i style="width:${progresso}%"></i></span>
+                            <span class="inv-prog-txt">${c.diasContados} de ${plano.duracaoDias} dias</span>
+                        </span>
                     </span>
                     ${ICONE_SETA}
                 </button>
@@ -87,6 +98,8 @@
             </div>`;
     }
 
+    const ICONE_VAZIO_COFRE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20h18"/><path d="M5 20V9l7-5 7 5v11"/><path d="M9 20v-6h6v6"/></svg>';
+
     function desenhar() {
         const lista = document.getElementById('invLista');
         if (!lista) return;
@@ -98,7 +111,15 @@
         if (!doGrupo.length) {
             const destino = abaAtual === 'ciclo' ? 'ciclos' : 'investir';
             const nome = abaAtual === 'ciclo' ? 'Ciclos' : 'Investir';
-            lista.innerHTML = `<div class="info-box muted">Você ainda não possui investimentos nesta aba. Vá até <button type="button" class="dep-link" data-goto="${destino}">${nome}</button> para começar.</div>`;
+            const texto = abaAtual === 'ciclo'
+                ? 'Seus ciclos ativos e concluídos vão aparecer aqui.'
+                : 'Seus planos de rendimento ativos e concluídos vão aparecer aqui.';
+            lista.innerHTML = `<div class="inv-vazio">
+                <span class="inv-vazio-ico">${ICONE_VAZIO_COFRE}</span>
+                <strong>Nenhum investimento nesta aba ainda</strong>
+                <p>${texto}</p>
+                <button type="button" class="btn btn-compact" data-goto="${destino}">Ir para ${nome}</button>
+            </div>`;
         } else {
             lista.innerHTML = doGrupo.map((p) => cartao(p, abaAtual)).join('');
         }
@@ -114,10 +135,21 @@
 
         let investido = 0;
         let rendimento = 0;
+        let ativos = 0;
+        let concluidos = 0;
         doGrupo.forEach((p) => {
+            const c = calcular(p);
             investido += p.valorInvestido || 0;
-            rendimento += calcular(p).acumulado;
+            rendimento += c.acumulado;
+            if (c.finalizado) concluidos++; else ativos++;
         });
+        const pills = document.getElementById('invPills');
+        if (pills) {
+            pills.innerHTML = doGrupo.length
+                ? '<span class="inv-pill is-on"><i></i>' + ativos + (ativos === 1 ? ' ativo' : ' ativos') + '</span>' +
+                  '<span class="inv-pill is-end">' + concluidos + (concluidos === 1 ? ' concluído' : ' concluídos') + '</span>'
+                : '';
+        }
         const total = document.getElementById('invRendimentoTotal');
         const totalInvestido = document.getElementById('invTotalInvestido');
         if (total) total.textContent = brl(rendimento);
@@ -125,6 +157,9 @@
 
         document.querySelectorAll('#section-carteira [data-inv-aba]').forEach((botao) => {
             const ativa = botao.dataset.invAba === abaAtual;
+            const total = planosUsuario.filter((p) => (botao.dataset.invAba === 'ciclo') === ehCiclo(p)).length;
+            const cnt = botao.querySelector('.inv-cnt');
+            if (cnt) cnt.textContent = total ? String(total) : '';
             botao.classList.toggle('btn-outline', !ativa);
             botao.setAttribute('aria-selected', ativa ? 'true' : 'false');
         });
