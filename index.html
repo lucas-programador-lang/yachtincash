@@ -225,22 +225,23 @@
             <section class="page-section" id="section-carteira">
                 <h1 class="page-title">Meus Investimentos</h1>
 
+                <div class="inv-total">
+                    <div class="inv-total-main">
+                        <span class="com-label">Rendimento Total</span>
+                        <h2 id="invRendimentoTotal">R$ 0,00</h2>
+                        <small id="invTotalInvestido">Total investido: R$ 0,00</small>
+                        <div class="inv-pills" id="invPills"></div>
+                    </div>
+                    <button type="button" class="btn btn-compact" data-goto="extrato">Ver Detalhes</button>
+                </div>
+
                 <div class="inv-tabs" role="tablist">
-                    <button type="button" class="btn btn-compact" role="tab" data-inv-aba="rendimento" aria-selected="true">Rendimento</button>
-                    <button type="button" class="btn btn-compact btn-outline" role="tab" data-inv-aba="ciclo" aria-selected="false">Ciclo</button>
+                    <button type="button" class="btn btn-compact" role="tab" data-inv-aba="rendimento" aria-selected="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5L3 8Z"/></svg><span class="inv-tab-txt">Rendimento</span><em class="inv-cnt" aria-hidden="true"></em></button>
+                    <button type="button" class="btn btn-compact btn-outline" role="tab" data-inv-aba="ciclo" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-13.6 5.7"/><path d="M4 12a8 8 0 0 1 13.6-5.7"/><path d="M18 3v4h-4M6 21v-4h4"/></svg><span class="inv-tab-txt">Ciclo</span><em class="inv-cnt" aria-hidden="true"></em></button>
                 </div>
 
                 <div class="inv-lista" id="invLista">
                     <div class="info-box muted">Carregando seus investimentos...</div>
-                </div>
-
-                <div class="inv-total">
-                    <div>
-                        <span class="com-label">Rendimento Total</span>
-                        <h2 id="invRendimentoTotal">R$ 0,00</h2>
-                        <small id="invTotalInvestido">Total investido: R$ 0,00</small>
-                    </div>
-                    <button type="button" class="btn btn-compact" data-goto="extrato">Ver Detalhes</button>
                 </div>
             </section>
             <!-- EQUIPE / COMISSÃO -->
