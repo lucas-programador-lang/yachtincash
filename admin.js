@@ -8,11 +8,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // três, já que é o que traduz a "chave" do plano (ex: 'ciclone3-250')
     // em nome/valor/retorno/duração/cashback.
     const PLANOS_INFO = {
-        'vip1-50': { nome: 'Plano Iniciante', valor: 50, retornoDiario: 1.25, duracaoDias: 24, limiteCompras: 2 },
-        'vip2-70': { nome: 'Plano Bronze', valor: 70, retornoDiario: 1.75, duracaoDias: 24, limiteCompras: 2 },
-        'vip3-150': { nome: 'Plano Prata', valor: 150, retornoDiario: 3.75, duracaoDias: 24, limiteCompras: 2 },
-        'vip4-300': { nome: 'Plano Ouro', valor: 300, retornoDiario: 7.5, duracaoDias: 24, limiteCompras: 2 },
-        'vip5-450': { nome: 'Plano Master', valor: 450, retornoDiario: 11.25, duracaoDias: 24, limiteCompras: 2 },
+        'vip1-50': { nome: 'Plano Iniciante', valor: 50, retornoDiario: 1.25, duracaoDias: 40, limiteCompras: 2 },
+        'vip2-70': { nome: 'Plano Bronze', valor: 70, retornoDiario: 1.75, duracaoDias: 40, limiteCompras: 2 },
+        'vip3-150': { nome: 'Plano Prata', valor: 150, retornoDiario: 3.75, duracaoDias: 40, limiteCompras: 2 },
+        'vip4-300': { nome: 'Plano Ouro', valor: 300, retornoDiario: 7.5, duracaoDias: 40, limiteCompras: 2 },
+        'vip5-450': { nome: 'Plano Master', valor: 450, retornoDiario: 11.25, duracaoDias: 40, limiteCompras: 2 },
 
         // Ciclos (tela Ciclos): 1% ao dia, 50 dias, limite de 2 ativos por
         // usuário e cashback (R$ fixo) nos que têm VIP.
