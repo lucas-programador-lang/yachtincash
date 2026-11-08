@@ -283,25 +283,31 @@ document.addEventListener('DOMContentLoaded', () => {
         if (totalIndicadosEl) totalIndicadosEl.textContent = String(membros.length);
 
         if (!membros.length) {
-            tbody.innerHTML = '<tr><td colspan="2" class="com-vazio">Nenhum membro na sua rede ainda. Compartilhe seu link de indicação para começar.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="2" class="eq-vazio">Nenhum membro na sua rede ainda. Compartilhe seu link de indicação para começar.</td></tr>';
             return;
         }
 
         membros.sort((a, b) => b.createdAt - a.createdAt);
 
+        const inicioHoje = new Date().setHours(0, 0, 0, 0);
+
         tbody.innerHTML = membros.map((membro) => {
             const dataFormatada = new Date(membro.createdAt).toLocaleDateString('pt-BR');
             const nome = (membro.referredName || '').trim();
             const inicial = nome ? nome.charAt(0).toUpperCase() : '?';
+            const novo = membro.createdAt >= inicioHoje ? '<span class="eq-novo">Novo</span>' : '';
             return `
                 <tr>
                     <td>
-                        <span class="com-membro">
-                            <span class="com-avatar" aria-hidden="true">${escapeHtml(inicial)}</span>
-                            <span class="com-membro-nome">${escapeHtml(nome) || '-'}</span>
+                        <span class="eq-membro">
+                            <span class="eq-avatar" aria-hidden="true">${escapeHtml(inicial)}</span>
+                            <span class="eq-membro-info">
+                                <span class="eq-membro-nome">${escapeHtml(nome) || '-'}${novo}</span>
+                                <span class="eq-membro-nivel">Nível 1</span>
+                            </span>
                         </span>
                     </td>
-                    <td class="com-data">${dataFormatada}</td>
+                    <td class="eq-data">${dataFormatada}</td>
                 </tr>
             `;
         }).join('');
@@ -389,6 +395,23 @@ document.addEventListener('DOMContentLoaded', () => {
         if (rotulo) {
             rotulo.textContent = 'Copiado!';
             setTimeout(() => { rotulo.textContent = 'Copiar'; }, 1800);
+        }
+    });
+
+    // Compartilhar o link de indicação (WhatsApp, Telegram, menu nativo)
+    document.addEventListener('click', (e) => {
+        const alvo = e.target.closest('#btnShareWhats, #btnShareTelegram, #btnShareMais');
+        if (!alvo) return;
+        const link = (document.getElementById('refLink') || {}).value || '';
+        const texto = 'Venha investir comigo na YachtinCash!';
+        if (alvo.id === 'btnShareWhats') {
+            window.open('https://wa.me/?text=' + encodeURIComponent(texto + ' ' + link), '_blank', 'noopener');
+        } else if (alvo.id === 'btnShareTelegram') {
+            window.open('https://t.me/share/url?url=' + encodeURIComponent(link) + '&text=' + encodeURIComponent(texto), '_blank', 'noopener');
+        } else if (navigator.share) {
+            navigator.share({ title: 'YachtinCash', text: texto, url: link }).catch(() => {});
+        } else {
+            navigator.clipboard.writeText(link).then(() => showToast('success', 'Link copiado!')).catch(() => {});
         }
     });
 
