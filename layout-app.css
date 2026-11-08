@@ -86,3 +86,13 @@
     .app-bottom-nav button.is-active { color: var(--primary-light); }
     .main-content { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)) !important; }
 }
+
+/* ============================================================
+   Computador: Telegram (Suporte) e Sair já ficam na aba Perfil,
+   então o rodapé do menu lateral some. No celular/tablet o rodapé
+   continua dentro da gaveta do menu e o Telegram segue disponível
+   no menu "Mais" (app-extras.js lê o link deste rodapé).
+   ============================================================ */
+@media (min-width: 1024px) {
+    .sidebar .sidebar-footer { display: none !important; }
+}
