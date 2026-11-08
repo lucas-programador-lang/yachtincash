@@ -302,7 +302,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <span class="eq-membro">
                             <span class="eq-avatar" aria-hidden="true">${escapeHtml(inicial)}</span>
                             <span class="eq-membro-info">
-                                <span class="eq-membro-nome">${escapeHtml(nome) || '-'}${novo}</span>
+                                <span class="eq-membro-nome"><span>${escapeHtml(nome) || '-'}</span>${novo}</span>
                                 <span class="eq-membro-nivel">Nível 1</span>
                             </span>
                         </span>
