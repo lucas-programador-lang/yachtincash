@@ -252,14 +252,17 @@
                     <span class="com-intro-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M2.8 19.2c.7-3.1 3.1-5 6.2-5s5.5 1.9 6.2 5"/><circle cx="17" cy="9" r="2.6"/><path d="M16.5 14.2c2.6.1 4.3 1.8 4.9 4.6"/></svg>
                     </span>
-                    <p>Convide amigos e ganhe comissões sobre os investimentos deles, em até 3 níveis.</p>
+                    <p>Convide amigos e ganhe <strong>comissões sobre os investimentos deles</strong>, em até 3 níveis.</p>
                 </div>
 
-                <div class="info-box">
-                    <p><strong>Seu link de indicação</strong></p>
-                    <div class="ref-link-row">
-                        <input type="text" id="refLink" class="ref-input" readonly value="https://yachtincash.com/register?ref=SEUUSUARIO">
-                        <button class="btn btn-compact" onclick="navigator.clipboard.writeText(document.getElementById('refLink').value); showToast('success', 'Link copiado!');">Copiar</button>
+                <div class="com-ref">
+                    <span class="com-eyebrow">Seu link de indicação</span>
+                    <div class="com-ref-row">
+                        <input type="text" id="refLink" class="com-ref-input" readonly value="https://yachtincash.com/register?ref=SEUUSUARIO">
+                        <button type="button" class="btn btn-compact com-copy" id="btnCopiarRef">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2.5"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/></svg>
+                            <span>Copiar</span>
+                        </button>
                     </div>
                 </div>
 
@@ -275,16 +278,16 @@
 
                 <h3 class="section-subtitle">Níveis</h3>
                 <div class="com-grid">
-                    <div class="com-card">
-                        <span class="com-label">Nível 1 • 10%</span>
+                    <div class="com-card com-n1">
+                        <span class="com-badge">Nível 1 <b>10%</b></span>
                         <strong id="comissaoNivel1">R$ 0,00</strong>
                     </div>
-                    <div class="com-card">
-                        <span class="com-label">Nível 2 • 1%</span>
+                    <div class="com-card com-n2">
+                        <span class="com-badge">Nível 2 <b>1%</b></span>
                         <strong id="comissaoNivel2">R$ 0,00</strong>
                     </div>
-                    <div class="com-card">
-                        <span class="com-label">Nível 3 • 1%</span>
+                    <div class="com-card com-n3">
+                        <span class="com-badge">Nível 3 <b>1%</b></span>
                         <strong id="comissaoNivel3">R$ 0,00</strong>
                     </div>
                 </div>
@@ -305,7 +308,10 @@
                     </div>
                 </div>
 
-                <button type="button" class="btn com-historico-btn" id="btnHistoricoComissoes" aria-expanded="false">Histórico de Comissões</button>
+                <button type="button" class="btn com-historico-btn" id="btnHistoricoComissoes" aria-expanded="false">
+                    <span>Histórico de Comissões</span>
+                    <svg class="com-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+                </button>
                 <div class="info-box com-historico" id="historicoComissoes" hidden>
                     <div class="table-scroll">
                         <table class="extrato-table">
@@ -326,29 +332,31 @@
                     </div>
                 </div>
 
-                <div class="grid-stats">
-                    <div class="stat-card">
-                        <span>Total de Indicados (Nível 1)</span>
+                <div class="com-indicados">
+                    <div>
+                        <span class="com-eyebrow">Total de Indicados (Nível 1)</span>
                         <h2 id="totalIndicados">0</h2>
                     </div>
+                    <span class="com-indicados-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M2.8 19.2c.7-3.1 3.1-5 6.2-5s5.5 1.9 6.2 5"/><path d="M19 8v6M16 11h6"/></svg>
+                    </span>
                 </div>
+
                 <h3 class="section-subtitle">Membros da Rede</h3>
-                <div class="info-box">
-                    <div class="table-scroll">
-                        <table class="extrato-table">
-                            <thead>
-                                <tr>
-                                    <th>Data de Cadastro</th>
-                                    <th>Nome</th>
-                                </tr>
-                            </thead>
-                            <tbody id="membrosRedeBody">
-                                <tr>
-                                    <td colspan="2" class="muted">Nenhum membro na sua rede ainda. Compartilhe seu link de indicação para começar.</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="com-membros">
+                    <table class="com-membros-table">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Cadastro</th>
+                            </tr>
+                        </thead>
+                        <tbody id="membrosRedeBody">
+                            <tr>
+                                <td colspan="2" class="com-vazio">Nenhum membro na sua rede ainda. Compartilhe seu link de indicação para começar.</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </section>
             <!-- MISSÕES (gerado pelo missoes.js) -->
