@@ -550,34 +550,50 @@
             <!-- PERFIL -->
             <section class="page-section" id="section-perfil">
                 <div class="perfil-view" id="perfilMenu">
-                    <div class="perfil-header">
+                    <div class="perfil-hero com-card">
                         <span class="perfil-avatar" id="perfilAvatar" aria-hidden="true">?</span>
                         <div class="perfil-user">
                             <h1 class="perfil-nome" id="perfilNome">visitante</h1>
-                            <span class="perfil-id">ID: <strong id="perfilId">—</strong></span>
-                            <span class="vip-badge is-none" id="perfilVip">
-                                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5L3 8Z"/></svg>
-                                <img class="vip-badge-img" id="perfilVipImg" alt="" width="40" height="40" hidden>
-                                <span id="perfilVipTexto">VIP 0</span>
-                            </span>
+                            <div class="perfil-meta">
+                                <span class="perfil-id">ID <strong id="perfilId">—</strong>
+                                    <button type="button" class="perfil-copy" id="btnCopiarId" aria-label="Copiar ID">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2.5"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/></svg>
+                                    </button>
+                                </span>
+                                <span class="vip-badge is-none" id="perfilVip">
+                                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5L3 8Z"/></svg>
+                                    <img class="vip-badge-img" id="perfilVipImg" alt="" width="40" height="40" hidden>
+                                    <span id="perfilVipTexto">VIP 0</span>
+                                </span>
+                            </div>
                         </div>
                     </div>
+
                     <div class="perfil-atalhos">
-                        <button type="button" class="perfil-atalho" data-goto="carteira">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V9"/><path d="M10 19V5"/><path d="M16 19v-7"/><path d="M22 19H2"/></svg>
-                            Meus Investimentos
+                        <button type="button" class="perfil-atalho com-card" data-goto="carteira">
+                            <span class="pi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V9"/><path d="M10 19V5"/><path d="M16 19v-7"/><path d="M22 19H2"/></svg></span>
+                            <span class="pi-txt"><b>Meus Investimentos</b><small>Planos e rendimentos</small></span>
                         </button>
-                        <button type="button" class="perfil-atalho" data-perfil-saques>
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="6.5" width="19" height="13" rx="2.2"/><path d="M2.5 10.5h19"/><path d="M16.5 14.5h2.5"/></svg>
-                            Meus Saques
+                        <button type="button" class="perfil-atalho com-card" data-perfil-saques>
+                            <span class="pi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="6.5" width="19" height="13" rx="2.2"/><path d="M2.5 10.5h19"/><path d="M16.5 14.5h2.5"/></svg></span>
+                            <span class="pi-txt"><b>Meus Saques</b><small>Retiradas e status</small></span>
                         </button>
                     </div>
-                    <div class="perfil-menu">
-                        <button type="button" class="perfil-item" data-goto="equipe"><svg class="perfil-item-icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M2.8 19.2c.7-3.1 3.1-5 6.2-5s5.5 1.9 6.2 5"/><circle cx="17" cy="9" r="2.6"/><path d="M16.5 14.2c2.6.1 4.3 1.8 4.9 4.6"/></svg><span class="perfil-item-texto">Minha Comissão</span><svg class="perfil-item-seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
-                        <button type="button" class="perfil-item" data-goto="extrato"><svg class="perfil-item-icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><path d="M9 12h6M9 16h6M9 8h2"/></svg><span class="perfil-item-texto">Histórico de Transações</span><svg class="perfil-item-seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
-                        <button type="button" class="perfil-item" data-perfil-dados><svg class="perfil-item-icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 19.5c1.1-3.6 4-5.6 7.5-5.6s6.4 2 7.5 5.6"/></svg><span class="perfil-item-texto">Meus Dados</span><svg class="perfil-item-seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
-                        <a class="perfil-item" href="https://t.me/yachtincash" target="_blank" rel="noopener"><svg class="perfil-item-icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 13v-1a8 8 0 0 1 16 0v1"/><rect x="3" y="13" width="4" height="6" rx="1.5"/><rect x="17" y="13" width="4" height="6" rx="1.5"/><path d="M19 19c0 1.5-1.5 2.5-4 2.5h-2"/></svg><span class="perfil-item-texto">Suporte</span><svg class="perfil-item-seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
-                        <button type="button" class="perfil-item is-sair" onclick="Auth.logout()"><svg class="perfil-item-icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 4H6a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h4"/><path d="M15 8l4 4-4 4"/><path d="M19 12H9"/></svg><span class="perfil-item-texto">Sair</span><svg class="perfil-item-seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+
+                    <span class="perfil-grupo-titulo">Conta</span>
+                    <div class="perfil-group com-card">
+                        <button class="perfil-item" data-goto="equipe"><span class="pi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M2.8 19.2c.7-3.1 3.1-5 6.2-5s5.5 1.9 6.2 5"/><circle cx="17" cy="9" r="2.6"/><path d="M16.5 14.2c2.6.1 4.3 1.8 4.9 4.6"/></svg></span><span class="pi-txt"><b>Minha Comissão</b><small>Ganhos da sua equipe</small></span><svg class="pi-seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+                        <button class="perfil-item" data-goto="extrato"><span class="pi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><path d="M9 12h6M9 16h6M9 8h2"/></svg></span><span class="pi-txt"><b>Histórico de Transações</b><small>Depósitos, saques e rendimentos</small></span><svg class="pi-seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+                        <button class="perfil-item" data-perfil-dados><span class="pi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 19.5c1.1-3.6 4-5.6 7.5-5.6s6.4 2 7.5 5.6"/></svg></span><span class="pi-txt"><b>Meus Dados</b><small>Nome e chave PIX</small></span><svg class="pi-seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+                    </div>
+
+                    <span class="perfil-grupo-titulo">Ajuda</span>
+                    <div class="perfil-group com-card">
+                        <a class="perfil-item" href="https://t.me/yachtincash" target="_blank" rel="noopener"><span class="pi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 13v-1a8 8 0 0 1 16 0v1"/><rect x="3" y="13" width="4" height="6" rx="1.5"/><rect x="17" y="13" width="4" height="6" rx="1.5"/><path d="M19 19c0 1.5-1.5 2.5-4 2.5h-2"/></svg></span><span class="pi-txt"><b>Suporte</b><small>Fale com a gente no Telegram</small></span><svg class="pi-seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+                    </div>
+
+                    <div class="perfil-group perfil-group-sair com-card">
+                        <button class="perfil-item is-sair" onclick="Auth.logout()"><span class="pi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 4H6a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h4"/><path d="M15 8l4 4-4 4"/><path d="M19 12H9"/></svg></span><span class="pi-txt"><b>Sair</b><small>Encerrar sessão</small></span><svg class="pi-seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
                     </div>
                 </div>
 
@@ -590,14 +606,20 @@
                     <h1 class="page-title">Meus Dados</h1>
                     <p class="page-subtitle">Gerencie suas informações de cadastro e dados para recebimento via PIX.</p>
                 <div class="profile-card">
-                    <h3 class="profile-card-title">Dados Pessoais</h3>
+                    <div class="perfil-card-head">
+                        <span class="pi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 19.5c1.1-3.6 4-5.6 7.5-5.6s6.4 2 7.5 5.6"/></svg></span>
+                        <h3 class="profile-card-title">Dados Pessoais</h3>
+                    </div>
                     <div class="form-group">
                         <label for="perfilNomeCompleto">Nome Completo</label>
                         <input type="text" id="perfilNomeCompleto" placeholder="Digite seu nome completo">
                     </div>
                 </div>
                 <div class="profile-card">
-                    <h3 class="profile-card-title">Chave PIX Padrão para Saques</h3>
+                    <div class="perfil-card-head">
+                        <span class="pi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="6.5" width="19" height="13" rx="2.2"/><path d="M2.5 10.5h19"/><path d="M16.5 14.5h2.5"/></svg></span>
+                        <h3 class="profile-card-title">Chave PIX Padrão para Saques</h3>
+                    </div>
                     <p class="muted form-box-note">Estes dados serão preenchidos automaticamente na solicitação de saque.</p>
                     <div class="form-group">
                         <label for="perfilTipoPix">Tipo de Chave PIX</label>
@@ -612,7 +634,7 @@
                         <label for="perfilChavePix">Sua Chave PIX</label>
                         <input type="text" id="perfilChavePix" placeholder="Digite sua chave PIX">
                     </div>
-                    <button class="btn" onclick="salvarPerfil()">Salvar Alterações</button>
+                    <button class="btn perfil-salvar" onclick="salvarPerfil()">Salvar Alterações</button>
                 </div>
                 </div>
             </section>
