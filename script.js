@@ -283,7 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (totalIndicadosEl) totalIndicadosEl.textContent = String(membros.length);
 
         if (!membros.length) {
-            tbody.innerHTML = '<tr><td colspan="2" class="muted">Nenhum membro na sua rede ainda. Compartilhe seu link de indicação para começar.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="2" class="com-vazio">Nenhum membro na sua rede ainda. Compartilhe seu link de indicação para começar.</td></tr>';
             return;
         }
 
@@ -291,10 +291,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         tbody.innerHTML = membros.map((membro) => {
             const dataFormatada = new Date(membro.createdAt).toLocaleDateString('pt-BR');
+            const nome = (membro.referredName || '').trim();
+            const inicial = nome ? nome.charAt(0).toUpperCase() : '?';
             return `
                 <tr>
-                    <td>${dataFormatada}</td>
-                    <td>${escapeHtml(membro.referredName) || '-'}</td>
+                    <td>
+                        <span class="com-membro">
+                            <span class="com-avatar" aria-hidden="true">${escapeHtml(inicial)}</span>
+                            <span class="com-membro-nome">${escapeHtml(nome) || '-'}</span>
+                        </span>
+                    </td>
+                    <td class="com-data">${dataFormatada}</td>
                 </tr>
             `;
         }).join('');
@@ -364,6 +371,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 </tr>`;
             }).join('');
     }
+
+    // Botão "Copiar" do link de indicação (com fallback para navegadores antigos)
+    document.addEventListener('click', async (e) => {
+        const botao = e.target.closest('#btnCopiarRef');
+        if (!botao) return;
+        const input = document.getElementById('refLink');
+        if (!input) return;
+        try {
+            await navigator.clipboard.writeText(input.value);
+        } catch (erro) {
+            input.select();
+            document.execCommand('copy');
+        }
+        showToast('success', 'Link copiado!');
+        const rotulo = botao.querySelector('span');
+        if (rotulo) {
+            rotulo.textContent = 'Copiado!';
+            setTimeout(() => { rotulo.textContent = 'Copiar'; }, 1800);
+        }
+    });
 
     // Botão "Histórico de Comissões": abre e fecha a lista
     document.addEventListener('click', (e) => {
