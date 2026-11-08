@@ -2474,3 +2474,102 @@ body::after { opacity: 0.30; }
     #section-gerente .ger-dot { animation: none; }
     #section-gerente .ger-card:hover { transform: none; }
 }
+
+
+/* ============================================================
+   v25 — CUPOM: SEGUNDA RODADA (acrescentado ao final)
+   Banner com marca d'água e resumo em pílulas, "Como funciona" em 4
+   passos, campo do código maior, brilho no botão e, no computador, duas
+   colunas (resgatar | como funciona) em vez de cartões esticados.
+   Para voltar ao v24, apague daqui para baixo e desfaça as 2 trocas
+   no index.html (pílulas do banner e a lista de passos).
+   ============================================================ */
+
+/* ---- Banner: marca d'água de ingresso + pílulas ---- */
+#section-cupom .cp-header {
+    background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e9c77f' stroke-opacity='.30' stroke-width='.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 9a2 2 0 0 0 0 6v3a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-3a2 2 0 0 1 0-6V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1Z'/%3E%3Cpath d='M9 9l6 6'/%3E%3C/svg%3E") right 158px center / 128px no-repeat,
+        radial-gradient(ellipse 240px 170px at 100% 50%, rgba(63, 224, 213, 0.22), transparent 70%),
+        radial-gradient(ellipse 260px 160px at 0% 0%, rgba(233, 199, 127, 0.14), transparent 70%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0) 45%),
+        linear-gradient(160deg, #123049 0%, #0a1d2f 60%, #07131f 100%);
+}
+#section-cupom .cp-header h1, #section-cupom .cp-header p { position: relative; z-index: 1; }
+#section-cupom .cp-chips { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+#section-cupom .cp-chips span {
+    padding: 5px 12px; font-size: 12px; font-weight: 700; letter-spacing: 0.03em; color: #f3e2b4;
+    background: linear-gradient(180deg, rgba(233, 199, 127, 0.16), rgba(233, 199, 127, 0.05));
+    border: 1px solid rgba(233, 199, 127, 0.30); border-radius: 999px;
+}
+#section-cupom .cp-chips span:first-child { color: #9cf5ee; background: linear-gradient(180deg, rgba(63, 224, 213, 0.18), rgba(63, 224, 213, 0.05)); border-color: rgba(63, 224, 213, 0.34); }
+
+/* Celular/tablet/janela estreita: sem marca d'água (o texto ocupa a largura toda) e pílulas menores */
+@media (max-width: 1199px) {
+    #section-cupom .cp-header {
+        background:
+            radial-gradient(ellipse 240px 170px at 100% 50%, rgba(63, 224, 213, 0.22), transparent 70%),
+            radial-gradient(ellipse 260px 160px at 0% 0%, rgba(233, 199, 127, 0.14), transparent 70%),
+            linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0) 45%),
+            linear-gradient(160deg, #123049 0%, #0a1d2f 60%, #07131f 100%);
+    }
+    #section-cupom .cp-chips { gap: 6px; margin-top: 12px; }
+    #section-cupom .cp-chips span { padding: 4px 10px; font-size: 11px; }
+}
+
+/* ---- Campo do código ---- */
+#section-cupom .cp-campo input { padding: 19px 0; font-size: 17px; text-transform: uppercase; }
+#section-cupom .cp-campo input::placeholder { text-transform: none; }
+
+/* ---- Botão com brilho que passa no hover ---- */
+#section-cupom .cp-btn { position: relative; overflow: hidden; }
+#section-cupom .cp-btn::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.5) 50%, transparent 70%);
+    transform: translateX(-130%); transition: transform 700ms ease;
+}
+#section-cupom .cp-btn:hover:not(:disabled)::after { transform: translateX(130%); }
+
+/* ---- Como funciona: 4 passos ---- */
+#section-cupom .cp-passos { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 12px; counter-reset: passo; }
+#section-cupom .cp-passos li { display: flex; flex-direction: column; gap: 1px; position: relative; padding-left: 38px; counter-increment: passo; }
+#section-cupom .cp-passos li::before {
+    content: counter(passo); position: absolute; left: 0; top: 1px; width: 26px; height: 26px; border-radius: 9px;
+    display: grid; place-items: center; font-size: 12px; font-weight: 800; color: var(--primary-color);
+    background: linear-gradient(180deg, rgba(63, 224, 213, 0.22), rgba(63, 224, 213, 0.06));
+    border: 1px solid rgba(63, 224, 213, 0.34);
+}
+#section-cupom .cp-passos li:not(:last-child)::after {
+    content: ""; position: absolute; left: 12.5px; top: 30px; bottom: -10px; width: 1px;
+    background: linear-gradient(180deg, rgba(63, 224, 213, 0.35), transparent);
+}
+#section-cupom .cp-passos strong { font-size: 13.5px; font-weight: 700; color: #f3e2b4; letter-spacing: 0.01em; }
+#section-cupom .cp-passos span { font-size: 13px; line-height: 1.45; color: var(--text-muted); }
+
+/* ---- Lista vazia com ícone ---- */
+#section-cupom .cp-vazio::before {
+    content: ""; display: block; width: 46px; height: 46px; margin: 0 auto 10px; opacity: 0.6;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233fe0d5' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 9a2 2 0 0 0 0 6v3a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-3a2 2 0 0 1 0-6V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1Z'/%3E%3Cpath d='M9 9l6 6'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+#section-cupom .cp-vazio { text-align: center; }
+#section-cupom .cp-item { transition: border-color 180ms, transform 180ms; }
+#section-cupom .cp-item:hover { border-color: rgba(74, 240, 180, 0.35); transform: translateX(2px); }
+
+/* ---- Computador: duas colunas ---- */
+@media (min-width: 1024px) {
+    #section-cupom.active {
+        display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+        gap: 18px 20px; align-items: start;
+    }
+    #section-cupom.active > * { margin: 0; }
+    #section-cupom.active > .cp-header { grid-column: 1 / -1; }
+    #section-cupom.active > .cp-card { margin: 0; }
+    #section-cupom.active > .cp-como { align-self: stretch; }
+    #section-cupom.active > .cp-card:last-child { grid-column: 1 / -1; }
+    #section-cupom .cp-header { padding: 26px 150px 26px 28px; }
+    #section-cupom .cp-header h1 { font-size: 34px; }
+    #section-cupom .cp-header p { font-size: 15px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    #section-cupom .cp-btn::after { transition: none; }
+    #section-cupom .cp-item:hover { transform: none; }
+}
