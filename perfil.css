@@ -34,7 +34,7 @@
 }
 #section-perfil .perfil-avatar {   /* mesmo anel dourado metálico do Início */
     flex: 0 0 84px; width: 84px; height: 84px; display: grid; place-items: center; border-radius: 50%;
-    font-family: var(--num); font-size: 2.2rem; font-weight: 600; text-transform: uppercase; color: var(--g-hi);
+    font-family: var(--font-body, 'Manrope', 'Inter', system-ui, sans-serif); font-size: 2.1rem; font-weight: 800; line-height: 1; letter-spacing: 0; text-transform: uppercase; color: var(--g-hi); -webkit-text-fill-color: var(--g-hi);
     border: 3px solid transparent;
     background:
         linear-gradient(#0a1722, #0a1722) padding-box,
@@ -53,7 +53,7 @@
     font-size: 11.5px; font-weight: 600; letter-spacing: .08em; color: var(--text-muted);
     background: rgba(255, 255, 255, .05); border: 1px solid var(--hair);
 }
-#section-perfil .perfil-id strong { color: var(--text-color); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .06em; }
+#section-perfil .perfil-id strong { color: var(--text-color); font-family: var(--font-body, 'Manrope', 'Inter', system-ui, sans-serif); font-weight: 700; letter-spacing: .1em; font-variant-numeric: lining-nums tabular-nums; }
 #section-perfil .perfil-copy {
     width: 24px; height: 24px; display: grid; place-items: center; padding: 0; cursor: pointer; border-radius: 50%;
     color: var(--g); background: color-mix(in srgb, var(--g) 12%, transparent); border: 0; transition: background 200ms, transform 200ms;
@@ -137,7 +137,7 @@
 /* ---------- Responsivo ---------- */
 @media (max-width: 420px) {
     #section-perfil .perfil-hero { gap: 14px; padding: 18px 16px; }
-    #section-perfil .perfil-avatar { flex-basis: 68px; width: 68px; height: 68px; font-size: 1.8rem; }
+    #section-perfil .perfil-avatar { flex-basis: 68px; width: 68px; height: 68px; font-size: 1.7rem; }
     #section-perfil .perfil-atalho { flex-direction: column; align-items: flex-start; gap: 10px; padding: 14px 12px; }
     #section-perfil .perfil-group .perfil-item + .perfil-item::before { left: 64px; }
 }
