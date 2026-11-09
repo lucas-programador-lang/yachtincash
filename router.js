@@ -112,10 +112,16 @@
         window.scrollTo(0, 0);
     }
 
+    // Na primeira navegação feita pela pessoa, as animações de entrada voltam ao normal
+    function limparSemAnim() {
+        document.querySelectorAll('.page-section.sem-anim').forEach((s) => s.classList.remove('sem-anim'));
+    }
+
     function iniciar() {
         // 1) Toda troca de tela feita pelo usuário vira uma entrada no histórico
         document.querySelectorAll('.sidebar .nav-item[data-section]').forEach((item) => {
             item.addEventListener('click', () => {
+                limparSemAnim();
                 if (aplicando) return;
                 empurrar(item.dataset.section);
             });
@@ -123,6 +129,7 @@
 
         // 2) Botão voltar/avançar do navegador
         window.addEventListener('popstate', () => {
+            limparSemAnim();
             mostrar(secaoDoCaminho(location.pathname) || 'inicio');
         });
 
@@ -135,7 +142,11 @@
             inicial = guardada;
         }
         mostrar(inicial);
-        // Tira a marca que o index.html colocou no <html> para evitar o flash do Início
+        // Tira a marca que o index.html colocou no <html> para evitar o flash do Início.
+        // A seção que já abriu fica SEM a animação de entrada (.sem-anim): senão, ao tirar a
+        // marca, a animação "secIn" (fade) começaria agora e pareceria um piscar da tela.
+        const jaAtiva = document.querySelector('.page-section.active');
+        if (jaAtiva && document.documentElement.hasAttribute('data-rota')) jaAtiva.classList.add('sem-anim');
         document.documentElement.removeAttribute('data-rota');
         history.replaceState({ secao: inicial }, '', ROTAS[inicial]);
     }
