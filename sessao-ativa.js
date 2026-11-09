@@ -28,6 +28,7 @@
             '.sessao-ativa-acoes button{flex:1 1 140px;padding:11px 14px;border-radius:12px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:background .2s,border-color .2s}' +
             '.sessao-ativa-ir{border:0;color:#2a1d05;background:linear-gradient(180deg,#f5dc92,#c9a04a)}' +
             '.sessao-ativa-sair{color:var(--gold,#d9b86c);background:transparent;border:1px solid rgba(241,201,111,.4)}' +
+            '.form-bloqueado{opacity:.4;pointer-events:none;filter:grayscale(.4);user-select:none}' +
             '.sessao-ativa-sair:hover{background:rgba(241,201,111,.1);border-color:rgba(241,201,111,.8)}';
         document.head.appendChild(s);
     }
@@ -79,9 +80,36 @@
         else card.insertBefore(aviso, card.firstChild);
     }
 
+    // No cadastro, enquanto houver alguém logado o formulário fica travado:
+    // criar uma conta nova trocaria a sessão sem querer. É preciso sair antes.
+    function travarFormulario(travar) {
+        if (!ehCadastro) return;
+        const form = document.getElementById('registerForm');
+        if (!form) return;
+        css();
+        form.classList.toggle('form-bloqueado', travar);
+        form.setAttribute('aria-disabled', String(travar));
+        form.querySelectorAll('input, button[type="submit"]').forEach((el) => { el.disabled = travar; });
+    }
+
+    // Segurança extra: mesmo que o formulário seja destravado pelo console, o envio é barrado.
+    // (capture = roda antes do listener do auth.js)
+    document.addEventListener('submit', (e) => {
+        if (!ehCadastro || !firebaseAuth.currentUser) return;
+        if (e.target && e.target.id === 'registerForm') {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+        }
+    }, true);
+
     firebaseAuth.onAuthStateChanged((user) => {
         const existente = document.getElementById('sessaoAtiva');
-        if (!user) { if (existente) existente.remove(); return; }
+        if (!user) {
+            if (existente) existente.remove();
+            travarFormulario(false);
+            return;
+        }
         mostrar(user);
+        travarFormulario(true);
     });
 })();
