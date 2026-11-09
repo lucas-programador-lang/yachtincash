@@ -844,6 +844,10 @@
     <!-- Toasts (substitui os alert() nativos do navegador) -->
     <div class="toast-container" id="toastContainer"></div>
 
+    <!-- Marca a seção e o item do menu da rota ANTES de qualquer script externo carregar
+         (sem isso, o Início fica destacado até o Firebase terminar de carregar). O router.js assume depois. -->
+    <script>(function(){var k=document.documentElement.getAttribute('data-rota');if(!k)return;document.querySelectorAll('.page-section').forEach(function(s){s.classList.toggle('active',s.id==='section-'+k);});document.querySelectorAll('.nav-item[data-section]').forEach(function(i){i.classList.toggle('active',i.getAttribute('data-section')===k);});})();</script>
+
     <!-- Firebase SDK (compat) — precisa vir antes de auth.js e script.js -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
