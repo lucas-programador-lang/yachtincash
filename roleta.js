@@ -62,7 +62,11 @@ document.addEventListener('DOMContentLoaded', () => {
             $('roletaDesconto').textContent = descontoPontos > 0 ? '-' + descontoPontos + '% na taxa' : 'Nenhum';
         }
         const btn = $('roletaGirar');
-        btn.disabled = girando || giros < 1;
+        // Só trava durante o giro. Sem giros o botão continua clicável e explica como ganhar.
+        btn.disabled = girando;
+        btn.classList.toggle('is-sem-giros', !girando && giros < 1);
+        btn.classList.toggle('is-pronto', !girando && giros >= 1);
+        btn.setAttribute('aria-disabled', String(girando || giros < 1));
         btn.innerHTML = 'GIRAR<small>' + giros + (giros === 1 ? ' giro' : ' giros') + '</small>';
     }
 
@@ -125,7 +129,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     $('roletaGirar').addEventListener('click', async () => {
-        if (girando || giros < 1) return;
+        if (girando) return;
+        if (giros < 1) {
+            toast('warning', 'Sem giros', 'Convide alguém que invista R$ 100,00 ou mais para ganhar 1 giro.');
+            return;
+        }
         girando = true;
         atualizarTela();
         try {
@@ -133,7 +141,8 @@ document.addEventListener('DOMContentLoaded', () => {
             await animarAte(dados.premio.tipo);
             mostrarResultado(dados.premio);
         } catch (err) {
-            toast('error', 'Roleta', err.message);
+            const falhaRede = err instanceof TypeError || /failed to fetch|network/i.test(err.message || '');
+            toast('error', 'Roleta', falhaRede ? 'Não foi possível falar com o servidor da roleta. Tente novamente em instantes.' : err.message);
         } finally {
             girando = false;
             atualizarTela();
