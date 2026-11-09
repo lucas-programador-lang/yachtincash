@@ -1,0 +1,10 @@
+# Rotas do painel (router.js): /investir, /equipe, /perfil, /roleta etc.
+#
+# NÃO precisa mais de regra "/investir /index.html 200": o Cloudflare Pages,
+# quando NÃO existe um 404.html no projeto, já trata o site como SPA e abre o
+# index.html em qualquer endereço que não seja um arquivo. As regras antigas
+# que apontavam para /index.html podiam fazer o Pages redirecionar para "/"
+# (por causa da regra de "URLs limpas"), e aí o F5 caía sempre no Início.
+#
+# Mantenha este arquivo sem 404.html para o comportamento continuar assim.
+/inicio   /   301
