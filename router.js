@@ -31,7 +31,10 @@
 
     // Só o painel do usuário (o admin e as telas de login ficam de fora)
     const corpo = document.body;
-    if (!corpo || !corpo.classList.contains('app-body') || corpo.classList.contains('admin-body')) return;
+    if (!corpo || !corpo.classList.contains('app-body') || corpo.classList.contains('admin-body')) {
+        document.documentElement.removeAttribute('data-rota');
+        return;
+    }
 
     const ROTAS = {
         inicio: '/',
@@ -132,6 +135,8 @@
             inicial = guardada;
         }
         mostrar(inicial);
+        // Tira a marca que o index.html colocou no <html> para evitar o flash do Início
+        document.documentElement.removeAttribute('data-rota');
         history.replaceState({ secao: inicial }, '', ROTAS[inicial]);
     }
 
