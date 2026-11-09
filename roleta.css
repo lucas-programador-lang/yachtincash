@@ -28,7 +28,7 @@
     border-radius: 50%;
     border: 6px solid #d8b56a;
     box-shadow: 0 0 24px rgba(216, 181, 106, 0.45), inset 0 0 18px rgba(0, 0, 0, 0.5);
-    transition: transform 5s cubic-bezier(0.12, 0.7, 0.1, 1);
+    transition: none !important; /* o giro é feito por JS (roleta.js) */
     will-change: transform;
 }
 .rol-wheel text {
@@ -113,17 +113,92 @@
     display: none;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.7);
+    padding: 20px;
+    background: rgba(2, 8, 14, 0.78);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
     z-index: 1000;
 }
-.rol-resultado.is-open { display: flex; }
-.rol-resultado-box {
-    background: var(--bg-card-2);
-    border: 2px solid #d8b56a;
-    border-radius: 18px;
-    padding: 28px 24px;
+.rol-resultado.is-open { display: flex; animation: rolFade 220ms ease-out; }
+#section-roleta .rol-resultado .rol-resultado-box {
+    --g: var(--gold, #d9b86c);
+    --g-hi: var(--gold-hi, #f3e3b8);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: min(340px, 100%);
+    padding: 34px 24px 24px;
     text-align: center;
-    width: min(320px, 88vw);
+    border: 1px solid transparent;
+    border-radius: 24px;
+    background:
+        radial-gradient(ellipse 280px 170px at 50% -10%, color-mix(in srgb, var(--g) 26%, transparent), transparent 70%) padding-box,
+        linear-gradient(160deg, #0f2f39 0%, #0a202b 55%, #07131c 100%) padding-box,
+        linear-gradient(160deg, var(--g-hi), color-mix(in srgb, var(--g) 30%, transparent) 40%, rgba(255, 255, 255, .06) 70%, color-mix(in srgb, var(--g) 55%, transparent)) border-box;
+    box-shadow: 0 30px 70px -20px rgba(0, 0, 0, .9), 0 0 60px -20px color-mix(in srgb, var(--g) 45%, transparent);
+    animation: rolPop 420ms cubic-bezier(.2, 1.2, .3, 1);
 }
-.rol-resultado-box h2 { margin-bottom: 8px; }
-.rol-resultado-box p { margin-bottom: 18px; }
+.rol-res-medalha {
+    width: 78px;
+    height: 78px;
+    display: grid;
+    place-items: center;
+    margin-bottom: 16px;
+    border-radius: 50%;
+    color: var(--g-hi);
+    border: 3px solid transparent;
+    background:
+        linear-gradient(#0a1722, #0a1722) padding-box,
+        conic-gradient(from 210deg, #fff2d2, #b38d3f, #e6c47c, #fff2d2, #b38d3f, #fff2d2) border-box;
+    box-shadow: 0 0 0 7px color-mix(in srgb, var(--g) 10%, transparent), 0 0 34px -4px color-mix(in srgb, var(--g) 55%, transparent);
+}
+.rol-res-medalha svg { width: 38px; height: 38px; }
+.rol-res-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--g);
+}
+.rol-resultado-box h2 {
+    margin: 8px 0 2px;
+    font-family: var(--font-num, 'Fraunces', Georgia, serif);
+    font-size: 46px;
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -.02em;
+    color: var(--g-hi);
+    -webkit-text-fill-color: var(--g-hi);
+    text-shadow: 0 2px 26px color-mix(in srgb, var(--g) 30%, transparent);
+}
+.rol-res-sub { font-size: 13px; font-weight: 600; color: var(--text-muted, #9fb3c8); }
+.rol-resultado-box p {
+    margin: 16px 0 22px;
+    padding-top: 16px;
+    width: 100%;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--text-muted, #9fb3c8);
+    border-top: 1px solid rgba(255, 255, 255, .08);
+}
+.rol-resultado-box .btn { width: 100%; }
+.rol-res-outra {
+    margin-top: 10px;
+    padding: 10px 18px;
+    width: 100%;
+    cursor: pointer;
+    font: inherit;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--g);
+    background: transparent;
+    border: 1px solid color-mix(in srgb, var(--g) 35%, transparent);
+    border-radius: 12px;
+    transition: background 200ms, border-color 200ms;
+}
+.rol-res-outra[hidden] { display: none; }
+.rol-res-outra:hover { background: color-mix(in srgb, var(--g) 10%, transparent); border-color: var(--g); }
+@keyframes rolFade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes rolPop { from { opacity: 0; transform: translateY(14px) scale(.92); } to { opacity: 1; transform: none; } }
