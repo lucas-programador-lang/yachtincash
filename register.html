@@ -15,6 +15,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="tema-oceano.css">
+    <!-- Enquanto o Firebase confere se já existe sessão, o formulário fica escondido
+         (evita piscar a tela de cadastro para quem já está logado e vai ser levado ao painel).
+         O sessao-ativa.js libera a tela; o temporizador abaixo é a garantia caso algo falhe. -->
+    <style>html.checando-sessao .container { visibility: hidden; }</style>
+    <script>
+        document.documentElement.classList.add('checando-sessao');
+        setTimeout(function () { document.documentElement.classList.remove('checando-sessao'); }, 3500);
+    </script>
 </head>
 <body>
     <div class="container">
