@@ -69,7 +69,14 @@
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
 }
 .rol-btn-girar small { display: block; font-size: 10px; font-weight: 700; opacity: 0.8; }
-.rol-btn-girar:disabled { filter: grayscale(0.7); cursor: not-allowed; }
+.rol-btn-girar.is-sem-giros { filter: grayscale(0.6); opacity: .85; }
+.rol-btn-girar:disabled { filter: grayscale(0.7); cursor: wait; }
+.rol-btn-girar.is-pronto { animation: rolPulso 1.8s ease-in-out infinite; }
+@keyframes rolPulso {
+    0%, 100% { box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5), 0 0 0 0 rgba(216, 181, 106, 0.55); }
+    50% { box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5), 0 0 0 14px rgba(216, 181, 106, 0); }
+}
+@media (prefers-reduced-motion: reduce) { .rol-btn-girar.is-pronto { animation: none; } }
 
 .rol-resumo {
     display: grid;
