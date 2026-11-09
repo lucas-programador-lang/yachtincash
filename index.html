@@ -441,11 +441,15 @@
                     <tbody id="roletaHistorico"><tr><td colspan="2" class="muted">Carregando...</td></tr></tbody>
                 </table>
 
-                <div class="rol-resultado" id="roletaResultado">
+                <div class="rol-resultado" id="roletaResultado" role="dialog" aria-modal="true" aria-labelledby="roletaResTitulo">
                     <div class="rol-resultado-box">
+                        <span class="rol-res-medalha" id="roletaResIcone" aria-hidden="true"></span>
+                        <span class="rol-res-eyebrow">Parabéns! Você ganhou</span>
                         <h2 id="roletaResTitulo"></h2>
+                        <span class="rol-res-sub" id="roletaResSub"></span>
                         <p id="roletaResTexto"></p>
-                        <button type="button" class="btn" id="roletaResFechar">OK</button>
+                        <button type="button" class="btn" id="roletaResFechar">Continuar</button>
+                        <button type="button" class="rol-res-outra" id="roletaResOutra" hidden>Girar de novo</button>
                     </div>
                 </div>
             </section>
