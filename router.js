@@ -65,7 +65,24 @@
     function secaoDoCaminho(caminho) { return SECOES[normalizar(caminho)] || null; }
     function itemDoMenu(secao) { return document.querySelector('.sidebar .nav-item[data-section="' + secao + '"]'); }
 
+    // Guarda a seção atual só nesta aba. Serve de rede de segurança: se o servidor
+    // devolver "/" ao recarregar (F5) uma rota como /investir, voltamos para ela.
+    function lembrar(secao) {
+        try { sessionStorage.setItem('yacht_router_secao', secao); } catch (e) { /* sem storage */ }
+    }
+    function lembrada() {
+        try { return sessionStorage.getItem('yacht_router_secao'); } catch (e) { return null; }
+    }
+    function foiRecarregamento() {
+        try {
+            const nav = performance.getEntriesByType('navigation')[0];
+            if (nav) return nav.type === 'reload';
+            return !!(performance.navigation && performance.navigation.type === 1);
+        } catch (e) { return false; }
+    }
+
     function atualizarTitulo(secao) {
+        lembrar(secao);
         const item = itemDoMenu(secao);
         const rotulo = item && item.querySelector('span:not(.nav-icon)');
         const nome = rotulo && rotulo.textContent.trim();
@@ -107,7 +124,13 @@
         });
 
         // 3) Abertura / recarregamento: o endereço manda
-        const inicial = secaoDoCaminho(location.pathname) || 'inicio';
+        let inicial = secaoDoCaminho(location.pathname) || 'inicio';
+        // F5 / Ctrl+F5 que o servidor mandou para "/": volta para a seção em que a pessoa estava
+        const guardada = lembrada();
+        if (inicial === 'inicio' && normalizar(location.pathname) === '/' && foiRecarregamento()
+            && guardada && guardada !== 'inicio' && ROTAS[guardada]) {
+            inicial = guardada;
+        }
         mostrar(inicial);
         history.replaceState({ secao: inicial }, '', ROTAS[inicial]);
     }
