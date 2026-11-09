@@ -1,138 +1,46 @@
 // ============================================================
 // Sessão já ativa nas telas de login e cadastro.
 //
-// LOGIN (login.html): quem já está logado é levado direto para o painel
-// (index.html), sem ver o formulário. Quem NÃO está logado e abre o painel
-// já era mandado para o login pelo auth.js (Auth.protectRoute).
-//   - Se a pessoa acabou de enviar o formulário de login, o auth.js é quem
-//     avisa ("Login realizado!") e redireciona; aqui não se mete.
+// Quem já está logado e abre login.html OU register.html é levado direto
+// para o painel (index.html), sem ver o formulário. Quem NÃO está logado e
+// abre o painel já era mandado para o login pelo auth.js (Auth.protectRoute).
 //
-// CADASTRO (register.html): NÃO redireciona sozinho, de propósito. Quem abre o
-// link de indicação (register.html?ref=...) já logado achava que tinha dado
-// erro; agora aparece um aviso com duas opções: ir para o painel ou sair e
-// continuar o cadastro (mantendo o ?ref= do link). Assim dá para testar o
-// próprio link de indicação no mesmo navegador.
+// Fica de fora quem ACABOU de enviar o formulário (login ou cadastro): ali o
+// auth.js é quem mostra o aviso ("Login realizado!" / "Cadastro realizado!") e
+// redireciona. No cadastro isso é essencial: o login acontece ANTES de o perfil,
+// o link de indicação e o e-mail de confirmação terminarem de ser gravados, e
+// sair da página nesse instante poderia cortar a gravação.
+//
+// Atenção: abrir um link de indicação (register.html?ref=...) já logado agora
+// leva ao painel. Para testar o link no mesmo navegador, saia da conta antes
+// (ou use uma janela anônima).
+//
 // Carregue este arquivo DEPOIS do auth.js.
 // ============================================================
 (function () {
     if (typeof firebaseAuth === 'undefined') return;
 
-    const ehCadastro = /register/i.test(location.pathname);
-
-    // Tela de login: libera o formulário (escondido pelo login.html enquanto
-    // se confere a sessão) e controla o redirecionamento para o painel.
+    // Libera o formulário (o login.html/register.html o escondem enquanto a sessão é conferida)
     const liberarTela = () => document.documentElement.classList.remove('checando-sessao');
-    let enviandoLogin = false;
+
+    // A pessoa acabou de enviar o formulário? Então o auth.js cuida do redirecionamento.
+    // (O sinal vale 20 s: se o envio falhar, a tela volta ao normal.)
+    let enviandoFormulario = false;
+    let temporizadorEnvio = null;
     document.addEventListener('submit', (e) => {
-        if (e.target && e.target.id === 'loginForm') enviandoLogin = true;
-    }, true);
-
-    function css() {
-        if (document.getElementById('sessaoAtivaCss')) return;
-        const s = document.createElement('style');
-        s.id = 'sessaoAtivaCss';
-        s.textContent =
-            '.sessao-ativa{margin:0 0 18px;padding:14px 16px;border-radius:14px;text-align:left;' +
-            'background:linear-gradient(160deg,rgba(241,201,111,.12),rgba(241,201,111,.04));' +
-            'border:1px solid rgba(241,201,111,.35);color:var(--text-color,#eaf2f8);font-size:13.5px;line-height:1.5}' +
-            '.sessao-ativa strong{color:var(--gold-hi,#f3e3b8);word-break:break-all}' +
-            '.sessao-ativa-acoes{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}' +
-            '.sessao-ativa-acoes button{flex:1 1 140px;padding:11px 14px;border-radius:12px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:background .2s,border-color .2s}' +
-            '.sessao-ativa-ir{border:0;color:#2a1d05;background:linear-gradient(180deg,#f5dc92,#c9a04a)}' +
-            '.sessao-ativa-sair{color:var(--gold,#d9b86c);background:transparent;border:1px solid rgba(241,201,111,.4)}' +
-            '.form-bloqueado{opacity:.4;pointer-events:none;filter:grayscale(.4);user-select:none}' +
-            '.sessao-ativa-sair:hover{background:rgba(241,201,111,.1);border-color:rgba(241,201,111,.8)}';
-        document.head.appendChild(s);
-    }
-
-    function mostrar(user) {
-        const card = document.querySelector('.card');
-        if (!card || document.getElementById('sessaoAtiva')) return;
-        css();
-
-        const aviso = document.createElement('div');
-        aviso.className = 'sessao-ativa';
-        aviso.id = 'sessaoAtiva';
-        aviso.setAttribute('role', 'status');
-
-        const texto = document.createElement('div');
-        texto.appendChild(document.createTextNode('Você já está logado como '));
-        const email = document.createElement('strong');
-        email.textContent = user.email || 'sua conta';
-        texto.appendChild(email);
-        texto.appendChild(document.createTextNode(ehCadastro
-            ? '. Para criar uma nova conta com este link, saia primeiro.'
-            : '. Quer entrar em outra conta? Saia primeiro.'));
-
-        const acoes = document.createElement('div');
-        acoes.className = 'sessao-ativa-acoes';
-
-        const ir = document.createElement('button');
-        ir.type = 'button';
-        ir.className = 'sessao-ativa-ir';
-        ir.textContent = 'Ir para o painel';
-        ir.addEventListener('click', () => { location.href = 'index.html'; });
-
-        const sair = document.createElement('button');
-        sair.type = 'button';
-        sair.className = 'sessao-ativa-sair';
-        sair.textContent = ehCadastro ? 'Sair e cadastrar' : 'Sair desta conta';
-        sair.addEventListener('click', () => {
-            sair.disabled = true;
-            firebaseAuth.signOut().then(() => location.reload()); // mantém o ?ref= da URL
-        });
-
-        acoes.appendChild(ir);
-        acoes.appendChild(sair);
-        aviso.appendChild(texto);
-        aviso.appendChild(acoes);
-
-        const logo = card.querySelector('.logo-container');
-        if (logo && logo.nextSibling) card.insertBefore(aviso, logo.nextSibling);
-        else card.insertBefore(aviso, card.firstChild);
-    }
-
-    // No cadastro, enquanto houver alguém logado o formulário fica travado:
-    // criar uma conta nova trocaria a sessão sem querer. É preciso sair antes.
-    function travarFormulario(travar) {
-        if (!ehCadastro) return;
-        const form = document.getElementById('registerForm');
-        if (!form) return;
-        css();
-        form.classList.toggle('form-bloqueado', travar);
-        form.setAttribute('aria-disabled', String(travar));
-        form.querySelectorAll('input, button[type="submit"]').forEach((el) => { el.disabled = travar; });
-    }
-
-    // Segurança extra: mesmo que o formulário seja destravado pelo console, o envio é barrado.
-    // (capture = roda antes do listener do auth.js)
-    document.addEventListener('submit', (e) => {
-        if (!ehCadastro || !firebaseAuth.currentUser) return;
-        if (e.target && e.target.id === 'registerForm') {
-            e.preventDefault();
-            e.stopImmediatePropagation();
-        }
+        const id = e.target && e.target.id;
+        if (id !== 'loginForm' && id !== 'registerForm') return;
+        enviandoFormulario = true;
+        clearTimeout(temporizadorEnvio);
+        temporizadorEnvio = setTimeout(() => { enviandoFormulario = false; }, 20000);
     }, true);
 
     firebaseAuth.onAuthStateChanged((user) => {
-        const existente = document.getElementById('sessaoAtiva');
         if (!user) {
-            if (existente) existente.remove();
-            travarFormulario(false);
             liberarTela();
             return;
         }
-
-        // Login: já está logado -> vai para o painel (a menos que ele tenha acabado
-        // de entrar pelo formulário: aí o auth.js mostra o aviso e redireciona).
-        if (!ehCadastro) {
-            if (!enviandoLogin) location.replace('index.html');
-            return;
-        }
-
-        // Cadastro: avisa e trava o formulário (não redireciona)
-        liberarTela();
-        mostrar(user);
-        travarFormulario(true);
+        // Já estava logado: vai para o painel (a tela continua escondida até a troca de página)
+        if (!enviandoFormulario) location.replace('index.html');
     });
 })();
