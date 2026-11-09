@@ -1,12 +1,16 @@
 // ============================================================
-// Aviso de "você já está logado" nas telas de cadastro e login.
+// Sessão já ativa nas telas de login e cadastro.
 //
-// Quem abre o link de indicação (register.html?ref=...) já logado
-// via o formulário de cadastro e achava que tinha dado erro. Agora
-// aparece um aviso com duas opções: ir para o painel ou sair e
-// continuar o cadastro (mantendo o ?ref= do link).
+// LOGIN (login.html): quem já está logado é levado direto para o painel
+// (index.html), sem ver o formulário. Quem NÃO está logado e abre o painel
+// já era mandado para o login pelo auth.js (Auth.protectRoute).
+//   - Se a pessoa acabou de enviar o formulário de login, o auth.js é quem
+//     avisa ("Login realizado!") e redireciona; aqui não se mete.
 //
-// Não redireciona sozinho de propósito: assim dá para testar o
+// CADASTRO (register.html): NÃO redireciona sozinho, de propósito. Quem abre o
+// link de indicação (register.html?ref=...) já logado achava que tinha dado
+// erro; agora aparece um aviso com duas opções: ir para o painel ou sair e
+// continuar o cadastro (mantendo o ?ref= do link). Assim dá para testar o
 // próprio link de indicação no mesmo navegador.
 // Carregue este arquivo DEPOIS do auth.js.
 // ============================================================
@@ -14,6 +18,14 @@
     if (typeof firebaseAuth === 'undefined') return;
 
     const ehCadastro = /register/i.test(location.pathname);
+
+    // Tela de login: libera o formulário (escondido pelo login.html enquanto
+    // se confere a sessão) e controla o redirecionamento para o painel.
+    const liberarTela = () => document.documentElement.classList.remove('checando-sessao');
+    let enviandoLogin = false;
+    document.addEventListener('submit', (e) => {
+        if (e.target && e.target.id === 'loginForm') enviandoLogin = true;
+    }, true);
 
     function css() {
         if (document.getElementById('sessaoAtivaCss')) return;
@@ -107,8 +119,19 @@
         if (!user) {
             if (existente) existente.remove();
             travarFormulario(false);
+            liberarTela();
             return;
         }
+
+        // Login: já está logado -> vai para o painel (a menos que ele tenha acabado
+        // de entrar pelo formulário: aí o auth.js mostra o aviso e redireciona).
+        if (!ehCadastro) {
+            if (!enviandoLogin) location.replace('index.html');
+            return;
+        }
+
+        // Cadastro: avisa e trava o formulário (não redireciona)
+        liberarTela();
         mostrar(user);
         travarFormulario(true);
     });
