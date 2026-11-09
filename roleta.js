@@ -67,6 +67,8 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.classList.toggle('is-sem-giros', !girando && giros < 1);
         btn.classList.toggle('is-pronto', !girando && giros >= 1);
         btn.setAttribute('aria-disabled', String(girando || giros < 1));
+        const outra = $('roletaResOutra');
+        if (outra) outra.hidden = giros < 1;
         btn.innerHTML = 'GIRAR<small>' + giros + (giros === 1 ? ' giro' : ' giros') + '</small>';
     }
 
@@ -100,6 +102,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return dados;
     }
 
+    // A roda gira por JavaScript (requestAnimationFrame) e NÃO por transição CSS:
+    // o style.css zera todas as transições para quem usa "reduzir animações" no sistema,
+    // o que fazia a roda pular direto para o resultado sem girar.
     function animarAte(tipo) {
         // Escolhe um segmento do tipo sorteado (pares = dinheiro, ímpares = desconto)
         const candidatos = [];
@@ -112,20 +117,50 @@ document.addEventListener('DOMContentLoaded', () => {
         const destino = (360 - alvo * passo) % 360;
         let delta = destino - atual;
         if (delta < 0) delta += 360;
-        rotacao += 360 * 5 + delta;
-        $('roletaRoda').style.transform = 'rotate(' + rotacao + 'deg)';
-        return new Promise((resolve) => setTimeout(resolve, 5200));
+
+        const reduzido = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+        const duracao = reduzido ? 2600 : 5200;
+        const voltas = reduzido ? 3 : 6;
+        const inicio = rotacao;
+        const fim = rotacao + 360 * voltas + delta;
+        const roda = $('roletaRoda');
+        roda.style.transition = 'none';
+
+        return new Promise((resolve) => {
+            const t0 = performance.now();
+            function quadro(agora) {
+                const t = Math.min(1, (agora - t0) / duracao);
+                const suave = 1 - Math.pow(1 - t, 4); // começa rápido e desacelera até parar
+                roda.style.transform = 'rotate(' + (inicio + (fim - inicio) * suave).toFixed(2) + 'deg)';
+                if (t < 1) {
+                    requestAnimationFrame(quadro);
+                } else {
+                    rotacao = fim;
+                    setTimeout(resolve, 350);
+                }
+            }
+            requestAnimationFrame(quadro);
+        });
     }
+
+    const ICONE_DINHEIRO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.2c-.5-.8-1.5-1.2-2.8-1.2-1.7 0-2.8.8-2.8 2 0 3 5.8 1.4 5.8 4.2 0 1.2-1.2 2-3 2-1.4 0-2.4-.5-3-1.4M12 6.5V8m0 8v1.5"/></svg>';
+    const ICONE_DESCONTO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 5 5 19"/><circle cx="7" cy="7" r="2.6"/><circle cx="17" cy="17" r="2.6"/></svg>';
 
     function mostrarResultado(premio) {
         if (premio.tipo === 'dinheiro') {
-            $('roletaResTitulo').textContent = 'Você ganhou ' + brl(premio.valor) + '!';
+            $('roletaResIcone').innerHTML = ICONE_DINHEIRO;
+            $('roletaResTitulo').textContent = brl(premio.valor);
+            $('roletaResSub').textContent = 'direto no seu saldo';
             $('roletaResTexto').textContent = 'O valor já foi creditado no seu saldo de Rendimento.';
         } else {
-            $('roletaResTitulo').textContent = 'Desconto na taxa de saque!';
+            $('roletaResIcone').innerHTML = ICONE_DESCONTO;
+            $('roletaResTitulo').textContent = '-' + premio.pontos + '%';
+            $('roletaResSub').textContent = 'na taxa de saque';
             $('roletaResTexto').textContent = 'Seu próximo saque terá -' + premio.pontos + '% de taxa.';
         }
+        atualizarTela();
         $('roletaResultado').classList.add('is-open');
+        $('roletaResFechar').focus();
     }
 
     $('roletaGirar').addEventListener('click', async () => {
@@ -149,7 +184,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    $('roletaResFechar').addEventListener('click', () => $('roletaResultado').classList.remove('is-open'));
+    const fecharResultado = () => $('roletaResultado').classList.remove('is-open');
+    $('roletaResFechar').addEventListener('click', fecharResultado);
+    $('roletaResOutra').addEventListener('click', () => { fecharResultado(); $('roletaGirar').click(); });
+    $('roletaResultado').addEventListener('click', (e) => { if (e.target === $('roletaResultado')) fecharResultado(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') fecharResultado(); });
 
     // ---------- Dados em tempo real ----------
     desenharRoda();
